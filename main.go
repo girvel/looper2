@@ -5,14 +5,20 @@ import (
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
+	// "github.com/gin-gonic/gin"
 )
 
-func main() {
-	db, err := sql.Open("sqlite3", "test.db")
+// type context struct {
+// 	*sql.DB
+// }
+
+func run() error {
+	db, err := sql.Open("sqlite3", "looper2.db")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer db.Close()
+	log.Println("Connected.")
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS tasks (
@@ -21,29 +27,36 @@ func main() {
 		);
 	`)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	log.Println("Initialized table tasks")
 
 	_, err = db.Exec("INSERT INTO tasks(text) VALUES (?)", "An entry")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	log.Println("Inserted an entry")
 
 	rows, err := db.Query("SELECT id, text FROM tasks")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	for rows.Next() {
 		var id int
 		var text string
 		err = rows.Scan(&id, &text)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		log.Printf("ID: %d, Name: %s", id, text)
 	}
+	
+	return nil
+}
 
-	log.Println("Connected.")
+func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
