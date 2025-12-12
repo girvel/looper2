@@ -2,7 +2,6 @@ import Axios from "/static/lib/axios.min.js";
 
 const tasks = document.getElementById("tasks");
 const newTaskText = document.getElementById("new-task-text");
-const newTaskButton = document.getElementById("new-task-button");
 
 const appendElement = (id, text) => {
   const div = document.createElement("div");
@@ -45,9 +44,8 @@ for (const entry of response.data) {
   appendElement(entry.id, entry.text);
 }
 
-newTaskButton.addEventListener("click", submitTask);
 newTaskText.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key === "Enter") {
+  if (e.key === "Enter") {
     e.preventDefault();
     submitTask();
   }

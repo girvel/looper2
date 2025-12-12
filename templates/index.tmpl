@@ -3,6 +3,8 @@
 <head>
     <title>Looper</title>
     <link rel="stylesheet" href="/static/css/tui.css" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Adaptive phone design -->
     <!-- <link rel="stylesheet" href="/static/css/index.css" />
     <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
@@ -13,8 +15,7 @@
     <div id="tasks">
         Loading...
     </div>
-    <textarea id="new-task-text"></textarea><br />
-    <button type="button" id="new-task-button">Add task</button>
+    <textarea id="new-task-text" enterkeyhint="enter" autofocus></textarea><br />
     <script src="/static/lib/axios.min.js"></script>
     <script type="module" src="/static/js/index.js"></script>
 </body>

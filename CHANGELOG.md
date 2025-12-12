@@ -2,6 +2,7 @@
 
 ## Unsorted future features
 
+- [ ] Don't remove tasks, instead set "completed" field
 - [ ] Repetitive (looping) tasks
 - [ ] Tags
   - [ ] Ordered collection of tasks (like #nodep -> #extra)
@@ -29,8 +30,8 @@ The most basic thing possible
     - [x] Docker compose
     - [ ] Visible to the outside on :8080
   - [ ] Forward from VPS
-  - [ ] Bind to iPhone
-    - [ ] Research the best way
+  - [x] Bind to iPhone
+    - [x] Research the best way
 - [ ] Polish & review
   - [ ] Multiple go files
   - [ ] Review (include TODOs)
