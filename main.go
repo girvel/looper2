@@ -59,6 +59,27 @@ func (d Deps) GetTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
+type Task struct {
+	Text string `json:"text"`
+}
+
+func (d Deps) PostTasks(c *gin.Context) {
+	var task Task
+	if err := c.BindJSON(&task); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	if _, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", task.Text); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func run() error {
 	deps, err := NewDeps()
 	if err != nil {
@@ -67,28 +88,9 @@ func run() error {
 
 	router := gin.Default()
 	router.GET("/api/tasks", deps.GetTasks)
+	router.POST("/api/tasks", deps.PostTasks)
 
 	router.Run()
-
-	// _, err = db.Exec("INSERT INTO tasks(text) VALUES (?)", "An entry")
-	// if err != nil {
-	// 	return err
-	// }
-	// log.Println("Inserted an entry")
-
-	// rows, err := db.Query("SELECT id, text FROM tasks")
-	// if err != nil {
-	// 	return err
-	// }
-	// for rows.Next() {
-	// 	var id int
-	// 	var text string
-	// 	err = rows.Scan(&id, &text)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	log.Printf("ID: %d, Name: %s", id, text)
-	// }
 	
 	return nil
 }
