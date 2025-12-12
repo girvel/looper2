@@ -21,7 +21,7 @@ The most basic thing possible
 - [ ] HTML rendering
   - [x] HTML hello world
   - [x] Render the list of tasks
-  - [ ] Finish tasks
+  - [x] Finish tasks
   - [ ] Add new tasks
   - [ ] Dark/TUI theme
 - [ ] Deploy
@@ -32,3 +32,5 @@ The most basic thing possible
   - [ ] Bind to iPhone
     - [ ] Research the best way
 - [ ] Polish & review
+  - [ ] Multiple go files
+  - [ ] Review (include TODOs)

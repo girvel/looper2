@@ -72,13 +72,21 @@ func (d Deps) AddTask(c *gin.Context) {
 		return
 	}
 
-	if _, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", task.Text); err != nil {
+	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", task.Text)
+	if err != nil {
 		log.Println(err);
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	id, err := result.LastInsertId()
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK", "id": id})
 }
 
 func (d Deps) CompleteTask(c *gin.Context) {
