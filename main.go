@@ -43,7 +43,7 @@ func (d Deps) GetTasks(c *gin.Context) {
 		return
 	}
 
-	var tasks []gin.H
+	tasks := make([]gin.H, 0)
 	for rows.Next() {
 		var id int
 		var text string
