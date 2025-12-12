@@ -1,5 +1,14 @@
 # Project Roadmap / Changlog
 
+## Unsorted future features
+
+- [ ] Repetitive (looping) tasks
+- [ ] Tags
+  - [ ] Ordered collection of tasks (like #nodep -> #extra)
+  - [ ] Easy input # from iphone keyboard?
+- [ ] Editing tasks
+- [ ] Auth
+
 ## v0.1.0 (Primitive task tracking)
 
 The most basic thing possible
@@ -16,4 +25,6 @@ The most basic thing possible
     - [ ] Docker compose
     - [ ] Visible to the outside on :8080
   - [ ] Forward from VPS
+  - [ ] Bind to iPhone
+    - [ ] Research the best way
 - [ ] Polish & review
