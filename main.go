@@ -98,6 +98,10 @@ func (d Deps) CompleteTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
+}
+
 func run() error {
 	deps, err := NewDeps()
 	if err != nil {
@@ -108,6 +112,10 @@ func run() error {
 	router.GET("/api/tasks", deps.GetTasks)
 	router.POST("/api/tasks", deps.AddTask)
 	router.POST("/api/tasks/:id", deps.CompleteTask)
+
+	router.LoadHTMLGlob("templates/*")
+	router.Static("/static", "./static")
+	router.GET("/", Index)
 
 	router.Run()
 	
