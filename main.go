@@ -3,22 +3,22 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
-	// "github.com/gin-gonic/gin"
 )
 
-// type context struct {
-// 	*sql.DB
-// }
+type Deps struct {
+	*sql.DB
+}
 
-func run() error {
+func NewDeps() (*Deps, error) {
 	db, err := sql.Open("sqlite3", "looper2.db")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer db.Close()
-	log.Println("Connected.")
+	// TODO close DB
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS tasks (
@@ -27,29 +27,68 @@ func run() error {
 		);
 	`)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	log.Println("Initialized table tasks")
 
-	_, err = db.Exec("INSERT INTO tasks(text) VALUES (?)", "An entry")
-	if err != nil {
-		return err
-	}
-	log.Println("Inserted an entry")
+	log.Println("Established sqlite3 DB")
+	return &Deps{db}, nil
+}
 
-	rows, err := db.Query("SELECT id, text FROM tasks")
+func (d Deps) GetTasks(c *gin.Context) {
+	rows, err := d.DB.Query("SELECT id, text FROM tasks")
 	if err != nil {
-		return err
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
 	}
+
+	var tasks []gin.H
 	for rows.Next() {
 		var id int
 		var text string
-		err = rows.Scan(&id, &text)
-		if err != nil {
-			return err
+		
+		if err := rows.Scan(&id, &text); err != nil {
+			log.Println(err);
+			c.JSON(http.StatusInternalServerError, gin.H{})
+			return
 		}
-		log.Printf("ID: %d, Name: %s", id, text)
+
+		tasks = append(tasks, gin.H{"id": id, "text": text})
 	}
+	
+	c.JSON(http.StatusOK, tasks)
+}
+
+func run() error {
+	deps, err := NewDeps()
+	if err != nil {
+		return err
+	}
+
+	router := gin.Default()
+	router.GET("/api/tasks", deps.GetTasks)
+
+	router.Run()
+
+	// _, err = db.Exec("INSERT INTO tasks(text) VALUES (?)", "An entry")
+	// if err != nil {
+	// 	return err
+	// }
+	// log.Println("Inserted an entry")
+
+	// rows, err := db.Query("SELECT id, text FROM tasks")
+	// if err != nil {
+	// 	return err
+	// }
+	// for rows.Next() {
+	// 	var id int
+	// 	var text string
+	// 	err = rows.Scan(&id, &text)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	log.Printf("ID: %d, Name: %s", id, text)
+	// }
 	
 	return nil
 }
