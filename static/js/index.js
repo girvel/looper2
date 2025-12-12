@@ -33,9 +33,8 @@ const submitTask = async () => {
 };
 
 const response = await Axios.get("/api/tasks");
-console.log(response.data);
 
-tasks.replaceChildren()
+tasks.replaceChildren();
 for (const entry of response.data) {
   appendElement(entry.id, entry.text);
 }
