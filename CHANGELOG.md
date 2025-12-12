@@ -8,15 +8,16 @@
   - [ ] Easy input # from iphone keyboard?
 - [ ] Editing tasks
 - [ ] Auth
+- [ ] (Later) go multi-user
 
 ## v0.1.0 (Primitive task tracking)
 
 The most basic thing possible
 
-- [ ] Task manipulation API
+- [x] Task manipulation API
   - [x] Create tasks
   - [x] Get tasks
-  - [ ] Finish tasks
+  - [x] Finish tasks
 - [ ] HTML rendering
   - [ ] Render the list of 
   - [ ] Dark theme

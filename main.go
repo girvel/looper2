@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
@@ -63,7 +64,7 @@ type Task struct {
 	Text string `json:"text"`
 }
 
-func (d Deps) PostTasks(c *gin.Context) {
+func (d Deps) AddTask(c *gin.Context) {
 	var task Task
 	if err := c.BindJSON(&task); err != nil {
 		log.Println(err);
@@ -80,6 +81,23 @@ func (d Deps) PostTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+func (d Deps) CompleteTask(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	if _, err := d.DB.Exec("DELETE FROM tasks WHERE id = ?", id); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func run() error {
 	deps, err := NewDeps()
 	if err != nil {
@@ -88,7 +106,8 @@ func run() error {
 
 	router := gin.Default()
 	router.GET("/api/tasks", deps.GetTasks)
-	router.POST("/api/tasks", deps.PostTasks)
+	router.POST("/api/tasks", deps.AddTask)
+	router.POST("/api/tasks/:id", deps.CompleteTask)
 
 	router.Run()
 	
