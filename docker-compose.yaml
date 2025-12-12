@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    container_name: looper2
+    restart: unless-stopped
+    ports:
+    - "8080:8080"
+    volumes:
+    - ./looper2.db:/app/looper2.db
+    environment:
+    - GIN_MODE=release

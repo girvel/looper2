@@ -26,7 +26,7 @@ The most basic thing possible
   - [x] Dark/TUI theme
 - [ ] Deploy
   - [ ] Run on thor1
-    - [ ] Docker compose
+    - [x] Docker compose
     - [ ] Visible to the outside on :8080
   - [ ] Forward from VPS
   - [ ] Bind to iPhone
