@@ -20,7 +20,7 @@ The most basic thing possible
   - [x] Finish tasks
 - [ ] HTML rendering
   - [x] HTML hello world
-  - [ ] Render the list of tasks
+  - [x] Render the list of tasks
   - [ ] Finish tasks
   - [ ] Add new tasks
   - [ ] Dark/TUI theme
