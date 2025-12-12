@@ -18,12 +18,12 @@ The most basic thing possible
   - [x] Create tasks
   - [x] Get tasks
   - [x] Finish tasks
-- [ ] HTML rendering
+- [x] HTML rendering
   - [x] HTML hello world
   - [x] Render the list of tasks
   - [x] Finish tasks
   - [x] Add new tasks
-  - [ ] Dark/TUI theme
+  - [x] Dark/TUI theme
 - [ ] Deploy
   - [ ] Run on thor1
     - [ ] Docker compose

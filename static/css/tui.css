@@ -31,7 +31,7 @@ a {
   color: #49a1f8;
 }
 
-textarea {
+textarea, button {
   background-color: transparent;
   color: inherit;
   font-size: inherit;
