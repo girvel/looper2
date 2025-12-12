@@ -22,7 +22,7 @@ The most basic thing possible
   - [x] HTML hello world
   - [x] Render the list of tasks
   - [x] Finish tasks
-  - [ ] Add new tasks
+  - [x] Add new tasks
   - [ ] Dark/TUI theme
 - [ ] Deploy
   - [ ] Run on thor1

@@ -22,6 +22,16 @@ const appendElement = (id, text) => {
   tasks.appendChild(div);
 }
 
+const submitTask = async () => {
+  if (newTaskText.value == "") return;
+
+  const response = await Axios.post("api/tasks", {"text": newTaskText.value});
+  if (response.data.status == "OK") {
+    appendElement(response.data.id, newTaskText.value);
+    newTaskText.value = "";
+  }
+};
+
 const response = await Axios.get("/api/tasks");
 console.log(response.data);
 
@@ -30,10 +40,10 @@ for (const entry of response.data) {
   appendElement(entry.id, entry.text);
 }
 
-newTaskButton.addEventListener("click", async () => {
-  const response = await Axios.post("api/tasks", {"text": newTaskText.value});
-  if (response.data.status == "OK") {
-    appendElement(response.data.id, newTaskText.value);
-    newTaskText.value = "";
+newTaskButton.addEventListener("click", submitTask)
+newTaskText.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key == "Enter") {
+    e.preventDefault();
+    submitTask();
   }
 })
