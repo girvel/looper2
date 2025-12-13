@@ -81,6 +81,81 @@ func (d Deps) completeTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+func (d Deps) getTags(c *gin.Context) {
+	rows, err := d.DB.Query(`
+		SELECT name, subtag FROM tags
+	`)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	defer rows.Close()
+
+	tags := make(map[string][]string)
+	for rows.Next() {
+		var name string
+		var subtag string
+		if err := rows.Scan(&name, &subtag); err != nil {
+			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{})
+			return
+		}
+
+		tags[name] = append(tags[name], subtag)
+	}
+
+	c.JSON(http.StatusOK, tags)
+}
+
+type tag struct {
+	Name string `json:"name"`
+	Subtags []string `json:"subtags"`
+}
+
+func (d Deps) addTag(c *gin.Context) {
+	// TODO handle duplicate subtags
+
+	var currentTag tag
+	if err := c.BindJSON(&currentTag); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	tx, err := d.DB.Begin()
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	defer tx.Rollback()
+
+	statement, err := tx.Prepare("INSERT INTO tags (name, subtag) VALUES (?, ?)")
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	defer statement.Close()
+
+	for _, subtag := range currentTag.Subtags {
+		if _, err := statement.Exec(currentTag.Name, subtag); err != nil {
+			log.Println(err);
+			c.JSON(http.StatusInternalServerError, gin.H{})
+			return
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func (d Deps) healthCheck(c *gin.Context) {
 	if err := d.DB.Ping(); err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"status": "DB_ERROR"})
@@ -117,6 +192,9 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/tasks", deps.getTasks)
 	router.POST("/api/tasks", deps.addTask)
 	router.POST("/api/tasks/:id", deps.completeTask)
+
+	router.GET("/api/tags", deps.getTags)
+	router.POST("/api/tags", deps.addTag)
 
 	router.GET("/api/healthcheck", deps.healthCheck)
 

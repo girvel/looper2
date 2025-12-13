@@ -9,7 +9,7 @@ import (
 	looper2 "github.com/girvel/looper2/src"
 )
 
-func run() error {
+func init_looper() error {
 	deps, err := looper2.NewDeps()
 	if err != nil {
 		return err
@@ -25,8 +25,8 @@ func run() error {
 }
 
 func main() {
-	err := run()
+	err := init_looper()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Initialization error: %s", err.Error())
 	}
 }
