@@ -16,10 +16,10 @@ body {
   box-sizing: border-box;
   padding: 20px;
 
-  background-color: #1a1b1e;
+  background-color: #222222;
   margin: 0 auto;
   font-family: JetBrains Mono;
-  color: white;
+  color: #f7f1ff;
 
   font-size: var(--font-size);
   line-height: var(--line-height);
@@ -70,7 +70,7 @@ textarea, button {
 textarea {
   border: none;
   outline: none;
-  background-color: rgba(0, 0, 0, var(--punctuation-opacity));
+  background-color: #191919;
   padding: 0;
 }
 
