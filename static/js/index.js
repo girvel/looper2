@@ -37,19 +37,24 @@ const updateTextareaHeight = () => {
   newTaskText.style.height = newTaskText.scrollHeight + "px";
 };
 
-const response = await Axios.get("/api/tasks");
+// allows HTML to fully load on slow internet speed
+const initialize = async () => {
+  const response = await Axios.get("/api/tasks");
 
-tasks.replaceChildren();
-for (const entry of response.data) {
-  appendElement(entry.id, entry.text);
-}
-
-newTaskText.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    submitTask();
+  tasks.replaceChildren();
+  for (const entry of response.data) {
+    appendElement(entry.id, entry.text);
   }
-});
 
-newTaskText.addEventListener("input", updateTextareaHeight);
-updateTextareaHeight();
+  newTaskText.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitTask();
+    }
+  });
+
+  newTaskText.addEventListener("input", updateTextareaHeight);
+  updateTextareaHeight();
+};
+
+initialize();
