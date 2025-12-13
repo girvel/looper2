@@ -11,6 +11,7 @@
 - [ ] Auth
 - [ ] (Later) go multi-user
 - [ ] Report errors in UI
+- [ ] Telegram bot to avoid DPI??
 
 ## v0.2.0 (Auth)
 
@@ -23,7 +24,7 @@ JWT auth, no registering, 1 user from env variables.
   - [ ] Ditch fancy checkboxes, use `[ ]` instead
   - [ ] Remove textearea borders, maybe highlight with color
 
-## v0.1.0 (Primitive task tracking)
+## v0.1.0 (Primitive task tracking) -- DONE
 
 The most basic thing possible: an editable list of tasks.
 
@@ -43,6 +44,6 @@ The most basic thing possible: an editable list of tasks.
   - [x] Bind to iPhone
     - [x] Research the best way
   - [x] Fix the iPhone bullshit
-- [ ] Polish & review
+- [x] Polish & review
   - [x] Multiple go files
-  - [ ] Review (include TODOs)
+  - [x] Review (include TODOs)
