@@ -11,9 +11,20 @@
 - [ ] Auth
 - [ ] (Later) go multi-user
 
+## v0.2.0 (Auth)
+
+JWT auth, no registering, 1 user from env variables.
+
+## v0.1.1 (Primitive but polished)
+
+- [ ] UI tweaks:
+  - [ ] Smaller font
+  - [ ] Ditch fancy checkboxes, use `[ ]` instead
+  - [ ] Remove textearea borders, maybe highlight with color
+
 ## v0.1.0 (Primitive task tracking)
 
-The most basic thing possible
+The most basic thing possible: an editable list of tasks.
 
 - [x] Task manipulation API
   - [x] Create tasks
