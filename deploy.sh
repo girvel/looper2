@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 VPS_USER="girvel"
 VPS_HOST="185.167.234.186"
