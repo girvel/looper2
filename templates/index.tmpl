@@ -11,7 +11,9 @@
     <div id="tasks">
         Loading...
     </div>
-    <textarea id="new-task-text" enterkeyhint="enter" autofocus></textarea><br />
+    <br>
+    <!-- TODO funny labels (maybe from looper 1's README) -->
+    <textarea rows="1" id="new-task-text" enterkeyhint="enter" placeholder="Clean the staples" autofocus></textarea><br />
     <script src="/static/lib/axios.min.js"></script>
     <script type="module" src="/static/js/index.js?t={{.Config.StartupTime}}"></script>
     <!-- .Config.StartupTime is for cache busting -->

@@ -12,7 +12,7 @@ body {
   background-color: #1a1b1e;
   margin: 0 auto;
   font-family: JetBrains Mono;
-  font-size: 20pt;
+  font-size: 16pt;
   color: white;
 }
 
@@ -52,43 +52,44 @@ textarea, button {
   font-size: inherit;
 }
 
-/* GENERATED */
-input[type="checkbox"] {
-  /* 1. Remove native styling */
-  -webkit-appearance: none;
-  appearance: none;
-
-  /* 2. Visual Box Style */
-  background-color: transparent;
-  width: 1.5em;
-  height: 1.5em;
-  border: 2px solid currentColor;
-  border-radius: 0.15em;
-
-  /* 3. THE FIX: Inline behavior */
-  display: inline-grid;    /* Allows it to sit next to text, but keeps internal grid for the checkmark */
-  place-content: center;   /* Centers the checkmark inside the box */
-  margin-right: 0.4em;     /* Adds the spacing (replacing flex gap) */
-  
-  /* 4. Fine-tune vertical position */
-  vertical-align: 0.4em; 
-  cursor: pointer;
-
-  color: inherit;
+textarea {
+  border: none;
+  outline: none;
+  background-color: rgba(0, 0, 0, .2);
+  padding: 0;
 }
 
-/* Keep the pseudo-element logic exactly the same */
+textarea::placeholder,
+textarea::-webkit-input-placeholder,
+textarea::-moz-placeholder,
+textarea:-moz-placeholder {
+  color: inherit;
+  opacity: 0.2;
+}
+
+/* GENERATED */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  cursor: pointer;
+
+  font-size: inherit;
+  font-family: inherit;
+}
+
 input[type="checkbox"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em currentColor;
-  transform-origin: center;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  content: '[ ] ';
+  white-space: pre;
+  opacity: 0.2;
 }
 
 input[type="checkbox"]:checked::before {
-  transform: scale(1);
+  content: '[x] ';
+  white-space: pre;
+}
+
+input[type="checkbox"]:hover::before {
+  content: '[.] ';
+  white-space: pre;
 }
