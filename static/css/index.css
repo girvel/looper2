@@ -8,3 +8,24 @@
   box-sizing: border-box;
   display: block;
 }
+
+#tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1ch;
+}
+
+.tag {
+  cursor: pointer;
+  opacity: 0.2;
+  text-decoration: none;
+}
+
+.tag:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.tag.active {
+  opacity: 1;
+}

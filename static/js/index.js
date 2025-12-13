@@ -15,17 +15,27 @@ const no_tasks_placeholder = "-- all done --";
 const render = () => {
   tags.replaceChildren();
 
-  const span = document.createElement("span");
-  span.innerText = "<feed>";
-  span.addEventListener("click", () => {
-    state.current_tag = null;
-    render();
-  });
-  tags.appendChild(span);
+  {
+    const span = document.createElement("span");
+    span.innerText = "<feed>";
+    span.className = "tag";
+    if (state.current_tag === null) {
+      span.classList.add("active");
+    }
+    span.addEventListener("click", () => {
+      state.current_tag = null;
+      render();
+    });
+    tags.appendChild(span);
+  }
 
   for (const tag of state.tags) {
     const span = document.createElement("span");
     span.innerText = tag.name;
+    span.className = "tag";
+    if (state.current_tag?.name === tag.name) {
+      span.classList.add("active");
+    }
     span.addEventListener("click", () => {
       state.current_tag = tag;
       render();

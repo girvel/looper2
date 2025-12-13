@@ -30,7 +30,7 @@
 
 Later (move):
 
-- [ ] UI for creating tasg
+- [ ] UI for creating tags
 
 ## v0.1.1 (Primitive but polished) -- DONE
 
