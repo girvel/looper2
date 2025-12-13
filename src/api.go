@@ -119,9 +119,6 @@ type tag struct {
 }
 
 func (d Deps) addTag(c *gin.Context) {
-	// TODO handle duplicate subtags
-	// TODO handle tags with no subtags
-
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
 		log.Println(err);

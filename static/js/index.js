@@ -24,8 +24,6 @@ const render = () => {
   tags.appendChild(span);
 
   for (const tag of state.tags) {
-    // TODO separate with spaces
-    // TODO <nav> or something
     const span = document.createElement("span");
     span.innerText = tag.name;
     span.addEventListener("click", () => {

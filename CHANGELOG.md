@@ -19,10 +19,18 @@
 
 ## v0.2.0 (Tags intro)
 
-- [ ] Table with tags
-- [ ] Display tags
-- [ ] Sort by tags in the frontend
-- [ ] Create new tags
+- [x] Table with tags
+- [x] Display tags
+- [x] Sort by tags in the frontend
+- [ ] Make tags appear prettier: use a meaningful tag, highlight on hover, space separator
+- [ ] Handle repeating subtags
+- [ ] Handle tags with no subtags
+- [ ] Retest
+- [ ] Review
+
+Later (move):
+
+- [ ] UI for creating tasg
 
 ## v0.1.1 (Primitive but polished) -- DONE
 
@@ -55,4 +63,4 @@ The most basic thing possible: an editable list of tasks.
   - [x] Fix the iPhone bullshit
 - [x] Polish & review
   - [x] Multiple go files
-  - [x] Review (include TODOs)
+  - [x] Review (include todos)
