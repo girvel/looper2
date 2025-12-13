@@ -43,5 +43,5 @@ The most basic thing possible: an editable list of tasks.
     - [x] Research the best way
   - [x] Fix the iPhone bullshit
 - [ ] Polish & review
-  - [ ] Multiple go files
+  - [x] Multiple go files
   - [ ] Review (include TODOs)
