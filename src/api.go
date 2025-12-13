@@ -2,6 +2,7 @@ package looper2
 
 import (
 	"log"
+	"math/rand/v2"
 	"net/http"
 	"strconv"
 
@@ -80,8 +81,28 @@ func (d Deps) completeTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+var idioms []string = []string{
+	"Clean the staples",
+	"Advance alchemic knowledge",
+	"Journal tribe movements",
+	"Wash my pants",
+	"Buy ritual paint (3), rags (3)",
+	"Pratice swordcraft",
+	"Clean the dungeon",
+	"Send anonymous prank letters to the King",
+	"Hunt",
+	"Change oil in lamps",
+	"Sell toenails",
+	"Fight hornets",
+	"Buy sausages (1000 lb)",
+	"Feed the platypus bear",
+}
+
 func (d Deps) index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{"Config": d.Config})
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"Config": d.Config,
+		"Idiom": idioms[rand.IntN(len(idioms))],
+	})
 }
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
