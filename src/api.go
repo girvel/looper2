@@ -81,6 +81,14 @@ func (d Deps) completeTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+func (d Deps) healthCheck(c *gin.Context) {
+	if err := d.DB.Ping(); err != nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"status": "DB_ERROR"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 var idioms []string = []string{
 	"Clean the staples",
 	"Advance alchemic knowledge",
@@ -109,6 +117,8 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/tasks", deps.getTasks)
 	router.POST("/api/tasks", deps.addTask)
 	router.POST("/api/tasks/:id", deps.completeTask)
+
+	router.GET("/api/healthcheck", deps.healthCheck)
 
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")

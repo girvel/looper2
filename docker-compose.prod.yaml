@@ -6,10 +6,15 @@ services:
     expose:
     - "8080"
     volumes:
-    - ./looper2.db:/app/looper2.db
+    - looper2_db:/app
     environment:
-    - GIN_MODE=release
     - LOOPER_RELEASE=1
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8080/api/healthcheck"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+      start_period: 15s
 
   nginx:
     image: nginx:alpine
@@ -22,3 +27,5 @@ services:
     depends_on:
     - looper
 
+volumes:
+  looper2_db:

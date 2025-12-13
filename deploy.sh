@@ -23,7 +23,7 @@ ssh $VPS_USER@$VPS_HOST << EOF
 
     # 2. Restart the container using the prod compose file
     mv docker-compose.prod.yaml docker-compose.yaml
-    docker compose up -d
+    docker compose up -d --wait
 
     # 3. Cleanup
     rm looper-deploy.tar.gz
