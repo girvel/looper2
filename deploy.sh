@@ -16,18 +16,18 @@ scp looper-deploy.tar.gz nginx.conf docker-compose.prod.yaml $VPS_USER@$VPS_HOST
 
 echo "Remote: Loading & Restarting..."
 ssh $VPS_USER@$VPS_HOST << EOF
-  touch looper2.db
+    [ ! -f looper2.db ] && touch looper2.db
 
-  # 1. Load the new image
-  gunzip -c looper-deploy.tar.gz | docker load
-  
-  # 2. Restart the container using the prod compose file
-  mv docker-compose.prod.yaml docker-compose.yaml
-  docker compose up -d
-  
-  # 3. Cleanup
-  rm looper-deploy.tar.gz
-  docker image prune -f # Remove old dangling images
+    # 1. Load the new image
+    gunzip -c looper-deploy.tar.gz | docker load
+
+    # 2. Restart the container using the prod compose file
+    mv docker-compose.prod.yaml docker-compose.yaml
+    docker compose up -d
+
+    # 3. Cleanup
+    rm looper-deploy.tar.gz
+    docker image prune -f # Remove old dangling images
 EOF
 
 echo "Deployment Complete!"
