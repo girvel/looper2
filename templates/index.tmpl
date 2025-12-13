@@ -13,7 +13,8 @@
     </div>
     <textarea id="new-task-text" enterkeyhint="enter" autofocus></textarea><br />
     <script src="/static/lib/axios.min.js"></script>
-    <script type="module" src="/static/js/index.js"></script>
+    <script type="module" src="/static/js/index.js?t={{.Config.StartupTime}}"></script>
+    <!-- .Config.StartupTime is for cache busting -->
 </body>
 </html>
 

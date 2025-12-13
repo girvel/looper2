@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
 	ReleaseMode bool
+	StartupTime int64
 }
 
 type Deps struct {
@@ -39,6 +41,7 @@ func NewDeps() (*Deps, error) {
 	if config.ReleaseMode {
 		log.Println("Release mode")
 	}
+	config.StartupTime = time.Now().Unix()
 
 	return &Deps{
 		DB: db,
