@@ -1,11 +1,12 @@
 services:
   looper:
-    build: .
+    image: looper-vps:latest
     container_name: looper
     restart: unless-stopped
     ports:
-    - "8080:8080"
+    - "80:8080"
     volumes:
     - ./looper2.db:/app/looper2.db
     environment:
     - GIN_MODE=release
+
