@@ -42,6 +42,7 @@ func (d Deps) GetTasks(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
+	defer rows.Close()
 
 	tasks := make([]gin.H, 0)
 	for rows.Next() {
