@@ -1,9 +1,12 @@
 FROM golang:1.25-bookworm AS builder
 WORKDIR /app
-COPY go.mod ./
+
+COPY go.mod go.sum ./
 RUN go mod download
+
 COPY main.go ./
-COPY go.sum ./
+COPY src ./src
+
 RUN CGO_ENABLED=1 GOOS=linux go build -o server main.go
 
 FROM debian:bookworm-slim
