@@ -12,6 +12,13 @@ const appendElement = (id, text) => {
       if (response.data.status == "OK") {
         tasks.removeChild(div);
       }
+
+      if (tasks.children.length === 0) {
+        const span = document.createElement("span")
+        span.className = "punctuation"
+        span.innerText = no_tasks_placeholder;
+        tasks.appendChild(span);
+      }
     });
     div.appendChild(cb);
 
@@ -21,11 +28,17 @@ const appendElement = (id, text) => {
   tasks.appendChild(div);
 };
 
+const no_tasks_placeholder = "-- all done --";
+
 const submitTask = async () => {
   if (newTaskText.value === "") return;
 
   const response = await Axios.post("api/tasks", {"text": newTaskText.value});
   if (response.data.status === "OK") {
+    if (tasks.children[0].innerText === no_tasks_placeholder) {
+      tasks.replaceChildren();
+    }
+
     appendElement(response.data.id, newTaskText.value);
     newTaskText.value = "";
     newTaskText.style.height = "auto";
@@ -40,10 +53,18 @@ const updateTextareaHeight = () => {
 // allows HTML to fully load on slow internet speed
 const refreshTasks = async () => {
   const response = await Axios.get("/api/tasks");
+  const entries = response.data;
 
   tasks.replaceChildren();
-  for (const entry of response.data) {
-    appendElement(entry.id, entry.text);
+  if (entries.length === 0) {
+    const span = document.createElement("span")
+    span.className = "punctuation"
+    span.innerText = no_tasks_placeholder;
+    tasks.appendChild(span);
+  } else {
+    for (const entry of entries) {
+      appendElement(entry.id, entry.text);
+    }
   }
 };
 

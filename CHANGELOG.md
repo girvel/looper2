@@ -19,10 +19,12 @@ JWT auth, no registering, 1 user from env variables.
 
 ## v0.1.1 (Primitive but polished)
 
-- [ ] UI tweaks:
-  - [ ] Smaller font
-  - [ ] Ditch fancy checkboxes, use `[ ]` instead
-  - [ ] Remove textearea borders, maybe highlight with color
+- [x] UI tweaks:
+  - [x] Smaller font
+  - [x] Ditch fancy checkboxes, use `[ ]` instead
+  - [x] Remove textearea borders, maybe highlight with color
+  - [x] `-- all done --`
+- [ ] Review JS code
 
 ## v0.1.0 (Primitive task tracking) -- DONE
 
