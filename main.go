@@ -17,6 +17,7 @@ func run() error {
 	defer deps.Close()
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil) // running behind nginx
 	looper2.ApiRoutes(router, deps)
 	router.Run()
 	

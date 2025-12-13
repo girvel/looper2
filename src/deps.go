@@ -23,6 +23,11 @@ func NewDeps() (*Deps, error) {
 		return nil, err
 	}
 
+    // Write-Ahead Logging for concurrency
+    if _, err := db.Exec("PRAGMA journal_mode=WAL;"); err != nil {
+        return nil, err
+    }
+
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
