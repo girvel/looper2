@@ -9,6 +9,7 @@ services:
     - ./looper2.db:/app/looper2.db
     environment:
     - GIN_MODE=release
+    - LOOPER_RELEASE=1
 
   nginx:
     image: nginx:alpine
