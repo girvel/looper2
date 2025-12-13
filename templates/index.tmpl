@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Looper</title>
+    <title>Looper {{if not .Config.ReleaseMode}} (dev){{end}}</title>
     <link rel="stylesheet" href="/static/css/tui.css" />
     <link rel="stylesheet" href="/static/css/index.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Adaptive phone design -->
-    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="icon" type="image/png" href="/static/favicon{{if not .Config.ReleaseMode}}-debug{{end}}.png">
 </head>
 <body>
     <div id="tasks">

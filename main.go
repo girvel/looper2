@@ -4,14 +4,20 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type Config struct {
+	ReleaseMode bool
+}
+
 type Deps struct {
 	*sql.DB
+	Config
 }
 
 func NewDeps() (*Deps, error) {
@@ -32,7 +38,15 @@ func NewDeps() (*Deps, error) {
 	}
 
 	log.Println("Established sqlite3 DB")
-	return &Deps{db}, nil
+
+	var config Config
+	release_var := os.Getenv("LOOPER_RELEASE")
+	config.ReleaseMode = release_var != "" && release_var != "0"
+	if config.ReleaseMode {
+		log.Println("Release mode")
+	}
+
+	return &Deps{db, config}, nil
 }
 
 func (d Deps) GetTasks(c *gin.Context) {
@@ -107,8 +121,8 @@ func (d Deps) CompleteTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
-func Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
+func (d Deps) Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{"Config": d.Config})
 }
 
 func run() error {
@@ -124,7 +138,7 @@ func run() error {
 
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
-	router.GET("/", Index)
+	router.GET("/", deps.Index)
 
 	router.Run()
 	
