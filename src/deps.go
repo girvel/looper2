@@ -40,7 +40,10 @@ func NewDeps() (*Deps, error) {
 		log.Println("Release mode")
 	}
 
-	return &Deps{db, config}, nil
+	return &Deps{
+		DB: db,
+		Config: config,
+	}, nil
 }
 
 func (d *Deps) Close() {
