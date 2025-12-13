@@ -10,6 +10,7 @@
 - [ ] Editing tasks
 - [ ] Auth
 - [ ] (Later) go multi-user
+- [ ] Report errors in UI
 
 ## v0.2.0 (Auth)
 

@@ -39,14 +39,14 @@ type task struct {
 }
 
 func (d Deps) addTask(c *gin.Context) {
-	var current_task task
-	if err := c.BindJSON(&current_task); err != nil {
+	var currentTask task
+	if err := c.BindJSON(&currentTask); err != nil {
 		log.Println(err);
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
-	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", current_task.Text)
+	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", currentTask.Text)
 	if err != nil {
 		log.Println(err);
 		c.JSON(http.StatusInternalServerError, gin.H{})
