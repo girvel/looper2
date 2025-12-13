@@ -10,11 +10,15 @@
 <body>
     <h1>The Looper</h1>
     <div id="tags"></div>
+    <br />
+
     <div id="tasks">
         <span class="punctuation">Loading...</span>
     </div>
-    <br>
-    <textarea rows="1" id="new-task-text" enterkeyhint="enter" placeholder="{{.Idiom}}" autofocus></textarea><br />
+    <br />
+
+    <textarea rows="1" id="new-task-text" enterkeyhint="enter" placeholder="{{.Idiom}}" autofocus></textarea>
+
     <script src="/static/lib/axios.min.js"></script>
     <script type="module" src="/static/js/index.js?t={{.Config.StartupTime}}"></script>
     <!-- .Config.StartupTime is for cache busting -->

@@ -7,21 +7,44 @@ const newTaskText = document.getElementById("new-task-text");
 let state = {
   tasks: [],
   tags: [],
+  current_tag: null,
 };
 
 const no_tasks_placeholder = "-- all done --";
 
 const render = () => {
   tags.replaceChildren();
+
+  const span = document.createElement("span");
+  span.innerText = "<feed>";
+  span.addEventListener("click", () => {
+    state.current_tag = null;
+    render();
+  });
+  tags.appendChild(span);
+
   for (const tag of state.tags) {
     // TODO separate with spaces
+    // TODO <nav> or something
     const span = document.createElement("span");
     span.innerText = tag.name;
+    span.addEventListener("click", () => {
+      state.current_tag = tag;
+      render();
+    });
     tags.appendChild(span);
   }
 
   tasks.replaceChildren();
-  if (state.tasks.length === 0) {
+  let renderedTasks = state.tasks;
+  if (state.current_tag !== null) {
+    renderedTasks = renderedTasks.filter(t => {
+      const lower = t.text.toLowerCase();
+      return state.current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
+    });
+  }
+
+  if (renderedTasks.length === 0) {
     const span = document.createElement("span");
     span.className = "punctuation"
     span.innerText = no_tasks_placeholder;
@@ -29,7 +52,7 @@ const render = () => {
     return;
   }
 
-  for (const task of state.tasks) {
+  for (const task of renderedTasks) {
     const div = document.createElement("div");
     const cb = document.createElement("input");
     cb.type = "checkbox";
