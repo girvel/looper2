@@ -4,18 +4,25 @@
 
 - [ ] Don't remove tasks, instead set "completed" field
 - [ ] Repetitive (looping) tasks
-- [ ] Tags
-  - [ ] Ordered collection of tasks (like #nodep -> #extra)
-  - [ ] Easy input # from iphone keyboard?
-- [ ] Editing tasks
-- [ ] Auth
+- [ ] Tags: substrings to search for; the first tag substring is the tag's name, the following ones are used too.
+  - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
 - [ ] (Later) go multi-user
 - [ ] Report errors in UI
+- [ ] Editing tasks
+  - [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
 - [ ] Telegram bot to avoid DPI??
+- [ ] Ligatures (like <-, =>)
+- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
+- [ ] Autoupdate state
+  - [ ] Disable logging for autoupdate
+- [ ] Auth
 
-## v0.2.0 (Auth)
+## v0.2.0 (Tags intro)
 
-JWT auth, no registering, 1 user from env variables.
+- [ ] Table with tags
+- [ ] Display tags
+- [ ] Sort by tags in the frontend
+- [ ] Create new tags
 
 ## v0.1.1 (Primitive but polished) -- DONE
 
