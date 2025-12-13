@@ -1,18 +1,28 @@
 import Axios from "/static/lib/axios.min.js";
 
 const tasks = document.getElementById("tasks");
+const tags = document.getElementById("tags");
 const newTaskText = document.getElementById("new-task-text");
 
 let state = {
   tasks: [],
+  tags: [],
 };
 
 const no_tasks_placeholder = "-- all done --";
 
 const render = () => {
+  tags.replaceChildren();
+  for (const tag of state.tags) {
+    // TODO separate with spaces
+    const span = document.createElement("span");
+    span.innerText = tag.name;
+    tags.appendChild(span);
+  }
+
   tasks.replaceChildren();
   if (state.tasks.length === 0) {
-    const span = document.createElement("span")
+    const span = document.createElement("span");
     span.className = "punctuation"
     span.innerText = no_tasks_placeholder;
     tasks.appendChild(span);
@@ -58,8 +68,8 @@ const updateTextareaHeight = () => {
 
 // allows HTML to fully load on slow internet speed
 (async () => {
-  const response = await Axios.get("/api/tasks");
-  state.tasks = response.data;
+  state.tasks = (await Axios.get("/api/tasks")).data;
+  state.tags = (await Axios.get("/api/tags")).data;
   render();
 })();
 

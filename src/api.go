@@ -92,7 +92,7 @@ func (d Deps) getTags(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	tags := make(map[string][]string)
+	tagMap := make(map[string][]string)
 	for rows.Next() {
 		var name string
 		var subtag string
@@ -102,10 +102,15 @@ func (d Deps) getTags(c *gin.Context) {
 			return
 		}
 
-		tags[name] = append(tags[name], subtag)
+		tagMap[name] = append(tagMap[name], subtag)
 	}
 
-	c.JSON(http.StatusOK, tags)
+	result := make([]gin.H, 0, len(tagMap))
+	for k, v := range tagMap {
+		result = append(result, gin.H{"name": k, "subtags": v})
+	}
+
+	c.JSON(http.StatusOK, result)
 }
 
 type tag struct {
@@ -115,6 +120,7 @@ type tag struct {
 
 func (d Deps) addTag(c *gin.Context) {
 	// TODO handle duplicate subtags
+	// TODO handle tags with no subtags
 
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
