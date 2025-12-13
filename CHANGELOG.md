@@ -25,12 +25,12 @@ The most basic thing possible
   - [x] Finish tasks
   - [x] Add new tasks
   - [x] Dark/TUI theme
-- [ ] Deploy
+- [x] Deploy
   - [x] Docker compose
   - [x] Deploy to VPS
   - [x] Bind to iPhone
     - [x] Research the best way
-  - [ ] Fix the iPhone bullshit
+  - [x] Fix the iPhone bullshit
 - [ ] Polish & review
   - [ ] Multiple go files
   - [ ] Review (include TODOs)

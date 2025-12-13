@@ -11,7 +11,7 @@ echo "Compressing Image..."
 docker save $IMAGE_NAME:latest | gzip > looper-deploy.tar.gz
 
 echo "Uploading Assets..."
-scp looper-deploy.tar.gz docker-compose.prod.yaml $VPS_USER@$VPS_HOST:~
+scp looper-deploy.tar.gz nginx.conf docker-compose.prod.yaml $VPS_USER@$VPS_HOST:~
 
 echo "Remote: Loading & Restarting..."
 ssh $VPS_USER@$VPS_HOST << EOF

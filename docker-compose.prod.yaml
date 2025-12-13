@@ -3,10 +3,21 @@ services:
     image: looper-vps:latest
     container_name: looper
     restart: unless-stopped
-    ports:
-    - "80:8080"
+    expose:
+    - "8080"
     volumes:
     - ./looper2.db:/app/looper2.db
     environment:
     - GIN_MODE=release
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+    - "80:80"
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+    - looper
 
