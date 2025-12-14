@@ -27,6 +27,7 @@ ssh $VPS_USER@$VPS_HOST << EOF
         --restart unless-stopped \
         -p 80:8080 \
         -e GIN_MODE=release \
+        -e LOOPER_RELEASE=1 \
         -v girvel_looper2_db:/app/data \
         looper-vps:latest
 
