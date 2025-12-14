@@ -28,18 +28,15 @@ const getActivationTime = function(expr) {
   if (expr === "second") {
     date.setMilliseconds(0);
   } else if (expr === "day") {
-    date.setMinutes(0, 0, 0);
-    date.setHours(3);
+    date.setUTCHours(3, 0, 0, 0);
   } else if (expr === "week") {
-    date.setMinutes(0, 0, 0);
-    date.setHours(3);
-    date.setDate(date.getDate() - date.getDay());
+    date.setUTCHours(3, 0, 0, 0);
+    date.setUTCDate(date.getUTCDate() - date.getUTCDay());
   } else if (expr === "month") {
-    date.setMinutes(0, 0, 0);
-    date.setHours(3);
-    date.setDate(1);
+    date.setUTCHours(3, 0, 0, 0);
+    date.setUTCDate(1);
   } else {
-    return true;
+    return 0;
   }
 
   return date.getTime() / 1000;
