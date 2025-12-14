@@ -147,7 +147,7 @@ type tag struct {
 	Subtags []string `json:"subtags"`
 }
 
-func (d Deps) addTag(c *gin.Context) {
+func (d Deps) setTag(c *gin.Context) {
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
 		log.Println(err);
@@ -269,7 +269,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.POST("/api/tasks/:id/rename", deps.renameTask)
 
 	router.GET("/api/tags", deps.getTags)
-	router.POST("/api/tags", deps.addTag)
+	router.POST("/api/tags", deps.setTag)
 	router.POST("/api/tags/remove", deps.removeTag)
 
 	router.GET("/api/healthcheck", deps.healthCheck)
