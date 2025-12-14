@@ -79,6 +79,35 @@ const App = {
     return span;
   },
 
+  filterTasks: function() {
+    const result = this.state.tasks.filter(t => {
+      const match = t.text.match(/@every\(([^)]+)\)/);
+      if (!match) {
+        return t.completion_time === null;
+      }
+      return t.completion_time < getActivationTime(match[1]);
+    });
+
+    if (this.state.current_tag === special_tags.feed) {
+      result = result.filter(t => {
+        const lower = t.text.toLowerCase();
+        return !this.state.tags.some(tag => {
+          return lower.includes(tag.name.toLowerCase())
+            || tag.subtags.some(st => lower.includes(st.toLowerCase()));
+        });
+      });
+    } else {
+      const current_tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
+      result = result.filter(t => {
+        const lower = t.text.toLowerCase();
+        return lower.includes(current_tag.name.toLowerCase())
+          || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
+      });
+    }
+
+    return result;
+  },
+
   render: function() {
     elements.tags.replaceChildren();
     elements.tags.appendChild(this.createTag(special_tags.feed));
@@ -89,32 +118,7 @@ const App = {
 
     elements.tasks.replaceChildren();
 
-    let renderedTasks; {
-      renderedTasks = this.state.tasks.filter(t => {
-        const match = t.text.match(/@every\(([^)]+)\)/);
-        if (!match) {
-          return t.completion_time === null;
-        }
-        return t.completion_time < getActivationTime(match[1]);
-      });
-
-      if (this.state.current_tag === special_tags.feed) {
-        renderedTasks = renderedTasks.filter(t => {
-          const lower = t.text.toLowerCase();
-          return !this.state.tags.some(tag => {
-            return lower.includes(tag.name.toLowerCase())
-              || tag.subtags.some(st => lower.includes(st.toLowerCase()));
-          });
-        });
-      } else {
-        const current_tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
-        renderedTasks = renderedTasks.filter(t => {
-          const lower = t.text.toLowerCase();
-          return lower.includes(current_tag.name.toLowerCase())
-            || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
-        });
-      }
-    }
+    let renderedTasks = this.filterTasks();
 
     if (renderedTasks.length === 0) {
       const span = document.createElement("span");
