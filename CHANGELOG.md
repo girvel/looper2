@@ -26,7 +26,7 @@ Hopefully v0.3.0
 ## v0.2.1 (Main features polished)
 
 - [ ] Code
-    - [ ] When finished editing a task, autosort it
+    - [x] When finished editing a task, autosort it
     - [ ] Tags/subtags consider spacing
     - [ ] bug: `<br />`s are not really 1 line tall
     - [ ] bug: editing the task + adding another one => hides edits

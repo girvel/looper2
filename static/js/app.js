@@ -99,15 +99,21 @@ const App = {
     textarea.value = task.text;
     textarea.rows = 1;
 
-    const commit = async () => {
+    const updateText = async () => {
       // TODO reset on fail? or dimmed while pending -> normal color
-      await Axios.post(`api/tasks/${task.id}/rename`, {text: textarea.value});
+      const value = textarea.value;
+      const response = await Axios.post(`api/tasks/${task.id}/rename`, {text: value});
+      if (response.data.status == "OK") {
+        task.text = value;
+        this.render();
+      }
     };
-    textarea.addEventListener("change", commit);
+
+    textarea.addEventListener("change", updateText);
     textarea.addEventListener("keydown", async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
-      await commit();
+      await updateText();
     });
     textarea.addEventListener("input", resizeTextarea);
     setTimeout(() => resizeTextarea.call(textarea), 0);
