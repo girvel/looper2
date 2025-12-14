@@ -42,6 +42,14 @@ const getActivationTime = function(expr) {
   return date.getTime() / 1000;
 };
 
+const doesTagMatch = (tag, task_text) => {
+  const task_elements = task_text.toLowerCase().split(" ");
+  return task_elements.some(
+    e => tag.name.toLowerCase() == e
+      || tag.subtags.some(st => st.toLowerCase() == e)
+  );
+}
+
 
 const App = {
   state: {
@@ -133,20 +141,10 @@ const App = {
     });
 
     if (this.state.current_tag === special_tags.feed) {
-      result = result.filter(t => {
-        const lower = t.text.toLowerCase();
-        return !this.state.tags.some(tag => {
-          return lower.includes(tag.name.toLowerCase())
-            || tag.subtags.some(st => lower.includes(st.toLowerCase()));
-        });
-      });
+      result = result.filter(task => !this.state.tags.some(tag => doesTagMatch(tag, task.text)));
     } else {
-      const current_tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
-      result = result.filter(t => {
-        const lower = t.text.toLowerCase();
-        return lower.includes(current_tag.name.toLowerCase())
-          || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
-      });
+      const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
+      result = result.filter(task => doesTagMatch(tag, task.text));
     }
 
     return result;
