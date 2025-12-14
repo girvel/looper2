@@ -1,28 +1,60 @@
 # Project Roadmap / Changlog
 
-## Unsorted future features
+## Never
 
-- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
-- [ ] (Later) go multi-user
-- [ ] Report errors in UI
-- [ ] ?? Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
-- [ ] Telegram bot to avoid DPI??
-- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
-- [ ] Autoupdate state
-    - [ ] Disable logging for autoupdate
-- [ ] Auth
-- [ ] Sort tags
+- [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
+- [ ] Telegram bot to evade DPI
+
+## Later
+
+- [ ] Go multi-user
 - [ ] Editing tags directly (maybe doubleclick?)
     - [ ] `(+)` button
-- [ ] Autoattaching tags (when adding task from inside the tag)
-- [ ] Tag descriptions
-    - [ ] Editable
-- [ ] `<completed>` pseudo-tag
-- [ ] Auto-sort tasks by tag on editing (run render?)
-- [ ] Move between task entries with arrows
 - [ ] Dim @ directives
 
-## v0.2.0 (Tags intro)
+## Queue
+
+- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
+- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
+- [ ] Tag ordering
+- [ ] Tag descriptions
+    - [ ] Editable
+- [ ] Prevent renames w/ unchanged tasks
+- [ ] Reordering tasks
+
+## Auth & safety
+
+Hopefully v0.3.0
+
+- [ ] Auth
+- [ ] Special token for iPhone
+- [ ] Backup DB
+- [ ] Report errors in UI
+- [ ] Don't fetch ALL the tasks (only with @every/no completion date)
+
+## v0.2.1 (Main features polished)
+
+- [ ] Code
+    - [ ] Tags/subtags consider spacing
+    - [ ] Auto-sort tasks by tag on editing (run render?)
+    - [ ] bug: `<br />`s are not really 1 line tall
+    - [ ] bug: editing the task + adding another one => hides edits
+    - [ ] Move between task entries with arrows
+    - [ ] `<completed>` pseudo-tag
+    - [ ] `<all>` pseudo-tag
+    - [ ] Autoupdate state
+        - [ ] Disable logging for autoupdate
+    - [ ] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
+    - [ ] GIN_MODE=release, attach all required middleware by hand
+- [ ] Review
+    - [ ] Research commonly used Gin middleware
+    - [ ] Review error handling in endpoints
+    - [ ] Review
+    - [ ] Think about the JS refactor
+
+## v0.2.0 (Main features) -- DONE
+
+Introduces tags, periods, allows editing tasks
 
 - [x] Table with tags
 - [x] Display tags
@@ -38,9 +70,6 @@
 - [x] Editing tasks
 - [x] Don't remove tasks, instead set "completed" field
 - [x] Repetitive (looping) tasks
-- [ ] Retest
-- [ ] Review; is JS a bit too complicated?
-
 
 ## v0.1.1 (Primitive but polished) -- DONE
 
