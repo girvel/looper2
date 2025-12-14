@@ -32,6 +32,7 @@ body {
 }
 
 @media (max-width: 600px) {
+  /* ADAPTIVE DESIGN WILL GO HERE */
 }
 
 ul {
@@ -51,6 +52,9 @@ li li::before {
 
 a {
   color: #49a1f8;
+}
+
+br {
 }
 
 h1::before {

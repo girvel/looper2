@@ -28,9 +28,8 @@ Hopefully v0.3.0
 - [ ] Code
     - [x] When finished editing a task, autosort it
     - [x] Tags/subtags consider spacing
-    - [ ] bug: `<br />`s are not really 1 line tall
-    - [ ] bug: editing the task + adding another one => hides edits
-    - [ ] Move between task entries with arrows
+    - [x] bug: editing the task + adding another one => hides edits
+    - [x] Move between task entries with arrows
     - [ ] `<completed>` pseudo-tag
     - [ ] `<all>` pseudo-tag
     - [ ] Autoupdate state

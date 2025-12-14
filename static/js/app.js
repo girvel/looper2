@@ -20,6 +20,8 @@ const resizeTextarea = function() {
   this.style.height = this.scrollHeight + "px";
 };
 
+const mod = (a, b) => ((a % b) + b) % b;
+
 const getActivationTime = function(expr) {
   let date = new Date();
   if (expr === "second") {
@@ -128,7 +130,7 @@ const App = {
 
     div.appendChild(textarea);
 
-    return div;
+    return [div, textarea];
   },
 
   filterTasks: function() {
@@ -165,8 +167,39 @@ const App = {
     }
 
     elements.tasks.replaceChildren();
+    let textareas = [];
     for (const task of renderedTasks) {
-      elements.tasks.appendChild(this.createTask(task));
+      const [div, textarea] = this.createTask(task);
+      elements.tasks.appendChild(div);
+      textareas.push(textarea);
+    }
+
+    for (const [i, textarea] of textareas.entries()) {
+      textarea.addEventListener("keydown", ev => {
+        if (ev.key == "Tab") {
+          ev.preventDefault();
+          elements.input.focus();
+          elements.input.select();
+          return;
+        }
+
+        let offset;
+        if (ev.key == "ArrowDown") {
+          offset = 1;
+        } else if (ev.key == "ArrowUp") {
+          offset = -1;
+        } else {
+          return;
+        }
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const next = textareas[mod(i + offset, textareas.length)];
+
+        ev.preventDefault();
+        next.focus();
+        next.setSelectionRange(start, end);
+      });
     }
   },
 
