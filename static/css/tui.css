@@ -66,13 +66,13 @@ h1 {
   margin-bottom: var(--line-height-unit);
 }
 
-textarea, button {
+textarea, button, input[type="text"] {
   background-color: transparent;
   color: inherit;
   font-size: inherit;
 }
 
-textarea {
+textarea, input[type="text"] {
   border: none;
   outline: none;
   background-color: var(--dark1);

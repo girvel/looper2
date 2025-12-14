@@ -79,7 +79,7 @@ const render = () => {
     const cb = document.createElement("input");
     cb.type = "checkbox";
     cb.addEventListener("change", async () => {
-      const response = await Axios.post(`/api/tasks/${task.id}`);
+      const response = await Axios.post(`api/tasks/${task.id}/complete`);
       if (response.data.status == "OK") {
         state.tasks = state.tasks.filter(t => t.id !== task.id);
         render();
@@ -87,9 +87,22 @@ const render = () => {
     });
     div.appendChild(cb);
 
-    const label = document.createElement("label");
-    label.textContent = task.text;
-    div.appendChild(label);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = task.text;
+
+    const commit = async () => {
+      // TODO reset on fail? or dimmed while pending -> normal color
+      await Axios.post(`api/tasks/${task.id}/rename`, {text: input.value});
+    };
+    input.addEventListener("change", commit);
+    input.addEventListener("keydown", async (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      await commit();
+    });
+
+    div.appendChild(input);
     tasks.appendChild(div);
   }
 };

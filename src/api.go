@@ -81,6 +81,30 @@ func (d Deps) completeTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+func (d Deps) renameTask(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	var currentTask task
+	if err := c.BindJSON(&currentTask); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	if _, err := d.DB.Exec("UPDATE tasks SET text = ? WHERE id = ?", currentTask.Text, id); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func (d Deps) getTags(c *gin.Context) {
 	rows, err := d.DB.Query(`
 		SELECT tags.name, subtags.name FROM tags
@@ -241,7 +265,8 @@ func (d Deps) index(c *gin.Context) {
 func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/tasks", deps.getTasks)
 	router.POST("/api/tasks", deps.addTask)
-	router.POST("/api/tasks/:id", deps.completeTask)
+	router.POST("/api/tasks/:id/complete", deps.completeTask)
+	router.POST("/api/tasks/:id/rename", deps.renameTask)
 
 	router.GET("/api/tags", deps.getTags)
 	router.POST("/api/tags", deps.addTag)
