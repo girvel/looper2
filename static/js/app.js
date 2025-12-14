@@ -21,6 +21,28 @@ const resizeTextarea = function() {
   this.style.height = this.scrollHeight + "px";
 };
 
+const getActivationTime = function(expr) {
+  let date = new Date();
+  if (expr === "second") {
+    date.setMilliseconds(0);
+  } else if (expr === "day") {
+    date.setMinutes(0, 0, 0);
+    date.setHours(3);
+  } else if (expr === "week") {
+    date.setMinutes(0, 0, 0);
+    date.setHours(3);
+    date.setDate(date.getDate() - date.getDay());
+  } else if (expr === "month") {
+    date.setMinutes(0, 0, 0);
+    date.setHours(3);
+    date.setDate(1);
+  } else {
+    return true;
+  }
+
+  return date.getTime() / 1000;
+};
+
 
 const App = {
   state: {
@@ -73,27 +95,7 @@ const App = {
         if (!match) {
           return t.completion_time === null;
         }
-        const expr = match[1];
-
-        let date = new Date();
-        if (expr === "second") {
-          date.setMilliseconds(0);
-        } else if (expr === "day") {
-          date.setMinutes(0, 0, 0);
-          date.setHours(3);
-        } else if (expr === "week") {
-          date.setMinutes(0, 0, 0);
-          date.setHours(3);
-          date.setDate(date.getDate() - date.getDay());
-        } else if (expr === "month") {
-          date.setMinutes(0, 0, 0);
-          date.setHours(3);
-          date.setDate(1);
-        } else {
-          return true;
-        }
-
-        return t.completion_time < date.getTime() / 1000;
+        return t.completion_time < getActivationTime(match[1]);
       });
 
       if (this.state.current_tag === special_tags.feed) {
