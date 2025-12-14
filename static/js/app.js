@@ -9,53 +9,60 @@ const elements = {
 
 const literals = {
   no_tasks: "-- all done --",
-  untagged: "<feed>",
   no_subtags: "<no subtags>",
 };
+
+const special_tags = {
+  feed: "<feed>",
+}
 
 const resizeTextarea = function() {
   this.style.height = "auto";  // Reset to calculate shrinkage
   this.style.height = this.scrollHeight + "px";
 };
 
+
 const App = {
   state: {
     tasks: [],
     tags: [],
-    current_tag: null,
+    current_tag: special_tags.feed,
+  },
+
+  // TODO don't allow creating <feed> tags (or alike)
+  // tag is either a tag object or "<feed>"
+  createTag: function(tag) {
+    let name, title
+    if (tag == special_tags.feed) {
+      name = special_tags.feed;
+      title = "Untagged tasks";
+    } else {
+      name = tag.name;
+      title = tag.subtags.length === 0
+        ? literals.no_subtags
+        : tag.subtags.join(" ");
+    }
+
+    const span = document.createElement("span");
+    span.innerText = name;
+    span.title = title;
+    span.className = "tag";
+    if (this.state.current_tag === name) {
+      span.classList.add("active");
+    }
+    span.addEventListener("click", () => {
+      this.state.current_tag = name;
+      this.render();
+    });
+    return span;
   },
 
   render: function() {
     elements.tags.replaceChildren();
-
-    {
-      const span = document.createElement("span");
-      span.innerText = literals.untagged;
-      span.className = "tag";
-      if (this.state.current_tag === null) {
-        span.classList.add("active");
-      }
-      span.addEventListener("click", () => {
-        this.state.current_tag = null;
-        this.render();
-      });
-      elements.tags.appendChild(span);
-    }
+    elements.tags.appendChild(this.createTag(special_tags.feed));
 
     for (const tag of this.state.tags) {
-      const span = document.createElement("span");
-      span.innerText = tag.name;
-      span.title = tag.subtags.length === 0 ? literals.no_subtags : tag.subtags.join(" ");
-      span.className = "tag";
-      if (this.state.current_tag === tag.name) {
-        span.classList.add("active");
-      }
-      span.addEventListener("click", () => {
-        this.state.current_tag = tag.name;
-        this.render();
-      });
-
-      elements.tags.appendChild(span);
+      elements.tags.appendChild(this.createTag(tag));
     }
 
     elements.tasks.replaceChildren();
@@ -89,8 +96,7 @@ const App = {
         return t.completion_time < date.getTime() / 1000;
       });
 
-      const current_tag = this.state.tags.find(tag => tag.name == this.state.current_tag) ?? null;
-      if (current_tag === null) {
+      if (this.state.current_tag === special_tags.feed) {
         renderedTasks = renderedTasks.filter(t => {
           const lower = t.text.toLowerCase();
           return !this.state.tags.some(tag => {
@@ -99,6 +105,7 @@ const App = {
           });
         });
       } else {
+        const current_tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
         renderedTasks = renderedTasks.filter(t => {
           const lower = t.text.toLowerCase();
           return lower.includes(current_tag.name.toLowerCase())

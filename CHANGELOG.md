@@ -21,6 +21,7 @@ Hopefully v0.3.0
 - [ ] Backup DB
 - [ ] Report errors in UI
 - [ ] Don't fetch ALL the tasks (only with @every/no completion date)
+- [ ] Typescript?
 
 ## v0.2.1 (Main features polished)
 
