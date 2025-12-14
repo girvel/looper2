@@ -46,14 +46,24 @@ const render = () => {
   }
 
   tasks.replaceChildren();
-  const current_tag = state.tags.find(tag => tag.name == state.current_tag) ?? null;
-  let renderedTasks = state.tasks;
-  if (current_tag !== null) {
-    renderedTasks = renderedTasks.filter(t => {
-      const lower = t.text.toLowerCase();
-      return lower.includes(current_tag.name.toLowerCase())
-        || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
-    });
+
+  let renderedTasks = state.tasks; {
+    const current_tag = state.tags.find(tag => tag.name == state.current_tag) ?? null;
+    if (current_tag === null) {
+      renderedTasks = renderedTasks.filter(t => {
+        const lower = t.text.toLowerCase();
+        return !state.tags.some(tag => {
+          return lower.includes(tag.name.toLowerCase())
+            || tag.subtags.some(st => lower.includes(st.toLowerCase()));
+        });
+      });
+    } else {
+      renderedTasks = renderedTasks.filter(t => {
+        const lower = t.text.toLowerCase();
+        return lower.includes(current_tag.name.toLowerCase())
+          || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
+      });
+    }
   }
 
   if (renderedTasks.length === 0) {

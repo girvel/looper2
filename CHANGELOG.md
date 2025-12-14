@@ -31,7 +31,7 @@
 - [x] Display subtags in a hover hint
 - [x] Edit tags with `:Tag <name> [subtags...]`
 - [x] Remove tags with `:TagRemove <name>`
-- [ ] Feed should contain only unsorted tags
+- [x] Feed should contain only unsorted tags
 - [ ] Retest
 - [ ] Review; is JS a bit too complicated?
 
