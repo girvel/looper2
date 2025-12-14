@@ -12,6 +12,7 @@
 - [ ] Move idioms to a separate txt file
     - [ ] How would it work with build? Maybe a go file with multiline string then?
 - [ ] Uncompleting tasks?
+- [ ] Removing current tag breaks stuff
 
 ## Auth & safety
 
@@ -32,7 +33,7 @@ Hopefully v0.3.0
     - [x] bug: editing the task + adding another one => hides edits
     - [x] Move between task entries with arrows
     - [x] `<completed>` pseudo-tag
-    - [ ] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
+    - [x] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
     - [ ] `<all>` pseudo-tag
     - [ ] Autoupdate state
         - [ ] Disable logging for autoupdate

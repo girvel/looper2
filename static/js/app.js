@@ -96,6 +96,17 @@ const App = {
     }
 
     span.addEventListener("click", () => {
+      const unusable_prev = Object.values(special_tags).includes(this.state.current_tag);
+      const unusable_next = Object.values(special_tags).includes(name);
+      const tag_entry = this.state.tags.find(tag => tag.name == this.state.current_tag);
+      if (
+        unusable_prev && elements.input.value === ""
+          || !unusable_prev && doesTagMatch(tag_entry, elements.input.value)
+      ) {
+        elements.input.value = unusable_next ? "" : (tag.subtags[0] ?? tag.name) + " ";
+      }
+      elements.input.focus();
+
       this.state.current_tag = name;
       this.render();
     });
@@ -246,7 +257,16 @@ const App = {
     if (response.data.status === "OK") {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
-      elements.input.value = "";
+
+      const unusable_tag = Object.values(special_tags).includes(this.state.current_tag);
+      if (!unusable_tag) {
+        const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
+        if (doesTagMatch(tag, value)) {
+          elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
+        } else {
+          elements.input.value = "";
+        }
+      }
     }
   },
 
