@@ -5,12 +5,13 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (d Deps) getTasks(c *gin.Context) {
-	rows, err := d.DB.Query("SELECT id, text FROM tasks")
+	rows, err := d.DB.Query("SELECT id, text, completion_time FROM tasks")
 	if err != nil {
 		log.Println(err);
 		c.JSON(http.StatusInternalServerError, gin.H{})
@@ -22,14 +23,15 @@ func (d Deps) getTasks(c *gin.Context) {
 	for rows.Next() {
 		var id int
 		var text string
+		var completion_time *int
 		
-		if err := rows.Scan(&id, &text); err != nil {
+		if err := rows.Scan(&id, &text, &completion_time); err != nil {
 			log.Println(err);
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
 		}
 
-		tasks = append(tasks, gin.H{"id": id, "text": text})
+		tasks = append(tasks, gin.H{"id": id, "text": text, "completion_time": completion_time})
 	}
 	
 	c.JSON(http.StatusOK, tasks)
@@ -72,7 +74,7 @@ func (d Deps) completeTask(c *gin.Context) {
 		return
 	}
 
-	if _, err := d.DB.Exec("DELETE FROM tasks WHERE id = ?", id); err != nil {
+	if _, err := d.DB.Exec("UPDATE tasks SET completion_time = ? WHERE id = ?", time.Now().Unix(), id); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return

@@ -52,7 +52,10 @@ const render = () => {
 
   tasks.replaceChildren();
 
-  let renderedTasks = state.tasks; {
+  let renderedTasks; {
+    renderedTasks = state.tasks
+      .filter(t => t.completion_time === null);
+
     const current_tag = state.tags.find(tag => tag.name == state.current_tag) ?? null;
     if (current_tag === null) {
       renderedTasks = renderedTasks.filter(t => {
@@ -145,7 +148,7 @@ const submitInput = async () => {
 
   const response = await Axios.post("api/tasks", {"text": value});
   if (response.data.status === "OK") {
-    state.tasks.push({id: response.data.id, text: value});
+    state.tasks.push({id: response.data.id, text: value, completion_time: null});
     render();
     newTaskText.value = "";
   }

@@ -18,7 +18,11 @@ type Deps struct {
 }
 
 func NewDeps() (*Deps, error) {
-	db, err := sql.Open("sqlite3", "looper2.db")
+	if err := os.MkdirAll("data", os.ModePerm); err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open("sqlite3", "data/looper2.db")
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +33,8 @@ func NewDeps() (*Deps, error) {
 
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			text TEXT NOT NULL
+			text TEXT NOT NULL,
+			completion_time INTEGER
 		);
 
 		CREATE TABLE IF NOT EXISTS tags (
