@@ -25,13 +25,11 @@
 - [x] Make tags appear prettier: use a meaningful tag, highlight on hover, space separator
 - [x] Handle repeating subtags
 - [x] Handle tags with no subtags
-- [ ] Display subtags in a hover hint
+- [x] Display subtags in a hover hint
+- [ ] Edit tags with `:Tag <name> [subtags...]`
 - [ ] Retest
 - [ ] Review
 
-Later (move):
-
-- [ ] UI for creating tags
 
 ## v0.1.1 (Primitive but polished) -- DONE
 

@@ -32,6 +32,7 @@ const render = () => {
   for (const tag of state.tags) {
     const span = document.createElement("span");
     span.innerText = tag.name;
+    span.title = tag.subtags.length === 0 ? "<no subtags>" : tag.subtags.join(" ");
     span.className = "tag";
     if (state.current_tag?.name === tag.name) {
       span.classList.add("active");
@@ -40,6 +41,7 @@ const render = () => {
       state.current_tag = tag;
       render();
     });
+
     tags.appendChild(span);
   }
 
