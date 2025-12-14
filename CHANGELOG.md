@@ -9,13 +9,14 @@
 - [ ] (Later) go multi-user
 - [ ] Report errors in UI
 - [ ] Editing tasks
-  - [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
+  - [ ] ?? Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
 - [ ] Telegram bot to avoid DPI??
 - [ ] Ligatures (like <-, =>)
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Autoupdate state
   - [ ] Disable logging for autoupdate
 - [ ] Auth
+- [ ] Sort tags
 
 ## v0.2.0 (Tags intro)
 
@@ -26,9 +27,10 @@
 - [x] Handle repeating subtags
 - [x] Handle tags with no subtags
 - [x] Display subtags in a hover hint
-- [ ] Edit tags with `:Tag <name> [subtags...]`
+- [x] Edit tags with `:Tag <name> [subtags...]`
+- [ ] Remove tags with `:TagRemove <name>`
 - [ ] Retest
-- [ ] Review
+- [ ] Review; is JS a bit too complicated?
 
 
 ## v0.1.1 (Primitive but polished) -- DONE

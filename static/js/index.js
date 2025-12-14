@@ -34,11 +34,11 @@ const render = () => {
     span.innerText = tag.name;
     span.title = tag.subtags.length === 0 ? "<no subtags>" : tag.subtags.join(" ");
     span.className = "tag";
-    if (state.current_tag?.name === tag.name) {
+    if (state.current_tag === tag.name) {
       span.classList.add("active");
     }
     span.addEventListener("click", () => {
-      state.current_tag = tag;
+      state.current_tag = tag.name;
       render();
     });
 
@@ -46,12 +46,13 @@ const render = () => {
   }
 
   tasks.replaceChildren();
+  const current_tag = state.tags.find(tag => tag.name == state.current_tag);
   let renderedTasks = state.tasks;
   if (state.current_tag !== null) {
     renderedTasks = renderedTasks.filter(t => {
       const lower = t.text.toLowerCase();
-      return lower.includes(state.current_tag.name.toLowerCase())
-        || state.current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
+      return lower.includes(current_tag.name.toLowerCase())
+        || current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
     });
   }
 
@@ -83,15 +84,28 @@ const render = () => {
   }
 };
 
-const submitTask = async () => {
-  if (newTaskText.value === "") return;
+const submitInput = async () => {
+  const value = newTaskText.value
+  if (value === "") return;
 
-  const response = await Axios.post("api/tasks", {"text": newTaskText.value});
+  if (value.startsWith(":Tag ")) {
+    const args = value.split(" ");
+    const response = await Axios.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
+
+    if (response.data.status === "OK") {
+      state.tags = (await Axios.get("/api/tags")).data;
+      render();
+      newTaskText.value = "";
+    }
+
+    return;
+  }
+
+  const response = await Axios.post("api/tasks", {"text": value});
   if (response.data.status === "OK") {
-    state.tasks.push({id: response.data.id, text: newTaskText.value});
+    state.tasks.push({id: response.data.id, text: value});
     render();
     newTaskText.value = "";
-    newTaskText.style.height = "auto";
   }
 };
 
@@ -110,7 +124,7 @@ const updateTextareaHeight = () => {
 newTaskText.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    submitTask();
+    submitInput();
   }
 });
 
