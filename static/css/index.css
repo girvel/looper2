@@ -4,6 +4,10 @@
   gap: 0.5ch;
 }
 
+.task textarea {
+  background-color: inherit;
+}
+
 #tags {
   display: flex;
   flex-wrap: wrap;
