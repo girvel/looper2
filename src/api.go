@@ -184,6 +184,28 @@ func (d Deps) addTag(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
+type tagName struct {
+	Name string `json:"name"`
+}
+
+func (d Deps) removeTag(c *gin.Context) {
+	var currentTag tagName
+	if err := c.BindJSON(&currentTag); err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	_, err := d.DB.Exec("DELETE FROM tags WHERE name = ?", currentTag.Name);
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func (d Deps) healthCheck(c *gin.Context) {
 	if err := d.DB.Ping(); err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"status": "DB_ERROR"})
@@ -223,6 +245,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 
 	router.GET("/api/tags", deps.getTags)
 	router.POST("/api/tags", deps.addTag)
+	router.POST("/api/tags/remove", deps.removeTag)
 
 	router.GET("/api/healthcheck", deps.healthCheck)
 

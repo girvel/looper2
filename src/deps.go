@@ -44,7 +44,7 @@ func NewDeps() (*Deps, error) {
 			tag_id INTEGER NOT NULL,
 			name TEXT NOT NULL,
 
-			FOREIGN KEY(tag_id) REFERENCES tags(id),
+			FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE,
 			UNIQUE(tag_id, name)
 		);
 	`); err != nil {

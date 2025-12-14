@@ -17,6 +17,8 @@
   - [ ] Disable logging for autoupdate
 - [ ] Auth
 - [ ] Sort tags
+- [ ] Editing tags directly (maybe doubleclick?)
+  - [ ] `(+)` button
 
 ## v0.2.0 (Tags intro)
 
@@ -28,7 +30,8 @@
 - [x] Handle tags with no subtags
 - [x] Display subtags in a hover hint
 - [x] Edit tags with `:Tag <name> [subtags...]`
-- [ ] Remove tags with `:TagRemove <name>`
+- [x] Remove tags with `:TagRemove <name>`
+- [ ] Feed should contain only unsorted tags
 - [ ] Retest
 - [ ] Review; is JS a bit too complicated?
 

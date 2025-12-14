@@ -46,9 +46,9 @@ const render = () => {
   }
 
   tasks.replaceChildren();
-  const current_tag = state.tags.find(tag => tag.name == state.current_tag);
+  const current_tag = state.tags.find(tag => tag.name == state.current_tag) ?? null;
   let renderedTasks = state.tasks;
-  if (state.current_tag !== null) {
+  if (current_tag !== null) {
     renderedTasks = renderedTasks.filter(t => {
       const lower = t.text.toLowerCase();
       return lower.includes(current_tag.name.toLowerCase())
@@ -88,14 +88,25 @@ const submitInput = async () => {
   const value = newTaskText.value
   if (value === "") return;
 
-  if (value.startsWith(":Tag ")) {
+  if (value.startsWith(":")) {
     const args = value.split(" ");
-    const response = await Axios.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
 
-    if (response.data.status === "OK") {
-      state.tags = (await Axios.get("/api/tags")).data;
-      render();
-      newTaskText.value = "";
+    if (args[0] == ":Tag") {
+      const response = await Axios.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
+
+      if (response.data.status === "OK") {
+        state.tags = (await Axios.get("/api/tags")).data;
+        render();
+        newTaskText.value = "";
+      }
+    } else if (args[0] == ":TagRemove") {
+      const response = await Axios.post("api/tags/remove", {"name": args[1]});
+
+      if (response.data.status === "OK") {
+        state.tags = (await Axios.get("/api/tags")).data;
+        render();
+        newTaskText.value = "";
+      }
     }
 
     return;
