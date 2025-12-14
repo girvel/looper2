@@ -1,17 +1,5 @@
 # Project Roadmap / Changlog
 
-## Never
-
-- [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
-- [ ] Telegram bot to evade DPI
-
-## Later
-
-- [ ] Go multi-user
-- [ ] Editing tags directly (maybe doubleclick?)
-    - [ ] `(+)` button
-- [ ] Dim @ directives
-
 ## Queue
 
 - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
@@ -21,6 +9,8 @@
     - [ ] Editable
 - [ ] Prevent renames w/ unchanged tasks
 - [ ] Reordering tasks
+- [ ] Move idioms to a separate txt file
+    - [ ] How would it work with build? Maybe a go file with multiline string then?
 
 ## Auth & safety
 
@@ -103,3 +93,15 @@ The most basic thing possible: an editable list of tasks.
 - [x] Polish & review
     - [x] Multiple go files
     - [x] Review (include todos)
+
+## Never
+
+- [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
+- [ ] Telegram bot to evade DPI
+
+## Later
+
+- [ ] Go multi-user
+- [ ] Editing tags directly (maybe doubleclick?)
+    - [ ] `(+)` button
+- [ ] Dim @ directives

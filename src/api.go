@@ -255,6 +255,7 @@ var idioms []string = []string{
 	"Fight hornets",
 	"Buy sausages (1000 lb)",
 	"Feed the platypus bear",
+	"Negotiate with beavers",
 }
 
 func (d Deps) index(c *gin.Context) {
