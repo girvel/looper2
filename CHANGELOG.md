@@ -22,9 +22,10 @@
 - [x] Table with tags
 - [x] Display tags
 - [x] Sort by tags in the frontend
-- [ ] Make tags appear prettier: use a meaningful tag, highlight on hover, space separator
-- [ ] Handle repeating subtags
-- [ ] Handle tags with no subtags
+- [x] Make tags appear prettier: use a meaningful tag, highlight on hover, space separator
+- [x] Handle repeating subtags
+- [x] Handle tags with no subtags
+- [ ] Display subtags in a hover hint
 - [ ] Retest
 - [ ] Review
 

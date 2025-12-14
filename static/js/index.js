@@ -48,7 +48,8 @@ const render = () => {
   if (state.current_tag !== null) {
     renderedTasks = renderedTasks.filter(t => {
       const lower = t.text.toLowerCase();
-      return state.current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
+      return lower.includes(state.current_tag.name.toLowerCase())
+        || state.current_tag.subtags.some(st => lower.includes(st.toLowerCase()));
     });
   }
 

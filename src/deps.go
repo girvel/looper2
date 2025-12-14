@@ -35,7 +35,17 @@ func NewDeps() (*Deps, error) {
 		CREATE TABLE IF NOT EXISTS tags (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL,
-			subtag TEXT NOT NULL
+
+			UNIQUE(name)
+		);
+
+		CREATE TABLE IF NOT EXISTS subtags (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			tag_id INTEGER NOT NULL,
+			name TEXT NOT NULL,
+
+			FOREIGN KEY(tag_id) REFERENCES tags(id),
+			UNIQUE(tag_id, name)
 		);
 	`); err != nil {
 		return nil, err

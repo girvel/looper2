@@ -83,7 +83,8 @@ func (d Deps) completeTask(c *gin.Context) {
 
 func (d Deps) getTags(c *gin.Context) {
 	rows, err := d.DB.Query(`
-		SELECT name, subtag FROM tags
+		SELECT tags.name, subtags.name FROM tags
+		LEFT JOIN subtags ON tags.id = subtags.tag_id
 	`)
 	if err != nil {
 		log.Println(err)
@@ -95,14 +96,18 @@ func (d Deps) getTags(c *gin.Context) {
 	tagMap := make(map[string][]string)
 	for rows.Next() {
 		var name string
-		var subtag string
+		var subtag *string
 		if err := rows.Scan(&name, &subtag); err != nil {
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
 		}
 
-		tagMap[name] = append(tagMap[name], subtag)
+		if subtag != nil {
+			tagMap[name] = append(tagMap[name], *subtag)
+		} else {
+			tagMap[name] = make([]string, 0)
+		}
 	}
 
 	result := make([]gin.H, 0, len(tagMap))
@@ -134,7 +139,27 @@ func (d Deps) addTag(c *gin.Context) {
 	}
 	defer tx.Rollback()
 
-	statement, err := tx.Prepare("INSERT INTO tags (name, subtag) VALUES (?, ?)")
+	var tagId int
+	// dummy DO UPDATE SET to return a value
+	err = tx.QueryRow(`
+		INSERT INTO tags (name) VALUES (?)
+		ON CONFLICT (name) DO UPDATE SET name = excluded.name
+		RETURNING id
+	`, currentTag.Name).Scan(&tagId)
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	_, err = tx.Exec("DELETE FROM subtags WHERE tag_id = ?", tagId)
+	if err != nil {
+		log.Println(err);
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+
+	statement, err := tx.Prepare("INSERT INTO subtags (tag_id, name) VALUES (?, ?)")
 	if err != nil {
 		log.Println(err);
 		c.JSON(http.StatusInternalServerError, gin.H{})
@@ -143,7 +168,7 @@ func (d Deps) addTag(c *gin.Context) {
 	defer statement.Close()
 
 	for _, subtag := range currentTag.Subtags {
-		if _, err := statement.Exec(currentTag.Name, subtag); err != nil {
+		if _, err := statement.Exec(tagId, subtag); err != nil {
 			log.Println(err);
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
