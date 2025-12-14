@@ -1,12 +1,7 @@
-#new-task-text {
-  resize: none; /* Hide the manual drag handle */
-  overflow-y: hidden; /* Hide scrollbar */
-  height: auto;
-  min-height: 2rem; /* Initial height */
-
-  width: 100%;
-  box-sizing: border-box;
-  display: block;
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5ch;
 }
 
 #tags {

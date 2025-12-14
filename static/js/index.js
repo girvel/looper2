@@ -1,5 +1,10 @@
 import Axios from "/static/lib/axios.min.js";
 
+const updateTextareaHeight = function() {
+  this.style.height = "auto";  // Reset to calculate shrinkage
+  this.style.height = this.scrollHeight + "px";
+};
+
 const tasks = document.getElementById("tasks");
 const tags = document.getElementById("tags");
 const newTaskText = document.getElementById("new-task-text");
@@ -76,6 +81,7 @@ const render = () => {
 
   for (const task of renderedTasks) {
     const div = document.createElement("div");
+    div.className = "task";
     const cb = document.createElement("input");
     cb.type = "checkbox";
     cb.addEventListener("change", async () => {
@@ -87,22 +93,24 @@ const render = () => {
     });
     div.appendChild(cb);
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = task.text;
+    const textarea = document.createElement("textarea");
+    textarea.value = task.text;
+    textarea.rows = 1;
 
     const commit = async () => {
       // TODO reset on fail? or dimmed while pending -> normal color
-      await Axios.post(`api/tasks/${task.id}/rename`, {text: input.value});
+      await Axios.post(`api/tasks/${task.id}/rename`, {text: textarea.value});
     };
-    input.addEventListener("change", commit);
-    input.addEventListener("keydown", async (event) => {
+    textarea.addEventListener("change", commit);
+    textarea.addEventListener("keydown", async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
       await commit();
     });
+    textarea.addEventListener("input", updateTextareaHeight);
+    setTimeout(() => updateTextareaHeight.call(textarea), 0);
 
-    div.appendChild(input);
+    div.appendChild(textarea);
     tasks.appendChild(div);
   }
 };
@@ -141,11 +149,6 @@ const submitInput = async () => {
     render();
     newTaskText.value = "";
   }
-};
-
-const updateTextareaHeight = () => {
-  newTaskText.style.height = "auto";  // Reset to calculate shrinkage
-  newTaskText.style.height = newTaskText.scrollHeight + "px";
 };
 
 // allows HTML to fully load on slow internet speed

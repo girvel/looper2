@@ -81,6 +81,16 @@ textarea, input[type="text"] {
   padding: 0;
 }
 
+textarea {
+  resize: none; /* Hide the manual drag handle */
+  overflow-y: hidden; /* Hide scrollbar */
+  height: auto;
+  min-height: 2rem; /* Initial height */
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
 textarea::placeholder,
 textarea::-webkit-input-placeholder,
 textarea::-moz-placeholder,
