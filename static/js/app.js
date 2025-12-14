@@ -13,6 +13,7 @@ const literals = {
 
 const special_tags = {
   feed: "<feed>",
+  completed: "<completed>",
 }
 
 const resizeTextarea = function() {
@@ -44,13 +45,21 @@ const getActivationTime = function(expr) {
   return date.getTime() / 1000;
 };
 
+const isCompleted = task => {
+  const match = task.text.match(/@every\(([^)]+)\)/);
+  if (!match) {
+    return task.completion_time !== null;
+  }
+  return task.completion_time >= getActivationTime(match[1]);
+}
+
 const doesTagMatch = (tag, task_text) => {
   const task_elements = task_text.toLowerCase().split(" ");
   return task_elements.some(
     e => tag.name.toLowerCase() == e
       || tag.subtags.some(st => st.toLowerCase() == e)
   );
-}
+};
 
 
 const App = {
@@ -64,9 +73,12 @@ const App = {
   // tag is either a tag object or "<feed>"
   createTag: function(tag) {
     let name, title
-    if (tag == special_tags.feed) {
+    if (tag === special_tags.feed) {
       name = special_tags.feed;
       title = "Untagged tasks";
+    } else if (tag === special_tags.completed) {
+      name = special_tags.completed;
+      title = "Completed tasks";
     } else {
       name = tag.name;
       title = tag.subtags.length === 0
@@ -96,10 +108,12 @@ const App = {
     div.className = "task";
     const cb = document.createElement("input");
     cb.type = "checkbox";
+    cb.checked = isCompleted(task);
+    cb.disabled = cb.checked;
     cb.addEventListener("change", async () => {
       const response = await Axios.post(`api/tasks/${task.id}/complete`);
       if (response.data.status == "OK") {
-        this.state.tasks = this.state.tasks.filter(t => t.id !== task.id);
+        task.completion_time = Date.now() / 1000;
         this.render();
       }
     });
@@ -134,16 +148,12 @@ const App = {
   },
 
   filterTasks: function() {
-    let result = this.state.tasks.filter(t => {
-      const match = t.text.match(/@every\(([^)]+)\)/);
-      if (!match) {
-        return t.completion_time === null;
-      }
-      return t.completion_time < getActivationTime(match[1]);
-    });
+    let invert = this.state.current_tag === special_tags.completed;
+    let result = this.state.tasks.filter(task => !isCompleted(task) ^ invert);
 
     if (this.state.current_tag === special_tags.feed) {
       result = result.filter(task => !this.state.tags.some(tag => doesTagMatch(tag, task.text)));
+    } else if (invert) {
     } else {
       const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
       result = result.filter(task => doesTagMatch(tag, task.text));
@@ -155,6 +165,7 @@ const App = {
   render: function() {
     elements.tags.replaceChildren();
     elements.tags.appendChild(this.createTag(special_tags.feed));
+    elements.tags.appendChild(this.createTag(special_tags.completed));
 
     for (const tag of this.state.tags) {
       elements.tags.appendChild(this.createTag(tag));

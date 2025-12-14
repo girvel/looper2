@@ -11,6 +11,7 @@
 - [ ] Reordering tasks
 - [ ] Move idioms to a separate txt file
     - [ ] How would it work with build? Maybe a go file with multiline string then?
+- [ ] Uncompleting tasks?
 
 ## Auth & safety
 
@@ -30,11 +31,11 @@ Hopefully v0.3.0
     - [x] Tags/subtags consider spacing
     - [x] bug: editing the task + adding another one => hides edits
     - [x] Move between task entries with arrows
-    - [ ] `<completed>` pseudo-tag
+    - [x] `<completed>` pseudo-tag
+    - [ ] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
     - [ ] `<all>` pseudo-tag
     - [ ] Autoupdate state
         - [ ] Disable logging for autoupdate
-    - [ ] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
     - [ ] GIN_MODE=release, attach all required middleware by hand
 - [ ] Review
     - [ ] Research commonly used Gin middleware
