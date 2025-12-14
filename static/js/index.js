@@ -53,8 +53,33 @@ const render = () => {
   tasks.replaceChildren();
 
   let renderedTasks; {
-    renderedTasks = state.tasks
-      .filter(t => t.completion_time === null);
+    renderedTasks = state.tasks.filter(t => {
+      const match = t.text.match(/@every\(([^)]+)\)/);
+      if (!match) {
+        return t.completion_time === null;
+      }
+      const expr = match[1];
+
+      let date = new Date();
+      if (expr === "second") {
+        date.setMilliseconds(0);
+      } else if (expr === "day") {
+        date.setMinutes(0, 0, 0);
+        date.setHours(3);
+      } else if (expr === "week") {
+        date.setMinutes(0, 0, 0);
+        date.setHours(3);
+        date.setDate(date.getDate() - date.getDay());
+      } else if (expr === "month") {
+        date.setMinutes(0, 0, 0);
+        date.setHours(3);
+        date.setDate(1);
+      } else {
+        return true;
+      }
+
+      return t.completion_time < date.getTime() / 1000;
+    });
 
     const current_tag = state.tags.find(tag => tag.name == state.current_tag) ?? null;
     if (current_tag === null) {
