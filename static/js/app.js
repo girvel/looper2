@@ -8,7 +8,6 @@ const elements = {
 };
 
 const literals = {
-  no_tasks: "-- all done --",
   no_subtags: "<no subtags>",
 };
 
@@ -69,18 +68,57 @@ const App = {
     span.innerText = name;
     span.title = title;
     span.className = "tag";
+
     if (this.state.current_tag === name) {
       span.classList.add("active");
     }
+
     span.addEventListener("click", () => {
       this.state.current_tag = name;
       this.render();
     });
+
     return span;
   },
 
+  createTask: function(task) {
+    const div = document.createElement("div");
+    div.className = "task";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.addEventListener("change", async () => {
+      const response = await Axios.post(`api/tasks/${task.id}/complete`);
+      if (response.data.status == "OK") {
+        this.state.tasks = this.state.tasks.filter(t => t.id !== task.id);
+        this.render();
+      }
+    });
+    div.appendChild(cb);
+
+    const textarea = document.createElement("textarea");
+    textarea.value = task.text;
+    textarea.rows = 1;
+
+    const commit = async () => {
+      // TODO reset on fail? or dimmed while pending -> normal color
+      await Axios.post(`api/tasks/${task.id}/rename`, {text: textarea.value});
+    };
+    textarea.addEventListener("change", commit);
+    textarea.addEventListener("keydown", async (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      await commit();
+    });
+    textarea.addEventListener("input", resizeTextarea);
+    setTimeout(() => resizeTextarea.call(textarea), 0);
+
+    div.appendChild(textarea);
+
+    return div;
+  },
+
   filterTasks: function() {
-    const result = this.state.tasks.filter(t => {
+    let result = this.state.tasks.filter(t => {
       const match = t.text.match(/@every\(([^)]+)\)/);
       if (!match) {
         return t.completion_time === null;
@@ -116,51 +154,15 @@ const App = {
       elements.tags.appendChild(this.createTag(tag));
     }
 
-    elements.tasks.replaceChildren();
-
     let renderedTasks = this.filterTasks();
-
     if (renderedTasks.length === 0) {
-      const span = document.createElement("span");
-      span.className = "punctuation"
-      span.innerText = literals.no_tasks;
-      tasks.appendChild(span);
+      elements.tasks.innerHTML = `<span class="punctuation">-- all done --<span>`
       return;
     }
 
+    elements.tasks.replaceChildren();
     for (const task of renderedTasks) {
-      const div = document.createElement("div");
-      div.className = "task";
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.addEventListener("change", async () => {
-        const response = await Axios.post(`api/tasks/${task.id}/complete`);
-        if (response.data.status == "OK") {
-          this.state.tasks = this.state.tasks.filter(t => t.id !== task.id);
-          this.render();
-        }
-      });
-      div.appendChild(cb);
-
-      const textarea = document.createElement("textarea");
-      textarea.value = task.text;
-      textarea.rows = 1;
-
-      const commit = async () => {
-        // TODO reset on fail? or dimmed while pending -> normal color
-        await Axios.post(`api/tasks/${task.id}/rename`, {text: textarea.value});
-      };
-      textarea.addEventListener("change", commit);
-      textarea.addEventListener("keydown", async (event) => {
-        if (event.key !== "Enter") return;
-        event.preventDefault();
-        await commit();
-      });
-      textarea.addEventListener("input", resizeTextarea);
-      setTimeout(() => resizeTextarea.call(textarea), 0);
-
-      div.appendChild(textarea);
-      elements.tasks.appendChild(div);
+      elements.tasks.appendChild(this.createTask(task));
     }
   },
 
