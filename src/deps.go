@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	ReleaseMode bool
-	StartupTime int64
+	DebugCacheBust int64
 }
 
 type Deps struct {
@@ -62,9 +62,11 @@ func NewDeps() (*Deps, error) {
 	release_var := os.Getenv("LOOPER_RELEASE")
 	config.ReleaseMode = release_var != "" && release_var != "0"
 	if config.ReleaseMode {
-		log.Println("Release mode")
+		log.Println("Release mode.")
+		config.DebugCacheBust = 0
+	} else {
+		config.DebugCacheBust = time.Now().Unix()
 	}
-	config.StartupTime = time.Now().Unix()
 
 	return &Deps{
 		DB: db,

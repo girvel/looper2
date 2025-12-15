@@ -54,9 +54,6 @@ a {
   color: #49a1f8;
 }
 
-br {
-}
-
 h1::before {
   content: '# ';
   opacity: var(--punctuation-opacity);
@@ -113,6 +110,8 @@ input[type="checkbox"] {
 
   font-size: inherit;
   font-family: inherit;
+  color: inherit;
+  min-width: 4ch;
 }
 
 input[type="checkbox"]::before {
