@@ -263,6 +263,8 @@ const App = {
         } else {
           elements.input.value = "";
         }
+      } else {
+        elements.input.value = "";
       }
     }
   },

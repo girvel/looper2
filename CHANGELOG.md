@@ -13,6 +13,7 @@
     - [ ] How would it work with build? Maybe a go file with multiline string then?
 - [ ] Uncompleting tasks?
 - [ ] Removing current tag breaks stuff
+- [ ] Clean the root directory: remove unused files
 
 ## Auth & safety
 
