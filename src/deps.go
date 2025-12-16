@@ -4,12 +4,20 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
+
+type Stats struct {
+	StaticPrefix string
+	ReleaseMode bool
+}
 
 type Deps struct {
 	*sql.DB
-	StartupTime int64
+	Stats
 }
 
 func NewDeps() (*Deps, error) {
@@ -53,9 +61,17 @@ func NewDeps() (*Deps, error) {
 
 	log.Println("Established sqlite3 DB")
 
+	var stats Stats
+	stats.ReleaseMode = gin.Mode() == gin.ReleaseMode
+	if stats.ReleaseMode {
+		stats.StaticPrefix = "/static/" + strconv.FormatInt(time.Now().Unix(), 10)
+	} else {
+		stats.StaticPrefix = "/static/dev"
+	}
+
 	return &Deps{
 		DB: db,
-		StartupTime: time.Now().Unix(),
+		Stats: stats,
 	}, nil
 }
 

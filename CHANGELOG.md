@@ -25,7 +25,6 @@
 - [ ] Disallow space-filled tasks in backend
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Cron expressions
-- [ ] Cache busting in Release mode (with startup time)
 
 ## Auth & safety
 
@@ -55,6 +54,8 @@ Hopefully v0.3.0
     - [x] Review error handling in endpoints
     - [ ] Review
     - [x] Think about the JS refactor
+- [x] Done in review
+    - [x] Cache busting in Release mode (with startup time)
 
 ## v0.2.0 (Main features) -- DONE
 

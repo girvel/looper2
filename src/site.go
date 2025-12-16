@@ -4,40 +4,42 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"path/filepath"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (d Deps) index(c *gin.Context) {
-	releaseMode := gin.Mode() == gin.ReleaseMode
-
-	var version string
-	if releaseMode {
-		version = strconv.FormatInt(d.StartupTime, 10)
+	if d.Stats.ReleaseMode {
+		c.Header("Cache-Control", "no-cache")
 	} else {
-		version = "dev"
+		c.Header("Cache-Control", "no-store")
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"ReleaseMode": releaseMode,
-		"StaticRoot": "/static/" + version,
+		"ReleaseMode": d.Stats.ReleaseMode,
+		"StaticRoot": d.Stats.StaticPrefix,
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
 }
 
+func (d Deps) favicon_dummy(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, d.Stats.StaticPrefix + "/favicon.png")
+}
+
 func (d Deps) static_routes(c *gin.Context) {
-	if gin.Mode() == gin.ReleaseMode {
+	if d.Stats.ReleaseMode {
 		c.Header("Cache-Control", "public, max-age=3153600, immutable")
 	} else {
 		c.Header("Cache-Control", "no-store")
 	}
 
+	// net/http protects from path traversal attacks
 	c.File(filepath.Join("./static", c.Param("filepath")))
 }
 
 func SiteRoutes(router *gin.Engine, deps *Deps) {
 	router.LoadHTMLGlob("templates/*")
 	router.GET("/static/:version/*filepath", deps.static_routes)
+	router.GET("/favicon.ico", deps.favicon_dummy)
 	router.GET("/", deps.index)
 }
