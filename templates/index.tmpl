@@ -20,6 +20,17 @@
     <!-- TODO disable autofocus in mobiles -->
     <textarea rows="1" id="input" enterkeyhint="enter" placeholder="{{.Idiom}}" autofocus></textarea>
 
+    <!-- TODO autogenerate -->
+    <script type="importmap">
+    {
+        "imports": {
+            "/static/js/app.js": "/static/js/app.js?t={{.DebugCacheBust}}",
+            "/static/js/index.js": "/static/js/index.js?t={{.DebugCacheBust}}",
+            "static/lib/axios.min.js": "/static/lib/axios.min.js",
+            "static/lib/htm.min.js": "/static/lib/htm.min.js"
+        }
+    }
+    </script>
     <script type="module" src="/static/js/index.js?t={{.DebugCacheBust}}"></script>
 </body>
 </html>
