@@ -92,25 +92,6 @@ const App = {
   },
 
   createTask: function(task) {
-    const div = document.createElement("div");
-    div.className = "task";
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.checked = isCompleted(task);
-    cb.disabled = cb.checked;
-    cb.addEventListener("change", async () => {
-      const response = await Axios.post(`api/tasks/${task.id}/complete`);
-      if (response.data.status == "OK") {
-        task.completion_time = Date.now() / 1000;
-        this.render();
-      }
-    });
-    div.appendChild(cb);
-
-    const textarea = document.createElement("textarea");
-    textarea.value = task.text;
-    textarea.rows = 1;
-
     const updateText = async () => {
       // TODO reset on fail? or dimmed while pending -> normal color
       const value = textarea.value;
@@ -121,16 +102,44 @@ const App = {
       }
     };
 
-    textarea.addEventListener("change", updateText);
-    textarea.addEventListener("keydown", async (event) => {
+    const handleKeydown = async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
       await updateText();
-    });
-    textarea.addEventListener("input", resizeTextarea);
+    };
+
+    const textarea = html`
+      <textarea
+        rows="1"
+        onchange=${updateText}
+        onkeydown=${handleKeydown}
+        oninput=${resizeTextarea}
+      >
+        ${task.text}
+      </textarea>
+    `;
     setTimeout(() => resizeTextarea.call(textarea), 0);
 
-    div.appendChild(textarea);
+    const handleChange = async () => {
+      const response = await Axios.post(`api/tasks/${task.id}/complete`);
+      if (response.data.status == "OK") {
+        task.completion_time = Date.now() / 1000;
+        this.render();
+      }
+    };
+
+    const is_completed = isCompleted(task);
+    const div = html`
+      <div className="task">
+        <input
+          type="checkbox"
+          checked=${is_completed}
+          disabled=${is_completed}
+          onchange=${handleChange}
+        />
+        ${textarea}
+      </div>
+    `;
 
     return [div, textarea];
   },
