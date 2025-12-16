@@ -81,10 +81,9 @@ textarea, input[type="text"] {
 }
 
 textarea {
-  resize: none; /* Hide the manual drag handle */
-  overflow-y: hidden; /* Hide scrollbar */
+  resize: none;
+  overflow-y: hidden;
   height: auto;
-  min-height: 2rem; /* Initial height */
 
   width: 100%;
   box-sizing: border-box;

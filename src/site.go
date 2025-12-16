@@ -23,7 +23,7 @@ func (d Deps) index(c *gin.Context) {
 }
 
 func (d Deps) favicon_dummy(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, d.Stats.StaticPrefix + "/favicon.png")
+	c.Redirect(http.StatusFound, d.Stats.StaticPrefix + "/favicon.png")
 }
 
 func (d Deps) static_routes(c *gin.Context) {

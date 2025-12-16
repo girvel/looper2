@@ -101,9 +101,9 @@ const App = {
   },
 
   createTask: function(task) {
-    const handleKeydown = async (event) => {
-      if (event.key !== "Enter") return;
-      event.preventDefault();
+    const handleKeydown = async (ev) => {
+      if (ev.key !== "Enter") return;
+      ev.preventDefault();
       await this.changeTask(task, ev.currentTarget.value);
     };
 
