@@ -14,6 +14,12 @@
 - [ ] Uncompleting tasks?
 - [ ] Removing current tag breaks stuff
 - [ ] Clean the root directory: remove unused files
+- [ ] Scrollable frame
+- [ ] Clear input button for phones
+- [ ] Splits by 1+ spaces
+- [ ] Sort by completion time and then ID (front)
+- [ ] Uncomplete tasks
+- [ ] Search
 
 ## Auth & safety
 
@@ -101,6 +107,7 @@ The most basic thing possible: an editable list of tasks.
 
 - [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
 - [ ] Telegram bot to evade DPI
+- [ ] Subtasks
 
 ## Later
 
