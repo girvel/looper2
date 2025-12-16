@@ -21,8 +21,10 @@ func wrap(fn HandlerFunc) gin.HandlerFunc {
 	}
 }
 
+// Only GET queries use context: POST query should still execute, even if connection breaks
+
 func (d Deps) getTasks(c *gin.Context) error {
-	rows, err := d.DB.Query("SELECT id, text, completion_time FROM tasks")
+	rows, err := d.DB.QueryContext(c.Request.Context(), "SELECT id, text, completion_time FROM tasks")
 	if err != nil {
 		return err
 	}
@@ -105,7 +107,7 @@ func (d Deps) renameTask(c *gin.Context) error {
 }
 
 func (d Deps) getTags(c *gin.Context) error {
-	rows, err := d.DB.Query(`
+	rows, err := d.DB.QueryContext(c.Request.Context(), `
 		SELECT tags.name, subtags.name FROM tags
 		LEFT JOIN subtags ON tags.id = subtags.tag_id
 	`)
