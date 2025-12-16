@@ -23,6 +23,12 @@ func wrap(fn HandlerFunc) gin.HandlerFunc {
 
 // Only GET queries use context: POST query should still execute, even if connection breaks
 
+type task struct {
+	Id int `json:"id"`
+	Text string `json:"text"`
+	CompletionTime *int `json:"completion_time"`
+}
+
 func (d Deps) getTasks(c *gin.Context) error {
 	rows, err := d.DB.QueryContext(c.Request.Context(), "SELECT id, text, completion_time FROM tasks")
 	if err != nil {
@@ -30,29 +36,28 @@ func (d Deps) getTasks(c *gin.Context) error {
 	}
 	defer rows.Close()
 
-	tasks := make([]gin.H, 0)
+	tasks := make([]task, 0)
 	for rows.Next() {
-		var id int
-		var text string
-		var completion_time *int
+		var currentTask task
 		
-		if err := rows.Scan(&id, &text, &completion_time); err != nil {
+		err := rows.Scan(&currentTask.Id, &currentTask.Text, &currentTask.CompletionTime)
+		if err != nil {
 			return err
 		}
 
-		tasks = append(tasks, gin.H{"id": id, "text": text, "completion_time": completion_time})
+		tasks = append(tasks, currentTask)
 	}
 	
 	c.JSON(http.StatusOK, tasks)
 	return nil
 }
 
-type task struct {
+type taskText struct {
 	Text string `json:"text"`
 }
 
 func (d Deps) addTask(c *gin.Context) error {
-	var currentTask task
+	var currentTask taskText
 	if err := c.BindJSON(&currentTask); err != nil {
 		return err
 	}
@@ -92,7 +97,7 @@ func (d Deps) renameTask(c *gin.Context) error {
 		return err
 	}
 
-	var currentTask task
+	var currentTask taskText
 	if err := c.BindJSON(&currentTask); err != nil {
 		return err
 	}
@@ -104,6 +109,11 @@ func (d Deps) renameTask(c *gin.Context) error {
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil
+}
+
+type tag struct {
+	Name string `json:"name"`
+	Subtags []string `json:"subtags"`
 }
 
 func (d Deps) getTags(c *gin.Context) error {
@@ -131,18 +141,13 @@ func (d Deps) getTags(c *gin.Context) error {
 		}
 	}
 
-	result := make([]gin.H, 0, len(tagMap))
+	result := make([]tag, 0, len(tagMap))
 	for k, v := range tagMap {
-		result = append(result, gin.H{"name": k, "subtags": v})
+		result = append(result, tag{Name: k, Subtags: v})
 	}
 
 	c.JSON(http.StatusOK, result)
 	return nil
-}
-
-type tag struct {
-	Name string `json:"name"`
-	Subtags []string `json:"subtags"`
 }
 
 func (d Deps) setTag(c *gin.Context) error {
