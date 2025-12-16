@@ -25,8 +25,11 @@ const resizeTextarea = function() {
 
 const mod = (a, b) => ((a % b) + b) % b;
 
+// TODO bug: impossible to complete a task between 00:00 and 03:00
+// day means 03:00, week means sunday, month means the first day
 const getActivationTime = function(expr) {
   let date = new Date();
+
   if (expr === "second") {
     date.setMilliseconds(0);
   } else if (expr === "day") {
@@ -45,10 +48,9 @@ const getActivationTime = function(expr) {
 };
 
 const isCompleted = task => {
+  if (task.completion_time === null) return false;
   const match = task.text.match(/@every\(([^)]+)\)/);
-  if (!match) {
-    return task.completion_time !== null;
-  }
+  if (!match) return true;
   return task.completion_time >= getActivationTime(match[1]);
 }
 
@@ -237,7 +239,7 @@ const App = {
     ) {
       elements.input.value = unusable_next ? "" : (next.subtags[0] ?? next.name) + " ";
     }
-    elements.input.focus();
+    elements.input.focus();  // TODO uncomfortable on phones
 
     this.state.current_tag = tagname;
     this.render();

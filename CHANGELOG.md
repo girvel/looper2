@@ -22,6 +22,8 @@
 - [ ] Search
 - [ ] Disallow recreating special tags
 - [ ] Checked checkboxes on iphone don't look right
+- [ ] Disallow space-filled tasks in backend
+- [ ] Safety: async locks for submitInput & changeTask
 
 ## Auth & safety
 
