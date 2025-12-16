@@ -2,7 +2,6 @@ package looper2
 
 import (
 	"log"
-	"math/rand/v2"
 	"net/http"
 	"sort"
 	"strconv"
