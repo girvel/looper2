@@ -31,7 +31,7 @@ const is_mobile = () => window.innerWidth < 600;
 const getActivationTime = function(expr) {
   let date = new Date();
 
-  if (data.getHours() < 3) {
+  if (date.getHours() < 3) {
     date.setDate(date.getDate() - 1);
   }
 
@@ -161,7 +161,7 @@ const App = {
 
     let renderedTasks = this.filterTasks();
     if (renderedTasks.length === 0) {
-      elements.tasks.innerHTML = `<span class="punctuation">-- all done --<span>`
+      elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
     } else {
       elements.tasks.replaceChildren(...renderedTasks.map(task => this.createTask(task)));
     }
