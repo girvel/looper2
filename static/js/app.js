@@ -80,28 +80,11 @@ const App = {
         : tag.subtags.join(" ");
     }
 
-    // TODO extract
-    const handleClick = () => {
-      const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
-      const unusable_next = Object.values(pseudo_tags).includes(name);
-      const tag_entry = this.state.tags.find(tag => tag.name == this.state.current_tag);
-      if (
-        unusable_prev && elements.input.value === ""
-          || !unusable_prev && doesTagMatch(tag_entry, elements.input.value)
-      ) {
-        elements.input.value = unusable_next ? "" : (tag.subtags[0] ?? tag.name) + " ";
-      }
-      elements.input.focus();
-
-      this.state.current_tag = name;
-      this.render();
-    };
-
     return html`
       <span
         class="tag ${this.state.current_tag === name ? 'active' : ''}"
         title=${title}
-        onclick=${handleClick}
+        onclick=${() => this.selectTag(name)}
       >
         ${name}
       </span>
@@ -265,6 +248,24 @@ const App = {
         elements.input.value = "";
       }
     }
+  },
+
+  selectTag: function(tagname) {
+    const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
+    const unusable_next = Object.values(pseudo_tags).includes(tagname);
+    const prev = this.state.tags.find(tag => tag.name == this.state.current_tag);
+    const next = this.state.tags.find(tag => tag.name == tagname);
+
+    if (
+      unusable_prev && elements.input.value === ""
+        || !unusable_prev && doesTagMatch(prev, elements.input.value)
+    ) {
+      elements.input.value = unusable_next ? "" : (next.subtags[0] ?? next.name) + " ";
+    }
+    elements.input.focus();
+
+    this.state.current_tag = tagname;
+    this.render();
   },
 
   bind: async function() {
