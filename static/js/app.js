@@ -25,10 +25,13 @@ const resizeTextarea = function() {
 
 const mod = (a, b) => ((a % b) + b) % b;
 
-// TODO bug: impossible to complete a task between 00:00 and 03:00
 // day means 03:00, week means sunday, month means the first day
 const getActivationTime = function(expr) {
   let date = new Date();
+
+  if (data.getHours() < 3) {
+    date.setDate(date.getDate() - 1);
+  }
 
   if (expr === "second") {
     date.setMilliseconds(0);
