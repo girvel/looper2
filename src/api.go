@@ -4,6 +4,7 @@ import (
 	"log"
 	"math/rand/v2"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
@@ -141,9 +142,15 @@ func (d Deps) getTags(c *gin.Context) error {
 		}
 	}
 
+	keys := make([]string, 0, len(tagMap))
+	for k := range tagMap {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
 	result := make([]tag, 0, len(tagMap))
-	for k, v := range tagMap {
-		result = append(result, tag{Name: k, Subtags: v})
+	for _, k := range keys {
+		result = append(result, tag{Name: k, Subtags: tagMap[k]})
 	}
 
 	c.JSON(http.StatusOK, result)
@@ -173,6 +180,7 @@ func (d Deps) setTag(c *gin.Context) error {
 		return err
 	}
 
+	// TODO unsafe, recreates subtags
 	_, err = tx.Exec("DELETE FROM subtags WHERE tag_id = ?", tagId)
 	if err != nil {
 		return err
@@ -253,6 +261,7 @@ func (d Deps) index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"ReleaseMode": releaseMode,
 		"DebugCacheBust": bust,
+		// TODO rename to CacheBust, use it for busting cache in release mode too
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
 }

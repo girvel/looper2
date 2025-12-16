@@ -15,6 +15,9 @@ const html = htm.bind((tag, props, ...children) => {
   }
 
   for (const child of children.flat()) {
+    // Support conditional operator-based branching in ${}
+    if (child === null || child === undefined || child === false || child === true) continue;
+
     if (typeof child === "string" || typeof child === "number") {
       element.appendChild(document.createTextNode(child));
     } else {

@@ -26,9 +26,7 @@ func init_looper() error {
 		}
 	}
 
-	router.Run()
-	
-	return nil
+	return router.Run()
 }
 
 func main() {
