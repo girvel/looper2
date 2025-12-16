@@ -4,16 +4,14 @@
 
 - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
+- [ ] Task ordering
 - [ ] Tag ordering
 - [ ] Tag descriptions
     - [ ] Editable
 - [ ] Prevent renames w/ unchanged tasks
-- [ ] Reordering tasks
 - [ ] Move idioms to a separate txt file
     - [ ] How would it work with build? Maybe a go file with multiline string then?
-- [ ] Uncompleting tasks?
 - [ ] Removing current tag breaks stuff
-- [ ] Clean the root directory: remove unused files
 - [ ] Scrollable frame
 - [ ] Clear input button for phones
 - [ ] Splits by 1+ spaces, strip space
@@ -49,13 +47,14 @@ Hopefully v0.3.0
     - [x] `<all>` pseudo-tag
     - [x] Autoupdate state
     - [x] GIN_MODE=release, attach all required middleware by hand
-- [ ] Review
+- [x] Review
     - [x] Research commonly used Gin middleware
     - [x] Review error handling in endpoints
-    - [ ] Review
+    - [x] Review
     - [x] Think about the JS refactor
 - [x] Done in review
     - [x] Cache busting in Release mode (with startup time)
+    - [x] Clean the root directory: remove unused files
 
 ## v0.2.0 (Main features) -- DONE
 
