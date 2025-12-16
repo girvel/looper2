@@ -1,5 +1,6 @@
 import htm from "/static/lib/htm.min.js";
 
+/// Uses className instead of class
 const html = htm.bind((tag, props, ...children) => {
   const element = document.createElement(tag);
   
@@ -8,7 +9,7 @@ const html = htm.bind((tag, props, ...children) => {
       if (key.startsWith("on")) {
         element.addEventListener(key.substring(2).toLowerCase(), props[key]);
       } else {
-        element[key] = props[key];
+        element[key] = props[key];  // works with className
       }
     }
   }

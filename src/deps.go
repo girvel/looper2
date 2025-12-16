@@ -15,7 +15,7 @@ func NewDeps() (*Deps, error) {
 		return nil, err
 	}
 
-	db, err := sql.Open("sqlite3", "data/looper2.db")
+	db, err := sql.Open("sqlite3", "data/looper2.db?_busy_timeout=1000")
 	if err != nil {
 		return nil, err
 	}
