@@ -25,14 +25,13 @@ func NewDeps() (*Deps, error) {
 		return nil, err
 	}
 
-	db, err := sql.Open("sqlite3", "data/looper2.db?_busy_timeout=1000")
+	db, err := sql.Open("sqlite3", "data/looper2.db?_busy_timeout=1000&_foreign_keys=on")
 	if err != nil {
 		return nil, err
 	}
 
 	if _, err = db.Exec(`
 		PRAGMA journal_mode = WAL;
-		PRAGMA foreign_keys = ON;
 
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
