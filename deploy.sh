@@ -2,7 +2,7 @@
 set -e
 
 VPS_USER="girvel"
-VPS_HOST="185.167.234.186"
+VPS_HOST="185.167.234.186"  # hardcoded, that's fine
 IMAGE_NAME="looper-vps"
 
 echo "Building Docker Image (amd64)..."

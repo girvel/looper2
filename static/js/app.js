@@ -145,23 +145,18 @@ const App = {
   },
 
   render: function() {
-    elements.tags.replaceChildren();
-    elements.tags.appendChild(this.createTag(pseudo_tags.feed));
-    elements.tags.appendChild(this.createTag(pseudo_tags.completed));
-    elements.tags.appendChild(this.createTag(pseudo_tags.all));
-    for (const tag of this.state.tags) {
-      elements.tags.appendChild(this.createTag(tag));
-    }
+    elements.tags.replaceChildren(
+      this.createTag(pseudo_tags.feed),
+      this.createTag(pseudo_tags.completed),
+      this.createTag(pseudo_tags.all),
+      ...this.state.tags.map(tag => this.createTag(tag))
+    );
 
     let renderedTasks = this.filterTasks();
     if (renderedTasks.length === 0) {
       elements.tasks.innerHTML = `<span class="punctuation">-- all done --<span>`
-      return;
-    }
-
-    elements.tasks.replaceChildren();
-    for (const task of renderedTasks) {
-      elements.tasks.appendChild(this.createTask(task));
+    } else {
+      elements.tasks.replaceChildren(...renderedTasks.map(task => this.createTask(task)));
     }
   },
 
