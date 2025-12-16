@@ -11,9 +11,10 @@ const literals = {
   no_subtags: "<no subtags>",
 };
 
-const special_tags = {
+const pseudo_tags = {
   feed: "<feed>",
   completed: "<completed>",
+  all: "<all>",
 }
 
 const resizeTextarea = function() {
@@ -63,19 +64,14 @@ const App = {
   state: {
     tasks: [],
     tags: [],
-    current_tag: special_tags.feed,
+    current_tag: pseudo_tags.feed,
   },
 
-  // TODO don't allow creating <feed> tags (or alike)
-  // tag is either a tag object or "<feed>"
   createTag: function(tag) {
     let name, title
-    if (tag === special_tags.feed) {
-      name = special_tags.feed;
-      title = "Untagged tasks";
-    } else if (tag === special_tags.completed) {
-      name = special_tags.completed;
-      title = "Completed tasks";
+    if (Object.values(pseudo_tags).includes(tag)) {
+      name = tag;
+      title = "";
     } else {
       name = tag.name;
       title = tag.subtags.length === 0
@@ -93,8 +89,8 @@ const App = {
     }
 
     span.addEventListener("click", () => {
-      const unusable_prev = Object.values(special_tags).includes(this.state.current_tag);
-      const unusable_next = Object.values(special_tags).includes(name);
+      const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
+      const unusable_next = Object.values(pseudo_tags).includes(name);
       const tag_entry = this.state.tags.find(tag => tag.name == this.state.current_tag);
       if (
         unusable_prev && elements.input.value === ""
@@ -156,12 +152,13 @@ const App = {
   },
 
   filterTasks: function() {
-    let invert = this.state.current_tag === special_tags.completed;
+    let invert = this.state.current_tag === pseudo_tags.completed;
     let result = this.state.tasks.filter(task => !isCompleted(task) ^ invert);
 
-    if (this.state.current_tag === special_tags.feed) {
+    if (this.state.current_tag === pseudo_tags.feed) {
       result = result.filter(task => !this.state.tags.some(tag => doesTagMatch(tag, task.text)));
     } else if (invert) {
+    } else if (this.state.current_tag == pseudo_tags.all) {
     } else {
       const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
       result = result.filter(task => doesTagMatch(tag, task.text));
@@ -172,9 +169,9 @@ const App = {
 
   render: function() {
     elements.tags.replaceChildren();
-    elements.tags.appendChild(this.createTag(special_tags.feed));
-    elements.tags.appendChild(this.createTag(special_tags.completed));
-
+    elements.tags.appendChild(this.createTag(pseudo_tags.feed));
+    elements.tags.appendChild(this.createTag(pseudo_tags.completed));
+    elements.tags.appendChild(this.createTag(pseudo_tags.all));
     for (const tag of this.state.tags) {
       elements.tags.appendChild(this.createTag(tag));
     }
@@ -255,7 +252,7 @@ const App = {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
 
-      const unusable_tag = Object.values(special_tags).includes(this.state.current_tag);
+      const unusable_tag = Object.values(pseudo_tags).includes(this.state.current_tag);
       if (!unusable_tag) {
         const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
         if (doesTagMatch(tag, value)) {

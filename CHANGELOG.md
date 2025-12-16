@@ -16,10 +16,12 @@
 - [ ] Clean the root directory: remove unused files
 - [ ] Scrollable frame
 - [ ] Clear input button for phones
-- [ ] Splits by 1+ spaces
+- [ ] Splits by 1+ spaces, strip space
 - [ ] Sort by completion time and then ID (front)
 - [ ] Uncomplete tasks
 - [ ] Search
+- [ ] Disallow recreating special tags
+- [ ] Checked checkboxes on iphone don't look right
 
 ## Auth & safety
 
