@@ -36,7 +36,7 @@ Hopefully v0.3.0
 
 ## v0.2.1 (Main features polished)
 
-- [ ] Code
+- [x] Code
     - [x] When finished editing a task, autosort it
     - [x] Tags/subtags consider spacing
     - [x] bug: editing the task + adding another one => hides edits
@@ -44,9 +44,8 @@ Hopefully v0.3.0
     - [x] `<completed>` pseudo-tag
     - [x] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
     - [x] `<all>` pseudo-tag
-    - [ ] Autoupdate state
-        - [ ] Disable logging for autoupdate
-    - [ ] GIN_MODE=release, attach all required middleware by hand
+    - [x] Autoupdate state
+    - [x] GIN_MODE=release, attach all required middleware by hand
 - [ ] Review
     - [ ] Research commonly used Gin middleware
     - [ ] Review error handling in endpoints

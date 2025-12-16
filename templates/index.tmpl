@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Looper {{if not .Config.ReleaseMode}} (dev){{end}}</title>
-    <link rel="stylesheet" href="/static/css/tui.css?t={{.Config.DebugCacheBust}}" />
-    <link rel="stylesheet" href="/static/css/index.css?t={{.Config.DebugCacheBust}}" />
+    <title>Looper {{if not .ReleaseMode}} (dev){{end}}</title>
+    <link rel="stylesheet" href="/static/css/tui.css?t={{.DebugCacheBust}}" />
+    <link rel="stylesheet" href="/static/css/index.css?t={{.DebugCacheBust}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Adaptive phone design -->
-    <link rel="icon" type="image/png" href="/static/favicon{{if not .Config.ReleaseMode}}-debug{{end}}.png">
+    <link rel="icon" type="image/png" href="/static/favicon{{if not .ReleaseMode}}-debug{{end}}.png">
 </head>
 <body>
     <h1>The Looper</h1>
@@ -20,7 +20,7 @@
     <textarea rows="1" id="input" enterkeyhint="enter" placeholder="{{.Idiom}}" autofocus></textarea>
 
     <script src="/static/lib/axios.min.js"></script>
-    <script type="module" src="/static/js/index.js?t={{.Config.DebugCacheBust}}"></script>
+    <script type="module" src="/static/js/index.js?t={{.DebugCacheBust}}"></script>
 </body>
 </html>
 

@@ -13,7 +13,7 @@ import (
 func (d Deps) getTasks(c *gin.Context) {
 	rows, err := d.DB.Query("SELECT id, text, completion_time FROM tasks")
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -26,7 +26,7 @@ func (d Deps) getTasks(c *gin.Context) {
 		var completion_time *int
 		
 		if err := rows.Scan(&id, &text, &completion_time); err != nil {
-			log.Println(err);
+			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
 		}
@@ -44,21 +44,21 @@ type task struct {
 func (d Deps) addTask(c *gin.Context) {
 	var currentTask task
 	if err := c.BindJSON(&currentTask); err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
 	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", currentTask.Text)
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -93,7 +93,7 @@ func (d Deps) renameTask(c *gin.Context) {
 
 	var currentTask task
 	if err := c.BindJSON(&currentTask); err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -152,14 +152,14 @@ type tag struct {
 func (d Deps) setTag(c *gin.Context) {
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
 	tx, err := d.DB.Begin()
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -180,14 +180,14 @@ func (d Deps) setTag(c *gin.Context) {
 
 	_, err = tx.Exec("DELETE FROM subtags WHERE tag_id = ?", tagId)
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
 	statement, err := tx.Prepare("INSERT INTO subtags (tag_id, name) VALUES (?, ?)")
 	if err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -195,14 +195,14 @@ func (d Deps) setTag(c *gin.Context) {
 
 	for _, subtag := range currentTag.Subtags {
 		if _, err := statement.Exec(tagId, subtag); err != nil {
-			log.Println(err);
+			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
-		log.Println(err);
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -259,8 +259,15 @@ var idioms []string = []string{
 }
 
 func (d Deps) index(c *gin.Context) {
+	releaseMode := gin.Mode() == gin.ReleaseMode
+	var bust int64
+	if !releaseMode {
+		bust = time.Now().Unix()
+	}
+
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"Config": d.Config,
+		"ReleaseMode": releaseMode,
+		"DebugCacheBust": bust,
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
 }
