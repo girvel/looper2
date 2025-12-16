@@ -7,10 +7,8 @@ const html = htm.bind((tag, props, ...children) => {
     for (const key in props) {
       if (key.startsWith("on")) {
         element.addEventListener(key.substring(2).toLowerCase(), props[key]);
-      } else if (key === "className") {
-        element.className = props[key];
       } else {
-        element.setAttribute(key, props[key]);
+        element[key] = props[key];
       }
     }
   }

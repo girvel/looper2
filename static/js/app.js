@@ -82,7 +82,7 @@ const App = {
 
     return html`
       <span
-        class="tag ${this.state.current_tag === name ? 'active' : ''}"
+        className="tag ${this.state.current_tag === name ? 'active' : ''}"
         title=${title}
         onclick=${() => this.selectTag(name)}
       >
@@ -92,26 +92,16 @@ const App = {
   },
 
   createTask: function(task) {
-    const updateText = async () => {
-      // TODO reset on fail? or dimmed while pending -> normal color
-      const value = textarea.value;
-      const response = await Axios.post(`api/tasks/${task.id}/rename`, {text: value});
-      if (response.data.status == "OK") {
-        task.text = value;
-        this.render();
-      }
-    };
-
     const handleKeydown = async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
-      await updateText();
+      await this.changeTask(task, ev.currentTarget.value);
     };
 
     const textarea = html`
       <textarea
         rows="1"
-        onchange=${updateText}
+        onchange=${async ev => this.changeTask(task, ev.currentTarget.value)}
         onkeydown=${handleKeydown}
         oninput=${resizeTextarea}
       >
@@ -120,14 +110,6 @@ const App = {
     `;
     setTimeout(() => resizeTextarea.call(textarea), 0);
 
-    const handleChange = async () => {
-      const response = await Axios.post(`api/tasks/${task.id}/complete`);
-      if (response.data.status == "OK") {
-        task.completion_time = Date.now() / 1000;
-        this.render();
-      }
-    };
-
     const is_completed = isCompleted(task);
     const div = html`
       <div className="task">
@@ -135,7 +117,7 @@ const App = {
           type="checkbox"
           checked=${is_completed}
           disabled=${is_completed}
-          onchange=${handleChange}
+          onchange=${async () => this.completeTask(task)}
         />
         ${textarea}
       </div>
@@ -275,6 +257,23 @@ const App = {
 
     this.state.current_tag = tagname;
     this.render();
+  },
+
+  changeTask: async function(task, value) {
+    // TODO reset on fail? or dimmed while pending -> normal color
+    const response = await Axios.post(`api/tasks/${task.id}/rename`, {text: value});
+    if (response.data.status == "OK") {
+      task.text = value;
+      this.render();
+    }
+  },
+
+  completeTask: async function(task) {
+    const response = await Axios.post(`api/tasks/${task.id}/complete`);
+    if (response.data.status == "OK") {
+      task.completion_time = Date.now() / 1000;
+      this.render();
+    }
   },
 
   bind: async function() {
