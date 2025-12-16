@@ -47,10 +47,10 @@ Hopefully v0.3.0
     - [x] Autoupdate state
     - [x] GIN_MODE=release, attach all required middleware by hand
 - [ ] Review
-    - [ ] Research commonly used Gin middleware
-    - [ ] Review error handling in endpoints
-    - [x] Review
-    - [ ] Think about the JS refactor
+    - [x] Research commonly used Gin middleware
+    - [x] Review error handling in endpoints
+    - [ ] Review
+    - [x] Think about the JS refactor
 
 ## v0.2.0 (Main features) -- DONE
 

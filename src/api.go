@@ -10,12 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (d Deps) getTasks(c *gin.Context) {
+type HandlerFunc func(c *gin.Context) error
+
+func wrap(fn HandlerFunc) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := fn(c); err != nil {
+			log.Printf("Internal error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "ERROR"})
+		}
+	}
+}
+
+func (d Deps) getTasks(c *gin.Context) error {
 	rows, err := d.DB.Query("SELECT id, text, completion_time FROM tasks")
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 	defer rows.Close()
 
@@ -26,96 +35,82 @@ func (d Deps) getTasks(c *gin.Context) {
 		var completion_time *int
 		
 		if err := rows.Scan(&id, &text, &completion_time); err != nil {
-			log.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{})
-			return
+			return err
 		}
 
 		tasks = append(tasks, gin.H{"id": id, "text": text, "completion_time": completion_time})
 	}
 	
 	c.JSON(http.StatusOK, tasks)
+	return nil
 }
 
 type task struct {
 	Text string `json:"text"`
 }
 
-func (d Deps) addTask(c *gin.Context) {
+func (d Deps) addTask(c *gin.Context) error {
 	var currentTask task
 	if err := c.BindJSON(&currentTask); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", currentTask.Text)
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK", "id": id})
+	return nil
 }
 
-func (d Deps) completeTask(c *gin.Context) {
+func (d Deps) completeTask(c *gin.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
-	if _, err := d.DB.Exec("UPDATE tasks SET completion_time = ? WHERE id = ?", time.Now().Unix(), id); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+	_, err = d.DB.Exec("UPDATE tasks SET completion_time = ? WHERE id = ?", time.Now().Unix(), id)
+	if err != nil {
+		return err
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
 }
 
-func (d Deps) renameTask(c *gin.Context) {
+func (d Deps) renameTask(c *gin.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	var currentTask task
 	if err := c.BindJSON(&currentTask); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
-	if _, err := d.DB.Exec("UPDATE tasks SET text = ? WHERE id = ?", currentTask.Text, id); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+	_, err = d.DB.Exec("UPDATE tasks SET text = ? WHERE id = ?", currentTask.Text, id)
+	if err != nil {
+		return err
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
 }
 
-func (d Deps) getTags(c *gin.Context) {
+func (d Deps) getTags(c *gin.Context) error {
 	rows, err := d.DB.Query(`
 		SELECT tags.name, subtags.name FROM tags
 		LEFT JOIN subtags ON tags.id = subtags.tag_id
 	`)
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 	defer rows.Close()
 
@@ -124,9 +119,7 @@ func (d Deps) getTags(c *gin.Context) {
 		var name string
 		var subtag *string
 		if err := rows.Scan(&name, &subtag); err != nil {
-			log.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{})
-			return
+			return err
 		}
 
 		if subtag != nil {
@@ -142,6 +135,7 @@ func (d Deps) getTags(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+	return nil
 }
 
 type tag struct {
@@ -149,19 +143,15 @@ type tag struct {
 	Subtags []string `json:"subtags"`
 }
 
-func (d Deps) setTag(c *gin.Context) {
+func (d Deps) setTag(c *gin.Context) error {
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	tx, err := d.DB.Begin()
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 	defer tx.Rollback()
 
@@ -173,63 +163,51 @@ func (d Deps) setTag(c *gin.Context) {
 		RETURNING id
 	`, currentTag.Name).Scan(&tagId)
 	if err != nil {
-		log.Println(err);
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	_, err = tx.Exec("DELETE FROM subtags WHERE tag_id = ?", tagId)
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	statement, err := tx.Prepare("INSERT INTO subtags (tag_id, name) VALUES (?, ?)")
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 	defer statement.Close()
 
 	for _, subtag := range currentTag.Subtags {
 		if _, err := statement.Exec(tagId, subtag); err != nil {
-			log.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{})
-			return
+			return err
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
 }
 
 type tagName struct {
 	Name string `json:"name"`
 }
 
-func (d Deps) removeTag(c *gin.Context) {
+func (d Deps) removeTag(c *gin.Context) error {
 	var currentTag tagName
 	if err := c.BindJSON(&currentTag); err != nil {
-		log.Println(err);
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	_, err := d.DB.Exec("DELETE FROM tags WHERE name = ?", currentTag.Name);
 	if err != nil {
-		log.Println(err);
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+		return err
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
 }
 
 func (d Deps) healthCheck(c *gin.Context) {
@@ -273,14 +251,14 @@ func (d Deps) index(c *gin.Context) {
 }
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
-	router.GET("/api/tasks", deps.getTasks)
-	router.POST("/api/tasks", deps.addTask)
-	router.POST("/api/tasks/:id/complete", deps.completeTask)
-	router.POST("/api/tasks/:id/rename", deps.renameTask)
+	router.GET("/api/tasks", wrap(deps.getTasks))
+	router.POST("/api/tasks", wrap(deps.addTask))
+	router.POST("/api/tasks/:id/complete", wrap(deps.completeTask))
+	router.POST("/api/tasks/:id/rename", wrap(deps.renameTask))
 
-	router.GET("/api/tags", deps.getTags)
-	router.POST("/api/tags", deps.setTag)
-	router.POST("/api/tags/remove", deps.removeTag)
+	router.GET("/api/tags", wrap(deps.getTags))
+	router.POST("/api/tags", wrap(deps.setTag))
+	router.POST("/api/tags/remove", wrap(deps.removeTag))
 
 	router.GET("/api/healthcheck", deps.healthCheck)
 
