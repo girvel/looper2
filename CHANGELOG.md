@@ -43,14 +43,14 @@ Hopefully v0.3.0
     - [x] Move between task entries with arrows
     - [x] `<completed>` pseudo-tag
     - [x] When switching to the tag and textarea is empty, or when submitting the task: set textarea to `<first subtag or tag><space>`
-    - [ ] `<all>` pseudo-tag
+    - [x] `<all>` pseudo-tag
     - [ ] Autoupdate state
         - [ ] Disable logging for autoupdate
     - [ ] GIN_MODE=release, attach all required middleware by hand
 - [ ] Review
     - [ ] Research commonly used Gin middleware
     - [ ] Review error handling in endpoints
-    - [ ] Review
+    - [x] Review
     - [ ] Think about the JS refactor
 
 ## v0.2.0 (Main features) -- DONE

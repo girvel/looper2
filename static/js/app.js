@@ -198,6 +198,12 @@ const App = {
 
   // INTERACTIONS //
 
+  refresh: async function() {
+    this.state.tasks = (await Axios.get("/api/tasks")).data;
+    this.state.tags = (await Axios.get("/api/tags")).data;
+    this.render();
+  },
+
   submitInput: async function() {
     const value = elements.input.value
     if (value === "") return;
@@ -284,11 +290,7 @@ const App = {
 
   bind: async function() {
     // allows HTML to fully load on slow internet speed
-    (async () => {
-      this.state.tasks = (await Axios.get("/api/tasks")).data;
-      this.state.tags = (await Axios.get("/api/tags")).data;
-      this.render();
-    })();
+    this.refresh();
 
     elements.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -299,6 +301,8 @@ const App = {
 
     elements.input.addEventListener("input", resizeTextarea);
     resizeTextarea.call(elements.input);
+
+    setInterval(async () => this.refresh(), 5000);
   },
 };
 
