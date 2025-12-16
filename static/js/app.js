@@ -199,9 +199,19 @@ const App = {
   // INTERACTIONS //
 
   refresh: async function() {
-    this.state.tasks = (await Axios.get("/api/tasks")).data;
-    this.state.tags = (await Axios.get("/api/tags")).data;
-    this.render();
+    const newTasks = await Axios.get("/api/tasks");
+    const newTags = await Axios.get("/api/tags");
+    this.state.tasks = newTasks.data;
+    this.state.tags = newTags.data;
+
+    const active = document.activeElement;
+    const isEditingInRender = active && elements.tasks.contains(active);
+
+    if (isEditingInRender) {
+      console.log("Skipping rerender, user is editing");
+    } else {
+      this.render();
+    }
   },
 
   submitInput: async function() {
