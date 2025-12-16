@@ -18,6 +18,7 @@ func init_looper() error {
 
 	router := gin.Default()
 	looper2.ApiRoutes(router, deps)
+	looper2.SiteRoutes(router, deps)
 
 	if gin.Mode() == gin.ReleaseMode {
 		log.Println("Active routes:")
