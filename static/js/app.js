@@ -68,6 +68,8 @@ const App = {
     current_tag: pseudo_tags.feed,
   },
 
+  // RENDERING //
+
   createTag: function(tag) {
     let name, title
     if (Object.values(pseudo_tags).includes(tag)) {
@@ -194,6 +196,8 @@ const App = {
     }
   },
 
+  // INTERACTIONS //
+
   submitInput: async function() {
     const value = elements.input.value
     if (value === "") return;
@@ -275,6 +279,8 @@ const App = {
       this.render();
     }
   },
+
+  // PUBLIC //
 
   bind: async function() {
     // allows HTML to fully load on slow internet speed
