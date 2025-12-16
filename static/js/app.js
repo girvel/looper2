@@ -181,7 +181,10 @@ const App = {
       this.state.tasks = newTasks.data;
       this.state.tags = newTags.data;
 
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
       this.render();
+      window.scrollTo(scrollX, scrollY);
     }
   },
 
