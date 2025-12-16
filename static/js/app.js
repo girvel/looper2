@@ -1,4 +1,5 @@
 import Axios from "/static/lib/axios.min.js";
+import html from "/static/js/htm.js";
 
 
 const elements = {
@@ -79,16 +80,8 @@ const App = {
         : tag.subtags.join(" ");
     }
 
-    const span = document.createElement("span");
-    span.innerText = name;
-    span.title = title;
-    span.className = "tag";
-
-    if (this.state.current_tag === name) {
-      span.classList.add("active");
-    }
-
-    span.addEventListener("click", () => {
+    // TODO extract
+    const handleClick = () => {
       const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
       const unusable_next = Object.values(pseudo_tags).includes(name);
       const tag_entry = this.state.tags.find(tag => tag.name == this.state.current_tag);
@@ -102,9 +95,17 @@ const App = {
 
       this.state.current_tag = name;
       this.render();
-    });
+    };
 
-    return span;
+    return html`
+      <span
+        class="tag ${this.state.current_tag === name ? 'active' : ''}"
+        title=${title}
+        onclick=${handleClick}
+      >
+        ${name}
+      </span>
+    `;
   },
 
   createTask: function(task) {
