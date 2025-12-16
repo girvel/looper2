@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 )
 
 type Deps struct {
 	*sql.DB
+	StartupTime int64
 }
 
 func NewDeps() (*Deps, error) {
@@ -53,6 +55,7 @@ func NewDeps() (*Deps, error) {
 
 	return &Deps{
 		DB: db,
+		StartupTime: time.Now().Unix(),
 	}, nil
 }
 

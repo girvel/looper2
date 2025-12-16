@@ -1,6 +1,7 @@
 @font-face {
   font-family: JetBrains Mono;
-  src: url(/static/fonts/JetBrainsMonoNerdFontMono-Regular.ttf);
+  src: url(../fonts/JetBrainsMonoNerdFontMono-Regular.ttf);
+    /* should be relative to work with cache busting prefix */
 }
 
 :root {

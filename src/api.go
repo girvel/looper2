@@ -251,18 +251,32 @@ var idioms []string = []string{
 	"Negotiate with beavers",
 }
 
+// TODO site.go
 func (d Deps) index(c *gin.Context) {
 	releaseMode := gin.Mode() == gin.ReleaseMode
-	var bust int64
-	if !releaseMode {
-		bust = time.Now().Unix()
+
+	var version string
+	if releaseMode {
+		version = strconv.FormatInt(d.StartupTime, 10)
+	} else {
+		version = "dev"
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"ReleaseMode": releaseMode,
-		"DebugCacheBust": bust,
+		"StaticRoot": "/static/" + version,
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
+}
+
+func (d Deps) static_routes(c *gin.Context) {
+	if gin.Mode() == gin.ReleaseMode {
+		c.Header("Cache-Control", "public, max_age=3153600, immutable")
+	} else {
+		c.Header("Cache-Control", "no-store")
+	}
+
+	c.File("./static" + c.Param("filepath"))
 }
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
@@ -278,7 +292,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/healthcheck", deps.healthCheck)
 
 	router.LoadHTMLGlob("templates/*")
-	router.Static("/static", "./static")
+	router.GET("/static/:version/*filepath", deps.static_routes)
 	router.GET("/", deps.index)
 }
 
