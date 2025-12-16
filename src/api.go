@@ -261,7 +261,6 @@ func (d Deps) index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"ReleaseMode": releaseMode,
 		"DebugCacheBust": bust,
-		// TODO rename to CacheBust, use it for busting cache in release mode too
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
 }

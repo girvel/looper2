@@ -25,6 +25,8 @@ const resizeTextarea = function() {
 
 const mod = (a, b) => ((a % b) + b) % b;
 
+const is_mobile = () => window.innerWidth < 600;
+
 // day means 03:00, week means sunday, month means the first day
 const getActivationTime = function(expr) {
   let date = new Date();
@@ -242,7 +244,8 @@ const App = {
     ) {
       elements.input.value = unusable_next ? "" : (next.subtags[0] ?? next.name) + " ";
     }
-    elements.input.focus();  // TODO uncomfortable on phones
+
+    if (!is_mobile()) elements.input.focus();
 
     this.state.current_tag = tagname;
     this.render();

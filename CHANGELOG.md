@@ -25,6 +25,7 @@
 - [ ] Disallow space-filled tasks in backend
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Cron expressions
+- [ ] Cache busting in Release mode (with startup time)
 
 ## Auth & safety
 
@@ -119,3 +120,4 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Editing tags directly (maybe doubleclick?)
     - [ ] `(+)` button
 - [ ] Dim @ directives
+- [ ] Disable autofocus on input for Android
