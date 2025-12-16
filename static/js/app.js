@@ -125,7 +125,7 @@ const App = {
       </div>
     `;
 
-    return [div, textarea];
+    return div;
   },
 
   filterTasks: function() {
@@ -160,56 +160,25 @@ const App = {
     }
 
     elements.tasks.replaceChildren();
-    let textareas = [];
     for (const task of renderedTasks) {
-      const [div, textarea] = this.createTask(task);
-      elements.tasks.appendChild(div);
-      textareas.push(textarea);
-    }
-
-    for (const [i, textarea] of textareas.entries()) {
-      textarea.addEventListener("keydown", ev => {
-        if (ev.key == "Tab") {
-          ev.preventDefault();
-          elements.input.focus();
-          elements.input.select();
-          return;
-        }
-
-        let offset;
-        if (ev.key == "ArrowDown") {
-          offset = 1;
-        } else if (ev.key == "ArrowUp") {
-          offset = -1;
-        } else {
-          return;
-        }
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const next = textareas[mod(i + offset, textareas.length)];
-
-        ev.preventDefault();
-        next.focus();
-        next.setSelectionRange(start, end);
-      });
+      elements.tasks.appendChild(this.createTask(task));
     }
   },
 
   // INTERACTIONS //
 
   refresh: async function() {
-    const newTasks = await Axios.get("/api/tasks");
-    const newTags = await Axios.get("/api/tags");
-    this.state.tasks = newTasks.data;
-    this.state.tags = newTags.data;
-
     const active = document.activeElement;
     const isEditingInRender = active && elements.tasks.contains(active);
 
     if (isEditingInRender) {
       console.log("Skipping rerender, user is editing");
     } else {
+      const newTasks = await Axios.get("/api/tasks");
+      const newTags = await Axios.get("/api/tags");
+      this.state.tasks = newTasks.data;
+      this.state.tags = newTags.data;
+
       this.render();
     }
   },
@@ -301,6 +270,37 @@ const App = {
   bind: async function() {
     // allows HTML to fully load on slow internet speed
     this.refresh();
+
+    elements.tasks.addEventListener("keydown", ev => {
+      if (ev.target.tagName !== "TEXTAREA") return;
+      const textareas = Array.from(elements.tasks.querySelectorAll("textarea"));
+      const textarea = ev.target;
+      const index = textareas.indexOf(textarea);
+
+      if (ev.key == "Tab") {
+        ev.preventDefault();
+        elements.input.focus();
+        elements.input.select();
+        return;
+      }
+
+      let offset;
+      if (ev.key == "ArrowDown") {
+        offset = 1;
+      } else if (ev.key == "ArrowUp") {
+        offset = -1;
+      } else {
+        return;
+      }
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const next = textareas[mod(index + offset, textareas.length)];
+
+      ev.preventDefault();
+      next.focus();
+      next.setSelectionRange(start, end);
+    });
 
     elements.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
