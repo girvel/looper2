@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Looper {{if not .ReleaseMode}} (dev){{end}}</title>
-    <link rel="stylesheet" href="{{.StaticRoot}}/css/tui.css" />
+    <title>Looper{{if not .ReleaseMode}} (dev){{end}}</title>
     <link rel="stylesheet" href="{{.StaticRoot}}/css/index.css" />
-    <script type="importmap">
-    {
-        "imports": {
-            "/static/": "{{.StaticRoot}}/"
-        }
-    }
-    </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Adaptive phone design -->
-    <link
-        rel="icon" type="image/png"
-        href="{{.StaticRoot}}/favicon{{if not .ReleaseMode}}-debug{{end}}.png"
-    />
+    {{ template "head" . }}
 </head>
 <body>
     <h1>The Looper</h1>

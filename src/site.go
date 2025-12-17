@@ -15,10 +15,30 @@ func (d Deps) index(c *gin.Context) {
 		c.Header("Cache-Control", "no-store")
 	}
 
+	_, err := c.Cookie("access_token")
+	if err != nil {
+		c.Redirect(http.StatusFound, "/auth")
+		return
+	}
+
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"ReleaseMode": d.Stats.ReleaseMode,
 		"StaticRoot": d.Stats.StaticPrefix,
 		"Idiom": idioms[rand.IntN(len(idioms))],
+	})
+}
+
+func (d Deps) auth(c *gin.Context) {
+	// TODO repetitive, fix
+	if d.Stats.ReleaseMode {
+		c.Header("Cache-Control", "no-cache")
+	} else {
+		c.Header("Cache-Control", "no-store")
+	}
+
+	c.HTML(http.StatusOK, "auth.tmpl", gin.H{
+		"ReleaseMode": d.Stats.ReleaseMode,
+		"StaticRoot": d.Stats.StaticPrefix,
 	})
 }
 
@@ -42,4 +62,5 @@ func SiteRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/static/:version/*filepath", deps.static_routes)
 	router.GET("/favicon.ico", deps.favicon_dummy)
 	router.GET("/", deps.index)
+	router.GET("/auth", deps.auth)
 }

@@ -23,6 +23,8 @@
 - [ ] Disallow space-filled tasks in backend
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Cron expressions
+- [ ] Tasks for the future
+    - [ ] Autotags like @tomorrow
 
 ## Auth & safety
 

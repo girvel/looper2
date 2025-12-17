@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth{{if not .ReleaseMode}} (dev){{end}}</title>
+    <link rel="stylesheet" href="{{.StaticRoot}}/css/auth.css" />
+    {{ template "head" . }}
+</head>
+<body>
+    <h1>Authorization</h1>
+    <input type="text" id="login" /><br />
+    <input type="password" id="password" /><br />
+    <button id="submit">Submit</button>
+
+    <script type="module" src="{{.StaticRoot}}/js/auth.js"></script>
+</body>
+</html>
