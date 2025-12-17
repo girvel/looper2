@@ -8,6 +8,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var idioms []string = []string{
+	"Clean the staples",
+	"Advance alchemic knowledge",
+	"Journal tribe movements",
+	"Wash my pants",
+	"Buy ritual paint (3), rags (3)",
+	"Pratice swordcraft",
+	"Clean the dungeon",
+	"Send anonymous prank letters to the King",
+	"Hunt",
+	"Change oil in lamps",
+	"Sell toenails",
+	"Fight hornets",
+	"Buy sausages (1000 lb)",
+	"Feed the platypus bear",
+	"Negotiate with beavers",
+}
+
 func (d Deps) index(c *gin.Context) {
 	if d.Stats.ReleaseMode {
 		c.Header("Cache-Control", "no-cache")
@@ -28,7 +46,7 @@ func (d Deps) index(c *gin.Context) {
 	})
 }
 
-func (d Deps) auth(c *gin.Context) {
+func (d Deps) authPage(c *gin.Context) {
 	// TODO repetitive, fix
 	if d.Stats.ReleaseMode {
 		c.Header("Cache-Control", "no-cache")
@@ -62,5 +80,5 @@ func SiteRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/static/:version/*filepath", deps.static_routes)
 	router.GET("/favicon.ico", deps.favicon_dummy)
 	router.GET("/", deps.index)
-	router.GET("/auth", deps.auth)
+	router.GET("/auth", deps.authPage)
 }

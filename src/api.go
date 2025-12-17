@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type HandlerFunc func(c *gin.Context) error
@@ -232,22 +233,49 @@ func (d Deps) healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
 
-var idioms []string = []string{
-	"Clean the staples",
-	"Advance alchemic knowledge",
-	"Journal tribe movements",
-	"Wash my pants",
-	"Buy ritual paint (3), rags (3)",
-	"Pratice swordcraft",
-	"Clean the dungeon",
-	"Send anonymous prank letters to the King",
-	"Hunt",
-	"Change oil in lamps",
-	"Sell toenails",
-	"Fight hornets",
-	"Buy sausages (1000 lb)",
-	"Feed the platypus bear",
-	"Negotiate with beavers",
+type authPair struct {
+	Login string `json:"login"`
+	Password string `json:"password"`
+}
+
+const authLifetime int = 3600 * 24 * 30
+var authKey []byte = []byte("TEMP-KEY-TODO-REPLACE")
+
+func (d Deps) auth(c *gin.Context) error {
+	now := time.Now().Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "looper2",
+		"sub": "girvel",
+		"exp": now + int64(authLifetime),
+		"iat": now,
+	})
+
+	token_str, err := token.SignedString(authKey)
+	if err != nil {
+		return err
+	}
+
+	// token2, err := jwt.Parse(
+	// 	token_str,
+	// 	func(token *jwt.Token) (any, error) { return key, nil },
+	// 	jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+	// 	jwt.WithIssuedAt(),
+	// )
+	// if err != nil {
+	// 	return err
+	// }
+
+	// claims, ok := token2.Claims.(jwt.MapClaims)
+	// if !ok {
+	// 	return fmt.Errorf("Unable to cast claims")
+	// }
+
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"sub": claims["sub"],
+	// })
+	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Stats.ReleaseMode, true)
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
 }
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
@@ -259,6 +287,8 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/tags", wrap(deps.getTags))
 	router.POST("/api/tags", wrap(deps.setTag))
 	router.POST("/api/tags/remove", wrap(deps.removeTag))
+
+	router.POST("/api/auth", wrap(deps.auth))
 
 	router.GET("/api/healthcheck", deps.healthCheck)
 }

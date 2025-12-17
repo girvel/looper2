@@ -98,6 +98,10 @@ textarea:-moz-placeholder {
   opacity: var(--punctuation-opacity);
 }
 
+button {
+  cursor: pointer;
+}
+
 /* GENERATED */
 input[type="checkbox"] {
   appearance: none;
