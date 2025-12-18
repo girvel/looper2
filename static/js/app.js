@@ -317,8 +317,6 @@ const App = {
 
     elements.input.addEventListener("input", resizeTextarea);
     resizeTextarea.call(elements.input);
-
-    setInterval(async () => this.refresh(), 5000);
   },
 };
 
