@@ -1,6 +1,7 @@
 package looper2
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sort"
@@ -31,7 +32,10 @@ type task struct {
 }
 
 func (d Deps) getTasks(c *gin.Context) error {
-	rows, err := d.DB.QueryContext(c.Request.Context(), "SELECT id, text, completion_time FROM tasks")
+	rows, err := d.DB.QueryContext(c.Request.Context(), `
+		SELECT id, text, completion_time FROM tasks WHERE user = ?
+	`, c.GetString("user"))
+
 	if err != nil {
 		return err
 	}
@@ -255,31 +259,40 @@ func (d Deps) auth(c *gin.Context) error {
 		return err
 	}
 
-	// token2, err := jwt.Parse(
-	// 	token_str,
-	// 	func(token *jwt.Token) (any, error) { return key, nil },
-	// 	jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
-	// 	jwt.WithIssuedAt(),
-	// )
-	// if err != nil {
-	// 	return err
-	// }
-
-	// claims, ok := token2.Claims.(jwt.MapClaims)
-	// if !ok {
-	// 	return fmt.Errorf("Unable to cast claims")
-	// }
-
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"sub": claims["sub"],
-	// })
 	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Stats.ReleaseMode, true)
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil
 }
 
+func (d Deps) authRequired(c *gin.Context) error {
+	token_str, err := c.Cookie("access_token")
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return nil
+	}
+
+	token, err := jwt.Parse(
+		token_str,
+		func(token *jwt.Token) (any, error) { return authKey, nil },
+		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+		jwt.WithIssuedAt(),
+	)
+	if err != nil {
+		return err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return fmt.Errorf("Unable to cast claims")
+	}
+
+	c.Set("user", claims["sub"])
+	c.Next()
+	return nil
+}
+
 func ApiRoutes(router *gin.Engine, deps *Deps) {
-	router.GET("/api/tasks", wrap(deps.getTasks))
+	router.GET("/api/tasks", wrap(deps.authRequired), wrap(deps.getTasks))
 	router.POST("/api/tasks", wrap(deps.addTask))
 	router.POST("/api/tasks/:id/complete", wrap(deps.completeTask))
 	router.POST("/api/tasks/:id/rename", wrap(deps.renameTask))

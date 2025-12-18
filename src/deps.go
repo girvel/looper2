@@ -35,12 +35,14 @@ func NewDeps() (*Deps, error) {
 
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			user TEXT NOT NULL,
 			text TEXT NOT NULL,
 			completion_time INTEGER
 		);
 
 		CREATE TABLE IF NOT EXISTS tags (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			user TEXT NOT NULL,
 			name TEXT NOT NULL,
 
 			UNIQUE(name)

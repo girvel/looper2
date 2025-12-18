@@ -32,6 +32,10 @@
 Hopefully v0.3.0
 
 - [ ] Auth
+    - [x] The page
+    - [ ] Primitive /api/auth
+    - [ ] Store token in a gitignored file
+    - [ ] Update prod DB
 - [ ] Special token for iPhone
 - [ ] Backup DB
 - [ ] Report errors in UI
