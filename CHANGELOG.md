@@ -26,6 +26,7 @@
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
 - [ ] Refresh messes with scrolling on desktop on large lists
+- [ ] binding:"required" for most of DTOs
 
 ## Auth & safety
 
@@ -33,9 +34,14 @@ Hopefully v0.3.0
 
 - [ ] Auth
     - [x] The page
-    - [ ] Primitive /api/auth
+    - [x] Primitive /api/auth
+    - [x] Auth middleware
+    - [x] Check users against a DB
     - [ ] Store token in a gitignored file
     - [ ] Update prod DB
+    - [ ] /api/auth HTTPS only
+    - [ ] Disallow empty username
+    - [ ] Auth with `[Enter]`
 - [ ] Special token for iPhone
 - [ ] Backup DB
 - [ ] Report errors in UI

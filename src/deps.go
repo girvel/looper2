@@ -33,11 +33,18 @@ func NewDeps() (*Deps, error) {
 	if _, err = db.Exec(`
 		PRAGMA journal_mode = WAL;
 
+		CREATE TABLE IF NOT EXISTS users (
+			user TEXT NOT NULL PRIMARY KEY,
+			password_hashed TEXT NOT NULL
+		);
+
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			user TEXT NOT NULL,
 			text TEXT NOT NULL,
-			completion_time INTEGER
+			completion_time INTEGER,
+
+			FOREIGN KEY(user) REFERENCES users(user)
 		);
 
 		CREATE TABLE IF NOT EXISTS tags (
@@ -45,6 +52,7 @@ func NewDeps() (*Deps, error) {
 			user TEXT NOT NULL,
 			name TEXT NOT NULL,
 
+			FOREIGN KEY(user) REFERENCES users(user),
 			UNIQUE(user, name)
 		);
 

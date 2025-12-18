@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type HandlerFunc func(c *gin.Context) error
@@ -247,18 +248,41 @@ func (d Deps) healthCheck(c *gin.Context) {
 }
 
 type authPair struct {
-	Login string `json:"login"`
-	Password string `json:"password"`
+	Login string `json:"login" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 const authLifetime int = 3600 * 24 * 30
 var authKey []byte = []byte("TEMP-KEY-TODO-REPLACE")
 
 func (d Deps) auth(c *gin.Context) error {
+	var pair authPair
+	if err := c.BindJSON(&pair); err != nil {
+		return err
+	}
+
+	var password_hashed string
+	err := d.DB.QueryRowContext(c.Request.Context(), `
+		SELECT password_hashed FROM users
+		WHERE user = ?
+	`, pair.Login).Scan(&password_hashed)
+	if err != nil {
+		log.Printf("Wrong user")
+		c.JSON(http.StatusConflict, gin.H{"status": "BAD"})
+		return nil
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(password_hashed), []byte(pair.Password))
+	if err != nil {
+		log.Printf("Wrong password")
+		c.JSON(http.StatusConflict, gin.H{"status": "BAD"})
+		return nil
+	}
+
 	now := time.Now().Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"iss": "looper2",
-		"sub": "girvel",
+		"sub": pair.Login,
 		"exp": now + int64(authLifetime),
 		"iat": now,
 	})
@@ -269,6 +293,26 @@ func (d Deps) auth(c *gin.Context) error {
 	}
 
 	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Stats.ReleaseMode, true)
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
+}
+
+func (d Deps) register(c *gin.Context) error {
+	var pair authPair
+	if err := c.BindJSON(&pair); err != nil {
+		return err
+	}
+
+	password_hashed, err := bcrypt.GenerateFromPassword([]byte(pair.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	d.DB.Exec(`
+		INSERT INTO users (user, password_hashed)
+		VALUES (?, ?)
+	`, pair.Login, string(password_hashed))
+
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil
 }
@@ -311,6 +355,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.POST("/api/tags/remove", wrap(deps.authRequired), wrap(deps.removeTag))
 
 	router.POST("/api/auth", wrap(deps.auth))
+	router.POST("/api/auth/register", wrap(deps.register))
 
 	router.GET("/api/healthcheck", deps.healthCheck)
 }
