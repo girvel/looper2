@@ -25,6 +25,7 @@
 - [ ] Cron expressions
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
+- [ ] Refresh messes with scrolling on desktop on large lists
 
 ## Auth & safety
 

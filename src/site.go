@@ -27,11 +27,8 @@ var idioms []string = []string{
 }
 
 func (d Deps) index(c *gin.Context) {
-	if d.Stats.ReleaseMode {
-		c.Header("Cache-Control", "no-cache")
-	} else {
-		c.Header("Cache-Control", "no-store")
-	}
+	// for idioms
+	c.Header("Cache-Control", "no-store")
 
 	_, err := c.Cookie("access_token")
 	if err != nil {
