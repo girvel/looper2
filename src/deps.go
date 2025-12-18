@@ -45,7 +45,7 @@ func NewDeps() (*Deps, error) {
 			user TEXT NOT NULL,
 			name TEXT NOT NULL,
 
-			UNIQUE(name)
+			UNIQUE(user, name)
 		);
 
 		CREATE TABLE IF NOT EXISTS subtags (

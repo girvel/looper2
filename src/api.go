@@ -67,7 +67,9 @@ func (d Deps) addTask(c *gin.Context) error {
 		return err
 	}
 
-	result, err := d.DB.Exec("INSERT INTO tasks (text) VALUES (?)", currentTask.Text)
+	result, err := d.DB.Exec(`
+		INSERT INTO tasks (user, text) VALUES (?, ?)
+	`, c.GetString("user"), currentTask.Text)
 	if err != nil {
 		return err
 	}
@@ -87,7 +89,9 @@ func (d Deps) completeTask(c *gin.Context) error {
 		return err
 	}
 
-	_, err = d.DB.Exec("UPDATE tasks SET completion_time = ? WHERE id = ?", time.Now().Unix(), id)
+	_, err = d.DB.Exec(`
+		UPDATE tasks SET completion_time = ? WHERE id = ? AND user = ?
+	`, time.Now().Unix(), id, c.GetString("user"))
 	if err != nil {
 		return err
 	}
@@ -107,7 +111,9 @@ func (d Deps) renameTask(c *gin.Context) error {
 		return err
 	}
 
-	_, err = d.DB.Exec("UPDATE tasks SET text = ? WHERE id = ?", currentTask.Text, id)
+	_, err = d.DB.Exec(`
+		UPDATE tasks SET text = ? WHERE id = ? AND user = ?
+	`, currentTask.Text, id, c.GetString("user"))
 	if err != nil {
 		return err
 	}
@@ -125,7 +131,8 @@ func (d Deps) getTags(c *gin.Context) error {
 	rows, err := d.DB.QueryContext(c.Request.Context(), `
 		SELECT tags.name, subtags.name FROM tags
 		LEFT JOIN subtags ON tags.id = subtags.tag_id
-	`)
+		WHERE tags.user = ?
+	`, c.GetString("user"))
 	if err != nil {
 		return err
 	}
@@ -176,10 +183,10 @@ func (d Deps) setTag(c *gin.Context) error {
 	var tagId int
 	// dummy DO UPDATE SET to return a value
 	err = tx.QueryRow(`
-		INSERT INTO tags (name) VALUES (?)
-		ON CONFLICT (name) DO UPDATE SET name = excluded.name
+		INSERT INTO tags (user, name) VALUES (?, ?)
+		ON CONFLICT (user, name) DO UPDATE SET name = excluded.name
 		RETURNING id
-	`, currentTag.Name).Scan(&tagId)
+	`, c.GetString("user"), currentTag.Name).Scan(&tagId)
 	if err != nil {
 		return err
 	}
@@ -220,7 +227,9 @@ func (d Deps) removeTag(c *gin.Context) error {
 		return err
 	}
 
-	_, err := d.DB.Exec("DELETE FROM tags WHERE name = ?", currentTag.Name);
+	_, err := d.DB.Exec(`
+		DELETE FROM tags WHERE name = ? AND user = ?
+	`, currentTag.Name, c.GetString("user"));
 	if err != nil {
 		return err
 	}
@@ -293,13 +302,13 @@ func (d Deps) authRequired(c *gin.Context) error {
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
 	router.GET("/api/tasks", wrap(deps.authRequired), wrap(deps.getTasks))
-	router.POST("/api/tasks", wrap(deps.addTask))
-	router.POST("/api/tasks/:id/complete", wrap(deps.completeTask))
-	router.POST("/api/tasks/:id/rename", wrap(deps.renameTask))
+	router.POST("/api/tasks", wrap(deps.authRequired), wrap(deps.addTask))
+	router.POST("/api/tasks/:id/complete", wrap(deps.authRequired), wrap(deps.completeTask))
+	router.POST("/api/tasks/:id/rename", wrap(deps.authRequired), wrap(deps.renameTask))
 
-	router.GET("/api/tags", wrap(deps.getTags))
-	router.POST("/api/tags", wrap(deps.setTag))
-	router.POST("/api/tags/remove", wrap(deps.removeTag))
+	router.GET("/api/tags", wrap(deps.authRequired), wrap(deps.getTags))
+	router.POST("/api/tags", wrap(deps.authRequired), wrap(deps.setTag))
+	router.POST("/api/tags/remove", wrap(deps.authRequired), wrap(deps.removeTag))
 
 	router.POST("/api/auth", wrap(deps.auth))
 
