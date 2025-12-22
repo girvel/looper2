@@ -2,10 +2,10 @@
 
 ```
 <feed> <x> <...>
-#now -> #nodep
-! #extra #bday #sleep
-#queue #clean #clean2
+#now -> #bday -> #nodep
+! #alina #extra #sleep #queue #fix #mt
 #buy #walk #ozon
+#research #culture #try
 ```
 
 So, the UI structure should be:

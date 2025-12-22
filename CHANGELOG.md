@@ -33,12 +33,19 @@
 - [ ] Don't deploy to ~
 - [ ] Typescript?
 - [ ] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
+- [ ] Expressions like @every(2 days)
+- [ ] bug: :TagRemove on the current empty tag crashes
+- [ ] publish tags (for the wishlist)
+
+## v0.4 Tag ordering
+
+## v0.3.1 A bunch of fixes, clean up the backlog
 
 ## v0.3 Auth & safety
 
 Hopefully v0.3.0
 
-- [ ] Auth
+- [x] Auth
     - [x] The page
     - [x] Primitive /api/auth
     - [x] Auth middleware
