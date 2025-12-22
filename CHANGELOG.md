@@ -31,6 +31,7 @@
 - [ ] selected tag should go to URL
 - [ ] disable checkbox hover on phones
 - [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
+- [ ] Don't deploy to ~
 
 ## v0.3 Auth & safety
 
@@ -42,6 +43,7 @@ Hopefully v0.3.0
     - [x] Auth middleware
     - [x] Check users against a DB
     - [x] Store token in a gitignored file
+    - [x] Configure deploy to use a token
     - [ ] Redirect if the JWT is invalid
     - [ ] /api/auth HTTPS only
     - [ ] Disallow empty username
