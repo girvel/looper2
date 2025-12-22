@@ -45,7 +45,7 @@ Hopefully v0.3.0
     - [x] Store token in a gitignored file
     - [x] Configure deploy to use a token
     - [x] Redirect if the JWT is invalid
-    - [ ] /api/auth HTTPS only
+    - [x] /api/auth HTTPS only
     - [ ] Disallow empty username
     - [ ] Auth with `[Enter]`
     - [ ] Display wrong user/password pair error

@@ -49,7 +49,13 @@ func (d Deps) index(c *gin.Context) {
 }
 
 func (d Deps) authPage(c *gin.Context) {
-	// TODO repetitive, fix
+	if d.Config.ReleaseMode && c.GetHeader("X-Forwarded-Proto") != "https" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "ERROR", "message": "HTTPS required",
+		})
+		return
+	}
+
 	if d.Config.ReleaseMode {
 		c.Header("Cache-Control", "no-cache")
 	} else {
