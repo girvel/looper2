@@ -28,3 +28,7 @@
 .tag.active {
   opacity: 1;
 }
+
+#status {
+  color: #fc618d;
+}

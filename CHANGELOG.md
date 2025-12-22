@@ -32,6 +32,7 @@
 - [ ] disable checkbox hover on phones
 - [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
 - [ ] Don't deploy to ~
+- [ ] Typescript?
 
 ## v0.3 Auth & safety
 
@@ -53,8 +54,7 @@ Hopefully v0.3.0
 - [ ] Special token for iPhone
     - [ ] Think about how to issue it
 - [ ] Backup DB
-- [ ] Report errors in UI
-- [ ] Typescript?
+- [x] Report errors in UI
 - [ ] Deploy
     - [ ] Update prod DB
 

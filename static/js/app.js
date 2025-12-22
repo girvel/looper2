@@ -6,7 +6,26 @@ const elements = {
   tasks: document.getElementById("tasks"),
   tags: document.getElementById("tags"),
   input: document.getElementById("input"),
+  status: document.getElementById("status"),
 };
+
+const api = Axios.create();
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      elements.status.innerText = "Connection issues";
+    } else {
+      const status = error.response.status;
+      if (status >= 500) {
+        elements.status.innerText = "Server error";
+      } else if (status >= 400) {
+        elements.status.innerText = "Unknown error";
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 const literals = {
   no_subtags: "<no subtags>",
@@ -152,6 +171,7 @@ const App = {
   },
 
   render: function() {
+    elements.status.innerText = "";
     elements.tags.replaceChildren(
       this.createTag(pseudo_tags.feed),
       this.createTag(pseudo_tags.completed),
@@ -176,8 +196,8 @@ const App = {
     if (isEditingInRender) {
       console.log("Skipping rerender, user is editing");
     } else {
-      const newTasks = await Axios.get("/api/tasks");
-      const newTags = await Axios.get("/api/tags");
+      const newTasks = await api.get("/api/tasks");
+      const newTags = await api.get("/api/tags");
       this.state.tasks = newTasks.data;
       this.state.tags = newTags.data;
 
@@ -196,18 +216,18 @@ const App = {
       const args = value.split(" ");
 
       if (args[0] == ":Tag") {
-        const response = await Axios.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
+        const response = await api.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
 
         if (response.data.status === "OK") {
-          this.state.tags = (await Axios.get("/api/tags")).data;
+          this.state.tags = (await api.get("/api/tags")).data;
           this.render();
           elements.input.value = "";
         }
       } else if (args[0] == ":TagRemove") {
-        const response = await Axios.post("api/tags/remove", {"name": args[1]});
+        const response = await api.post("api/tags/remove", {"name": args[1]});
 
         if (response.data.status === "OK") {
-          this.state.tags = (await Axios.get("/api/tags")).data;
+          this.state.tags = (await api.get("/api/tags")).data;
           this.render();
           elements.input.value = "";
         }
@@ -216,7 +236,7 @@ const App = {
       return;
     }
 
-    const response = await Axios.post("api/tasks", {"text": value});
+    const response = await api.post("api/tasks", {"text": value});
     if (response.data.status === "OK") {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
@@ -256,7 +276,7 @@ const App = {
 
   changeTask: async function(task, value) {
     // TODO reset on fail? or dimmed while pending -> normal color
-    const response = await Axios.post(`api/tasks/${task.id}/rename`, {text: value});
+    const response = await api.post(`api/tasks/${task.id}/rename`, {text: value});
     if (response.data.status == "OK") {
       task.text = value;
       this.render();
@@ -264,7 +284,7 @@ const App = {
   },
 
   completeTask: async function(task) {
-    const response = await Axios.post(`api/tasks/${task.id}/complete`);
+    const response = await api.post(`api/tasks/${task.id}/complete`);
     if (response.data.status == "OK") {
       task.completion_time = Date.now() / 1000;
       this.render();
