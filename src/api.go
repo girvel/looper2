@@ -330,8 +330,8 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 		tasks := router.Group("/api/tasks")
 		tasks.Use(wrap(deps.authRequired))
 
-		tasks.GET("/", wrap(deps.getTasks))
-		tasks.POST("/", wrap(deps.addTask))
+		tasks.GET("", wrap(deps.getTasks))
+		tasks.POST("", wrap(deps.addTask))
 		tasks.POST("/:id/complete", wrap(deps.completeTask))
 		tasks.POST("/:id/rename", wrap(deps.renameTask))
 	}
@@ -340,8 +340,8 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 		tags := router.Group("/api/tags")
 		tags.Use(wrap(deps.authRequired))
 
-		tags.GET("/", wrap(deps.getTags))
-		tags.POST("/", wrap(deps.setTag))
+		tags.GET("", wrap(deps.getTags))
+		tags.POST("", wrap(deps.setTag))
 		tags.POST("/remove", wrap(deps.removeTag))
 	}
 
