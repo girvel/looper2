@@ -1,7 +1,6 @@
 package looper2
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"sort"
@@ -9,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -278,20 +276,12 @@ func (d Deps) auth(c *gin.Context) error {
 		return nil
 	}
 
-	now := time.Now().Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iss": "looper2",
-		"sub": pair.Login,
-		"exp": now + int64(authLifetime),
-		"iat": now,
-	})
-
-	token_str, err := token.SignedString(d.Config.AuthKey)
+	token, err := IssueToken(pair.Login, int64(authLifetime), d.Config.AuthKey)
 	if err != nil {
 		return err
 	}
 
-	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Config.ReleaseMode, true)
+	c.SetCookie("access_token", token, authLifetime, "/", "", d.Config.ReleaseMode, true)
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil
 }
@@ -317,31 +307,20 @@ func (d Deps) register(c *gin.Context) error {
 }
 
 func (d Deps) authRequired(c *gin.Context) error {
-	token_str, err := c.Cookie("access_token")
+	token, err := c.Cookie("access_token")
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return nil
 	}
 
-	token, err := jwt.Parse(
-		token_str,
-		func(token *jwt.Token) (any, error) { return d.Config.AuthKey, nil },
-		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
-		jwt.WithIssuedAt(),
-	)
+	sub, err := ValidateToken(token, d.Config.AuthKey)
 	if err != nil {
 		c.SetCookie("access_token", "", -1, "/", "", d.Config.ReleaseMode, true)
 		c.Abort()
 		return err
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		c.Abort()
-		return fmt.Errorf("Unable to cast claims")
-	}
-
-	c.Set("user", claims["sub"])
+	c.Set("user", sub)
 	c.Next()
 	return nil
 }

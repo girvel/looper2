@@ -30,8 +30,13 @@ func (d Deps) index(c *gin.Context) {
 	// for idioms
 	c.Header("Cache-Control", "no-store")
 
-	_, err := c.Cookie("access_token")
+	token, err := c.Cookie("access_token")
 	if err != nil {
+		c.Redirect(http.StatusFound, "/auth")
+		return
+	}
+
+	if _, err := ValidateToken(token, d.Config.AuthKey); err != nil {
 		c.Redirect(http.StatusFound, "/auth")
 		return
 	}
