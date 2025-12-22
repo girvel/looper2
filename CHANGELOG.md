@@ -48,7 +48,7 @@ Hopefully v0.3.0
     - [x] /api/auth HTTPS only
     - [x] Disallow empty username
     - [x] Auth with `[Enter]`
-    - [ ] Display wrong user/password pair error
+    - [x] Display wrong user/password pair error
     - [ ] Redesign auth page
 - [ ] Special token for iPhone
     - [ ] Think about how to issue it
