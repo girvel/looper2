@@ -49,7 +49,7 @@ Hopefully v0.3.0
     - [x] Disallow empty username
     - [x] Auth with `[Enter]`
     - [x] Display wrong user/password pair error
-    - [ ] Redesign auth page
+    - [x] Redesign auth page
 - [ ] Special token for iPhone
     - [ ] Think about how to issue it
 - [ ] Backup DB

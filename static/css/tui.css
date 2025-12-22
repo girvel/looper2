@@ -1,7 +1,17 @@
 @font-face {
-  font-family: JetBrains Mono;
+  font-family: 'JetBrains Mono';
   src: url(../fonts/JetBrainsMonoNerdFontMono-Regular.ttf);
     /* should be relative to work with cache busting prefix */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url(../fonts/JetBrainsMonoNerdFontMono-Italic.ttf);
+    /* should be relative to work with cache busting prefix */
+  font-weight: normal;
+  font-style: italic;
 }
 
 :root {
@@ -68,7 +78,6 @@ h1 {
 }
 
 textarea, button, input[type="text"], input[type="password"] {
-  background-color: var(--dark1);
   color: inherit;
   font-size: inherit;
   font-family: inherit;
@@ -76,6 +85,10 @@ textarea, button, input[type="text"], input[type="password"] {
   border: none;
   outline: none;
   padding: 0;
+}
+
+textarea, input[type="text"], input[type="password"] {
+  background-color: var(--dark1);
 }
 
 textarea {
@@ -90,9 +103,18 @@ textarea {
 textarea::placeholder,
 textarea::-webkit-input-placeholder,
 textarea::-moz-placeholder,
-textarea:-moz-placeholder {
+textarea:-moz-placeholder,
+input[type="text"]::placeholder,
+input[type="text"]::-webkit-input-placeholder,
+input[type="text"]::-moz-placeholder,
+input[type="text"]:-moz-placeholder,
+input[type="password"]::placeholder,
+input[type="password"]::-webkit-input-placeholder,
+input[type="password"]::-moz-placeholder,
+input[type="password"]:-moz-placeholder {
   color: inherit;
   opacity: var(--punctuation-opacity);
+  font-style: italic;
 }
 
 .punctuation {
@@ -101,6 +123,13 @@ textarea:-moz-placeholder {
 
 button {
   cursor: pointer;
+  background-color: var(--text);
+  color: var(--background);
+}
+
+button:hover {
+  background-color: var(--dark1);
+  color: var(--text);
 }
 
 /* GENERATED */
