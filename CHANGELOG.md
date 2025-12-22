@@ -46,8 +46,8 @@ Hopefully v0.3.0
     - [x] Configure deploy to use a token
     - [x] Redirect if the JWT is invalid
     - [x] /api/auth HTTPS only
-    - [ ] Disallow empty username
-    - [ ] Auth with `[Enter]`
+    - [x] Disallow empty username
+    - [x] Auth with `[Enter]`
     - [ ] Display wrong user/password pair error
     - [ ] Redesign auth page
 - [ ] Special token for iPhone

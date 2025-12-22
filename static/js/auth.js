@@ -6,7 +6,7 @@ const elements = {
   submitButton: document.getElementById("submit"),
 }
 
-elements.submitButton.addEventListener("click", async () => {
+const submit = async () => {
   const response = await Axios.post("/api/auth", {
     "login": elements.loginField.value,
     "password": elements.passwordField.value
@@ -15,4 +15,9 @@ elements.submitButton.addEventListener("click", async () => {
   if (response.data.status == "OK") {
     window.location.href = "/";
   }
-});
+}
+elements.submitButton.addEventListener("click", submit);
+
+elements.passwordField.addEventListener("keydown", async ev => {
+  if (ev.key == "Enter") await submit();
+})
