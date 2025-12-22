@@ -37,32 +37,32 @@ func (d Deps) index(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"ReleaseMode": d.Stats.ReleaseMode,
-		"StaticRoot": d.Stats.StaticPrefix,
+		"ReleaseMode": d.Config.ReleaseMode,
+		"StaticRoot": d.Config.StaticPrefix,
 		"Idiom": idioms[rand.IntN(len(idioms))],
 	})
 }
 
 func (d Deps) authPage(c *gin.Context) {
 	// TODO repetitive, fix
-	if d.Stats.ReleaseMode {
+	if d.Config.ReleaseMode {
 		c.Header("Cache-Control", "no-cache")
 	} else {
 		c.Header("Cache-Control", "no-store")
 	}
 
 	c.HTML(http.StatusOK, "auth.tmpl", gin.H{
-		"ReleaseMode": d.Stats.ReleaseMode,
-		"StaticRoot": d.Stats.StaticPrefix,
+		"ReleaseMode": d.Config.ReleaseMode,
+		"StaticRoot": d.Config.StaticPrefix,
 	})
 }
 
 func (d Deps) favicon_dummy(c *gin.Context) {
-	c.Redirect(http.StatusFound, d.Stats.StaticPrefix + "/favicon.png")
+	c.Redirect(http.StatusFound, d.Config.StaticPrefix + "/favicon.png")
 }
 
 func (d Deps) static_routes(c *gin.Context) {
-	if d.Stats.ReleaseMode {
+	if d.Config.ReleaseMode {
 		c.Header("Cache-Control", "public, max-age=3153600, immutable")
 	} else {
 		c.Header("Cache-Control", "no-store")

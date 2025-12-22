@@ -2,6 +2,7 @@
 
 ## Queue
 
+- [ ] BIG IDEA: all of tasks is a single file
 - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Task ordering
@@ -27,8 +28,11 @@
     - [ ] Autotags like @tomorrow
 - [ ] Refresh messes with scrolling on desktop on large lists
 - [ ] binding:"required" for most of DTOs
+- [ ] selected tag should go to URL
+- [ ] disable checkbox hover on phones
+- [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
 
-## Auth & safety
+## v0.3 Auth & safety
 
 Hopefully v0.3.0
 
@@ -37,16 +41,20 @@ Hopefully v0.3.0
     - [x] Primitive /api/auth
     - [x] Auth middleware
     - [x] Check users against a DB
-    - [ ] Store token in a gitignored file
-    - [ ] Update prod DB
+    - [x] Store token in a gitignored file
+    - [ ] Redirect if the JWT is invalid
     - [ ] /api/auth HTTPS only
     - [ ] Disallow empty username
     - [ ] Auth with `[Enter]`
+    - [ ] Display wrong user/password pair error
+    - [ ] Redesign auth page
 - [ ] Special token for iPhone
+    - [ ] Think about how to issue it
 - [ ] Backup DB
 - [ ] Report errors in UI
-- [ ] Don't fetch ALL the tasks (only with @every/no completion date)
 - [ ] Typescript?
+- [ ] Deploy
+    - [ ] Update prod DB
 
 ## v0.2.1 (Main features polished)
 

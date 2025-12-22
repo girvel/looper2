@@ -10,14 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Stats struct {
+type Config struct {
 	StaticPrefix string
 	ReleaseMode bool
+	AuthKey []byte
 }
 
 type Deps struct {
 	*sql.DB
-	Stats
+	Config
 }
 
 func NewDeps() (*Deps, error) {
@@ -70,17 +71,22 @@ func NewDeps() (*Deps, error) {
 
 	log.Println("Established sqlite3 DB")
 
-	var stats Stats
-	stats.ReleaseMode = gin.Mode() == gin.ReleaseMode
-	if stats.ReleaseMode {
-		stats.StaticPrefix = "/static/" + strconv.FormatInt(time.Now().Unix(), 10)
+	var config Config
+	config.ReleaseMode = gin.Mode() == gin.ReleaseMode
+	if config.ReleaseMode {
+		config.StaticPrefix = "/static/" + strconv.FormatInt(time.Now().Unix(), 10)
 	} else {
-		stats.StaticPrefix = "/static/dev"
+		config.StaticPrefix = "/static/dev"
 	}
+	key, err := os.ReadFile(".auth-key")
+	if err != nil {
+		return nil, err
+	}
+	config.AuthKey = []byte(key)
 
 	return &Deps{
 		DB: db,
-		Stats: stats,
+		Config: config,
 	}, nil
 }
 

@@ -253,7 +253,6 @@ type authPair struct {
 }
 
 const authLifetime int = 3600 * 24 * 30
-var authKey []byte = []byte("TEMP-KEY-TODO-REPLACE")
 
 func (d Deps) auth(c *gin.Context) error {
 	var pair authPair
@@ -287,12 +286,12 @@ func (d Deps) auth(c *gin.Context) error {
 		"iat": now,
 	})
 
-	token_str, err := token.SignedString(authKey)
+	token_str, err := token.SignedString(d.Config.AuthKey)
 	if err != nil {
 		return err
 	}
 
-	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Stats.ReleaseMode, true)
+	c.SetCookie("access_token", token_str, authLifetime, "/", "", d.Config.ReleaseMode, true)
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil
 }
@@ -326,16 +325,19 @@ func (d Deps) authRequired(c *gin.Context) error {
 
 	token, err := jwt.Parse(
 		token_str,
-		func(token *jwt.Token) (any, error) { return authKey, nil },
+		func(token *jwt.Token) (any, error) { return d.Config.AuthKey, nil },
 		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
 		jwt.WithIssuedAt(),
 	)
 	if err != nil {
+		c.SetCookie("access_token", "", -1, "/", "", d.Config.ReleaseMode, true)
+		c.Abort()
 		return err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
+		c.Abort()
 		return fmt.Errorf("Unable to cast claims")
 	}
 
@@ -345,14 +347,24 @@ func (d Deps) authRequired(c *gin.Context) error {
 }
 
 func ApiRoutes(router *gin.Engine, deps *Deps) {
-	router.GET("/api/tasks", wrap(deps.authRequired), wrap(deps.getTasks))
-	router.POST("/api/tasks", wrap(deps.authRequired), wrap(deps.addTask))
-	router.POST("/api/tasks/:id/complete", wrap(deps.authRequired), wrap(deps.completeTask))
-	router.POST("/api/tasks/:id/rename", wrap(deps.authRequired), wrap(deps.renameTask))
+	{
+		tasks := router.Group("/api/tasks")
+		tasks.Use(wrap(deps.authRequired))
 
-	router.GET("/api/tags", wrap(deps.authRequired), wrap(deps.getTags))
-	router.POST("/api/tags", wrap(deps.authRequired), wrap(deps.setTag))
-	router.POST("/api/tags/remove", wrap(deps.authRequired), wrap(deps.removeTag))
+		tasks.GET("/", wrap(deps.getTasks))
+		tasks.POST("/", wrap(deps.addTask))
+		tasks.POST("/:id/complete", wrap(deps.completeTask))
+		tasks.POST("/:id/rename", wrap(deps.renameTask))
+	}
+
+	{
+		tags := router.Group("/api/tags")
+		tags.Use(wrap(deps.authRequired))
+
+		tags.GET("/", wrap(deps.getTags))
+		tags.POST("/", wrap(deps.setTag))
+		tags.POST("/remove", wrap(deps.removeTag))
+	}
 
 	router.POST("/api/auth", wrap(deps.auth))
 	router.POST("/api/auth/register", wrap(deps.register))
