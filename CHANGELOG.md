@@ -26,13 +26,13 @@
 - [ ] Cron expressions
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
-- [ ] Refresh messes with scrolling on desktop on large lists
 - [ ] binding:"required" for most of DTOs
 - [ ] selected tag should go to URL
 - [ ] disable checkbox hover on phones
 - [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
 - [ ] Don't deploy to ~
 - [ ] Typescript?
+- [ ] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
 
 ## v0.3 Auth & safety
 
@@ -57,6 +57,8 @@ Hopefully v0.3.0
 - [x] Report errors in UI
 - [ ] Deploy
     - [ ] Update prod DB
+    - [ ] Test it works
+    - [ ] Test the iphone shortcut works
 
 ## v0.2.1 (Main features polished)
 
