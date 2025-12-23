@@ -33,12 +33,17 @@
 - [ ] Don't deploy to ~
 - [ ] Typescript?
 - [ ] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
+- [ ] Dim tasks that are moved to another tag, not remove them
+- [ ] Display completed tasks on click to "all done"
+    - [ ] Display a clickable span like "...228 upcoming"
+- [ ] Gestures (swipe tasks) for phones
+- [ ] Push backup to remote (future)
 
 ## v0.3 Auth & safety
 
 Hopefully v0.3.0
 
-- [ ] Auth
+- [x] Auth
     - [x] The page
     - [x] Primitive /api/auth
     - [x] Auth middleware
@@ -136,6 +141,7 @@ The most basic thing possible: an editable list of tasks.
 ## Never
 
 - [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
+- [ ] Or just mass actions
 - [ ] Telegram bot to evade DPI
 - [ ] Subtasks
 
@@ -145,4 +151,7 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Editing tags directly (maybe doubleclick?)
     - [ ] `(+)` button
 - [ ] Dim @ directives
-- [ ] Disable autofocus on input for Android
+- [ ] Disable autofocus on #input for Android
+- [ ] Consider something like pseudo tag `<today>`
+- [ ] RU ui
+- [ ] Consider Ansible for deployment
