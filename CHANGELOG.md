@@ -65,7 +65,8 @@ Hopefully v0.3.0
     - [x] Redesign auth page
 - [x] Special token for iPhone
     - [x] Think about how to issue it
-- [ ] Backup DB
+- [x] Backup DB
+    - [x] Test the backup script
 - [x] Report errors in UI
 - [ ] Deploy
     - [ ] Update prod DB
