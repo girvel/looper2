@@ -38,6 +38,13 @@
     - [ ] Display a clickable span like "...228 upcoming"
 - [ ] Gestures (swipe tasks) for phones
 - [ ] Push backup to remote (future)
+- [ ] Expressions like @every(2 days)
+- [ ] bug: :TagRemove on the current empty tag crashes
+- [ ] publish tags (for the wishlist)
+
+## v0.4 Tag ordering
+
+## v0.3.1 A bunch of fixes, clean up the backlog
 
 ## v0.3 Auth & safety
 
