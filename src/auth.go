@@ -2,6 +2,7 @@ package looper2
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,7 @@ func IssueToken(sub, scope string, lifetime int64, key []byte) (string, error) {
 
 // Returns username
 func ValidateToken(token string, key []byte) (string, string, error) {
-	token_parsed, err := jwt.Parse(
+	tokenParsed, err := jwt.Parse(
 		token,
 		func(token *jwt.Token) (any, error) { return key, nil },
 		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
@@ -33,7 +34,7 @@ func ValidateToken(token string, key []byte) (string, string, error) {
 		return "", "", err
 	}
 
-	claims, ok := token_parsed.Claims.(jwt.MapClaims)
+	claims, ok := tokenParsed.Claims.(jwt.MapClaims)
 	if !ok {
 		return "", "", fmt.Errorf("Unable to cast claims")
 	}
@@ -43,12 +44,12 @@ func ValidateToken(token string, key []byte) (string, string, error) {
 		return "", "", fmt.Errorf("No subject in JWT claims")
 	}
 
-	scope_any, ok := claims["scope"]
+	scopeAny, ok := claims["scope"]
 	if !ok {
 		return "", "", fmt.Errorf("scope claim is missing")
 	}
 
-	scope, ok := scope_any.(string)
+	scope, ok := scopeAny.(string)
 	if !ok {
 		return "", "", fmt.Errorf("scope claim should be of type string")
 	}
@@ -58,8 +59,8 @@ func ValidateToken(token string, key []byte) (string, string, error) {
 
 func MatchScope(c *gin.Context, scope string) bool {
 	if scope != "*" {
-		endpoint_scope := c.Request.Method + ":" + c.FullPath()
-		return scope == endpoint_scope
+		endpointScope := strings.TrimSuffix(c.Request.Method + ":" + c.FullPath(), "/")
+		return strings.TrimSuffix(scope, "/") == endpointScope
 	}
 	return true
 }
