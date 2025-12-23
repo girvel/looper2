@@ -63,8 +63,8 @@ Hopefully v0.3.0
     - [x] Auth with `[Enter]`
     - [x] Display wrong user/password pair error
     - [x] Redesign auth page
-- [ ] Special token for iPhone
-    - [ ] Think about how to issue it
+- [x] Special token for iPhone
+    - [x] Think about how to issue it
 - [ ] Backup DB
 - [x] Report errors in UI
 - [ ] Deploy

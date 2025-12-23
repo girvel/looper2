@@ -251,6 +251,7 @@ type authPair struct {
 }
 
 const authLifetime int = 3600 * 24 * 30
+const iphoneAuthLifetime int = 3600 * 24 * 365
 
 func (d Deps) auth(c *gin.Context) error {
 	var pair authPair
@@ -277,6 +278,42 @@ func (d Deps) auth(c *gin.Context) error {
 	}
 
 	token, err := IssueToken(pair.Login, "*", int64(authLifetime), d.Config.AuthKey)
+	if err != nil {
+		return err
+	}
+
+	c.SetCookie("access_token", token, authLifetime, "/", "", d.Config.ReleaseMode, true)
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
+}
+
+func (d Deps) authIphone(c *gin.Context) error {
+	var pair authPair
+	if err := c.BindJSON(&pair); err != nil {
+		return err
+	}
+
+	var password_hashed string
+	err := d.DB.QueryRowContext(c.Request.Context(), `
+		SELECT password_hashed FROM users
+		WHERE user = ?
+	`, pair.Login).Scan(&password_hashed)
+	if err != nil {
+		log.Printf("Wrong user")
+		c.JSON(http.StatusConflict, gin.H{"status": "BAD"})
+		return nil
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(password_hashed), []byte(pair.Password))
+	if err != nil {
+		log.Printf("Wrong password")
+		c.JSON(http.StatusConflict, gin.H{"status": "BAD"})
+		return nil
+	}
+
+	token, err := IssueToken(
+		pair.Login, "POST:/api/tasks", int64(iphoneAuthLifetime), d.Config.AuthKey,
+	)
 	if err != nil {
 		return err
 	}
@@ -354,6 +391,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 	}
 
 	router.POST("/api/auth", wrap(deps.auth))
+	router.POST("/api/auth/iphone", wrap(deps.authIphone))
 	router.POST("/api/auth/register", wrap(deps.register))
 
 	router.GET("/api/healthcheck", deps.healthCheck)
