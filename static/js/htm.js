@@ -1,15 +1,19 @@
 import htm from "/static/lib/htm.min.js";
 
+const properties = new Set(["className", "value", "checked", "disabled"]);
+
 /// Uses className instead of class
 const html = htm.bind((tag, props, ...children) => {
   const element = document.createElement(tag);
   
   if (props) {
-    for (const key in props) {
+    for (const [key, value] in Object.entries[props]) {
       if (key.startsWith("on")) {
-        element.addEventListener(key.substring(2).toLowerCase(), props[key]);
+        element.addEventListener(key.substring(2).toLowerCase(), value);
+      } else if (properties.has(key)) {
+        element[key] = value;
       } else {
-        element[key] = props[key];  // works with className
+        element.setAttribute(key, value);
       }
     }
   }

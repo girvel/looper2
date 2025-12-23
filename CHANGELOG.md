@@ -46,9 +46,9 @@
 
 ## v0.3.1 A bunch of fixes, clean up the backlog
 
-## v0.3 Auth & safety
+## v0.3.0 Auth & safety
 
-Hopefully v0.3.0
+Security milestone: restricts access with a password, provides a daily DB backup logic.
 
 - [x] Auth
     - [x] The page
@@ -68,10 +68,10 @@ Hopefully v0.3.0
 - [x] Backup DB
     - [x] Test the backup script
 - [x] Report errors in UI
-- [ ] Deploy
-    - [ ] Update prod DB
-    - [ ] Test it works
-    - [ ] Test the iphone shortcut works
+- [x] Deploy
+    - [x] Update prod DB
+    - [x] Test it works
+    - [x] Test the iphone shortcut works
 
 ## v0.2.1 (Main features polished)
 
@@ -156,6 +156,7 @@ The most basic thing possible: an editable list of tasks.
 ## Later
 
 - [ ] Go multi-user
+- [ ] Backup cleanup
 - [ ] Editing tags directly (maybe doubleclick?)
     - [ ] `(+)` button
 - [ ] Dim @ directives
