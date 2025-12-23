@@ -10,6 +10,7 @@ docker build --platform linux/amd64 -t $IMAGE_NAME:latest .
 
 echo "Compressing Image..."
 docker save $IMAGE_NAME:latest | gzip > looper-deploy.tar.gz
+trap "rm looper-deploy.tar.gz" EXIT
 
 echo "Uploading Assets..."
 scp looper-deploy.tar.gz .auth-key backup.sh $VPS_USER@$VPS_HOST:~
@@ -36,4 +37,3 @@ ssh $VPS_USER@$VPS_HOST << EOF
 EOF
 
 echo "Deployment Complete!"
-rm looper-deploy.tar.gz  # TODO remove even if failed
