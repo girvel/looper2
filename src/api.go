@@ -276,7 +276,7 @@ func (d Deps) auth(c *gin.Context) error {
 		return nil
 	}
 
-	token, err := IssueToken(pair.Login, int64(authLifetime), d.Config.AuthKey)
+	token, err := IssueToken(pair.Login, "*", int64(authLifetime), d.Config.AuthKey)
 	if err != nil {
 		return err
 	}
@@ -313,11 +313,19 @@ func (d Deps) authRequired(c *gin.Context) error {
 		return nil
 	}
 
-	sub, err := ValidateToken(token, d.Config.AuthKey)
+	sub, scope, err := ValidateToken(token, d.Config.AuthKey)
 	if err != nil {
 		c.SetCookie("access_token", "", -1, "/", "", d.Config.ReleaseMode, true)
 		c.Abort()
 		return err
+	}
+
+	if !MatchScope(c, scope) {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+			"status": "ERROR",
+			"message": "Provided auth token does not allow access to this endpoint",
+		})
+		return nil
 	}
 
 	c.Set("user", sub)

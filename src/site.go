@@ -36,7 +36,8 @@ func (d Deps) index(c *gin.Context) {
 		return
 	}
 
-	if _, err := ValidateToken(token, d.Config.AuthKey); err != nil {
+	_, scope, err := ValidateToken(token, d.Config.AuthKey)
+	if err != nil || !MatchScope(c, scope) {
 		c.Redirect(http.StatusFound, "/auth")
 		return
 	}

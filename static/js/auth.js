@@ -33,6 +33,12 @@ const submit = async () => {
 }
 
 elements.submitButton.addEventListener("click", submit);
+elements.loginField.addEventListener("keydown", async ev => {
+  if (ev.key == "Enter") {
+    elements.passwordField.focus();
+    elements.passwordField.select();
+  }
+})
 elements.passwordField.addEventListener("keydown", async ev => {
   if (ev.key == "Enter") await submit();
 })

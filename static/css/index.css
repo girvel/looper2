@@ -27,6 +27,7 @@
 
 .tag.active {
   opacity: 1;
+  color: #fce566;
 }
 
 #status {
