@@ -2,50 +2,40 @@
 
 ## Queue
 
-- [ ] BIG IDEA: all of tasks is a single file
-- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
-- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
-- [ ] Task ordering
-- [ ] Tag ordering
-- [ ] Tag descriptions
-    - [ ] Editable
-- [ ] Prevent renames w/ unchanged tasks
-- [ ] Move idioms to a separate txt file
-    - [ ] How would it work with build? Maybe a go file with multiline string then?
-- [ ] Removing current tag breaks stuff
 - [ ] Scrollable frame
-- [ ] Clear input button for phones
-- [ ] Splits by 1+ spaces, strip space
-- [ ] Sort by completion time and then ID (front)
-- [ ] Uncomplete tasks
-- [ ] Search
-- [ ] Disallow recreating special tags
-- [ ] Checked checkboxes on iphone don't look right
-- [ ] Disallow space-filled tasks in backend
+- [ ] Search tasks
 - [ ] Safety: async locks for submitInput & changeTask
-- [ ] Cron expressions
-- [ ] Tasks for the future
-    - [ ] Autotags like @tomorrow
-- [ ] binding:"required" for most of DTOs
-- [ ] selected tag should go to URL
-- [ ] disable checkbox hover on phones
-- [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
-- [ ] Don't deploy to ~
-- [ ] Typescript?
-- [ ] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
-- [ ] Display completed tasks on click to "all done"
-    - [ ] Display a clickable span like "...228 upcoming"
-- [ ] Gestures (swipe tasks) for phones
-- [ ] Push backup to remote (future)
-- [ ] Expressions like @every(2 days)
-- [ ] bug: :TagRemove on the current empty tag crashes
-- [ ] publish tags (for the wishlist)
 
 ## v0.4 Tag ordering
 
-## v0.3.1 A bunch of fixes, clean up the backlog
+- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
+- [ ] publish tags (for the wishlist)
+- [ ] Tag descriptions
+    - [ ] Editable
+
+## v0.3.1 UI/UX
 
 - [x] Dim tasks that are moved to another tag, not remove them
+- [x] Uncomplete tasks
+- [x] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
+- [ ] Removing current tag breaks stuff
+    - [ ] bug: :TagRemove on the current empty tag crashes
+- [ ] Disallow recreating special tags
+- [ ] disable checkbox hover on phones
+- [ ] Expressions like @every(2 days)
+- [ ] Cron expressions
+- [ ] Prevent renames w/ unchanged tasks
+- [ ] Display completed tasks on click to "all done"
+    - [ ] Display a clickable span like "...228 upcoming"
+- [ ] Disallow space-filled tasks in backend
+- [ ] binding:"required" for most of DTOs
+- [ ] Move idioms to a separate txt file
+    - [ ] How would it work with build? Maybe a go file with multiline string then?
+- [ ] Checked checkboxes on iphone don't look right
+- [ ] Splits by 1+ spaces, strip space
+- [ ] Clear input button for phones
+- [ ] Sort by completion time and then ID (front)
+- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 
 ## v0.3.0 Auth & safety
 
@@ -153,6 +143,7 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Or just mass actions
 - [ ] Telegram bot to evade DPI
 - [ ] Subtasks
+- [ ] BIG IDEA: all of tasks is a single file
 
 ## Later
 
@@ -165,3 +156,12 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Consider something like pseudo tag `<today>`
 - [ ] RU ui
 - [ ] Consider Ansible for deployment
+- [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
+- [ ] Don't deploy to ~
+- [ ] selected tag should go to URL?
+- [ ] Typescript?
+- [ ] Gestures (swipe tasks) for phones
+- [ ] Push backup to remote
+- [ ] Manual task ordering
+- [ ] Tasks for the future
+    - [ ] Autotags like @tomorrow
