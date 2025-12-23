@@ -154,10 +154,14 @@ input[type="checkbox"]::before {
 input[type="checkbox"]:checked::before {
   content: '[x] ';
   white-space: pre;
-  cursor: default;
 }
 
 input[type="checkbox"]:hover::before {
   content: '[x] ';
+  white-space: pre;
+}
+
+input[type="checkbox"]:checked:hover::before {
+  content: '[ ] ';
   white-space: pre;
 }

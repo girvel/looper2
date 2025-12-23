@@ -99,6 +99,23 @@ func (d Deps) completeTask(c *gin.Context) error {
 	return nil
 }
 
+func (d Deps) resetTask(c *gin.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	_, err = d.DB.Exec(`
+		UPDATE tasks SET completion_time = NULL WHERE id = ? AND user = ?
+	`, id, c.GetString("user"))
+	if err != nil {
+		return err
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+	return nil
+}
+
 func (d Deps) renameTask(c *gin.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -381,6 +398,7 @@ func ApiRoutes(router *gin.Engine, deps *Deps) {
 		tasks.GET("", wrap(deps.getTasks))
 		tasks.POST("", wrap(deps.addTask))
 		tasks.POST("/:id/complete", wrap(deps.completeTask))
+		tasks.POST("/:id/reset", wrap(deps.resetTask))
 		tasks.POST("/:id/rename", wrap(deps.renameTask))
 	}
 
