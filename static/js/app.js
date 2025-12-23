@@ -145,8 +145,7 @@ const App = {
         <input
           type="checkbox"
           checked=${is_completed}
-          disabled=${is_completed}
-          onchange=${async () => this.completeTask(task)}
+          onchange=${async ev => this.completeTask(ev.currentTarget.closest(".task"))}
         />
         ${textarea}
       </div>
@@ -282,18 +281,26 @@ const App = {
     if (response.data.status == "OK") {
       task.text = value;
       if (this.filterTask(task)) {
-        element.classList.remove("punctuation")
+        element.classList.remove("punctuation");
       } else {
-        element.classList.add("punctuation")
+        element.classList.add("punctuation");
       }
     }
   },
 
-  completeTask: async function(task) {
+  completeTask: async function(element) {
+    const task = element._task
     const response = await api.post(`api/tasks/${task.id}/complete`);
     if (response.data.status == "OK") {
       task.completion_time = Date.now() / 1000;
-      this.render();
+      if (this.filterTask(task)) {
+        element.classList.remove("punctuation");
+      } else {
+        element.classList.add("punctuation");
+      }
+
+      const checkbox = element.querySelector('input[type="checkbox"]');
+      checkbox.checked = true;
     }
   },
 
