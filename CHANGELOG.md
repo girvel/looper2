@@ -33,7 +33,6 @@
 - [ ] Don't deploy to ~
 - [ ] Typescript?
 - [ ] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
-- [ ] Dim tasks that are moved to another tag, not remove them
 - [ ] Display completed tasks on click to "all done"
     - [ ] Display a clickable span like "...228 upcoming"
 - [ ] Gestures (swipe tasks) for phones
@@ -45,6 +44,8 @@
 ## v0.4 Tag ordering
 
 ## v0.3.1 A bunch of fixes, clean up the backlog
+
+- [x] Dim tasks that are moved to another tag, not remove them
 
 ## v0.3.0 Auth & safety
 

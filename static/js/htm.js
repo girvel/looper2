@@ -7,10 +7,10 @@ const html = htm.bind((tag, props, ...children) => {
   const element = document.createElement(tag);
   
   if (props) {
-    for (const [key, value] in Object.entries[props]) {
+    for (const [key, value] of Object.entries(props)) {
       if (key.startsWith("on")) {
         element.addEventListener(key.substring(2).toLowerCase(), value);
-      } else if (properties.has(key)) {
+      } else if (properties.has(key) || key.startsWith("_")) {
         element[key] = value;
       } else {
         element.setAttribute(key, value);

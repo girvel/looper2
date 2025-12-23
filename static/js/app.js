@@ -123,13 +123,14 @@ const App = {
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
-      await this.changeTask(task, ev.currentTarget.value);
+      await this.changeTask(ev.currentTarget.closest(".task"), ev.currentTarget.value);
     };
 
     const textarea = html`
       <textarea
         rows="1"
-        onchange=${async ev => this.changeTask(task, ev.currentTarget.value)}
+        onchange=${async ev =>
+          this.changeTask(ev.currentTarget.closest(".task"), ev.currentTarget.value)}
         onkeydown=${handleKeydown}
         oninput=${resizeTextarea}
       >
@@ -140,7 +141,7 @@ const App = {
 
     const is_completed = isCompleted(task);
     const div = html`
-      <div className="task">
+      <div className="task" _task=${task}>
         <input
           type="checkbox"
           checked=${is_completed}
@@ -154,20 +155,20 @@ const App = {
     return div;
   },
 
-  filterTasks: function() {
+  filterTask: function(task) {
     let invert = this.state.current_tag === pseudo_tags.completed;
-    let result = this.state.tasks.filter(task => !isCompleted(task) ^ invert);
+    if (isCompleted(task) ^ invert) return false;
 
     if (this.state.current_tag === pseudo_tags.feed) {
-      result = result.filter(task => !this.state.tags.some(tag => doesTagMatch(tag, task.text)));
+      return !this.state.tags.some(tag => doesTagMatch(tag, task.text));
     } else if (invert) {
     } else if (this.state.current_tag == pseudo_tags.all) {
     } else {
       const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
-      result = result.filter(task => doesTagMatch(tag, task.text));
+      return doesTagMatch(tag, task.text);
     }
 
-    return result;
+    return true;
   },
 
   render: function() {
@@ -179,7 +180,7 @@ const App = {
       ...this.state.tags.map(tag => this.createTag(tag))
     );
 
-    let renderedTasks = this.filterTasks();
+    let renderedTasks = this.state.tasks.filter(task => this.filterTask(task));
     if (renderedTasks.length === 0) {
       elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
     } else {
@@ -274,12 +275,17 @@ const App = {
     this.render();
   },
 
-  changeTask: async function(task, value) {
+  changeTask: async function(element, value) {
     // TODO reset on fail? or dimmed while pending -> normal color
+    const task = element._task;
     const response = await api.post(`api/tasks/${task.id}/rename`, {text: value});
     if (response.data.status == "OK") {
       task.text = value;
-      this.render();
+      if (this.filterTask(task)) {
+        element.classList.remove("punctuation")
+      } else {
+        element.classList.add("punctuation")
+      }
     }
   },
 
