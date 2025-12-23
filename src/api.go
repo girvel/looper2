@@ -334,10 +334,13 @@ func (d Deps) register(c *gin.Context) error {
 		return err
 	}
 
-	d.DB.Exec(`
+	_, err = d.DB.Exec(`
 		INSERT INTO users (user, password_hashed)
 		VALUES (?, ?)
 	`, pair.Login, string(password_hashed))
+	if err != nil {
+		return err
+	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 	return nil

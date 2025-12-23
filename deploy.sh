@@ -28,6 +28,7 @@ ssh $VPS_USER@$VPS_HOST << EOF
         -p 80:8080 \
         -e GIN_MODE=release \
         -v girvel_looper2_db:/app/data \
+        -v /home/girvel/.auth-key:/app/.auth-key \
         looper-vps:latest
 
     rm looper-deploy.tar.gz
@@ -35,4 +36,4 @@ ssh $VPS_USER@$VPS_HOST << EOF
 EOF
 
 echo "Deployment Complete!"
-rm looper-deploy.tar.gz
+rm looper-deploy.tar.gz  # TODO remove even if failed
