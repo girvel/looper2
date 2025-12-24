@@ -57,7 +57,7 @@ func (d Deps) getTasks(c *gin.Context) error {
 }
 
 type taskText struct {
-	Text string `json:"text"`
+	Text string `json:"text" binding:"required"`
 }
 
 func (d Deps) addTask(c *gin.Context) error {
@@ -139,7 +139,7 @@ func (d Deps) renameTask(c *gin.Context) error {
 }
 
 type tag struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 	Subtags []string `json:"subtags"`
 }
 
@@ -234,7 +234,7 @@ func (d Deps) setTag(c *gin.Context) error {
 }
 
 type tagName struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 }
 
 func (d Deps) removeTag(c *gin.Context) error {
