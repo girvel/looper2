@@ -5,6 +5,8 @@
 - [ ] Scrollable frame
 - [ ] Search tasks
 - [ ] Safety: async locks for submitInput & changeTask
+- [ ] Research usability features for iPhone/phones
+- [ ] iPhone shortcut for sharing
 
 ## v0.4 Tag ordering
 
@@ -20,10 +22,12 @@
 - [x] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
 - [ ] Removing current tag breaks stuff
     - [ ] bug: :TagRemove on the current empty tag crashes
-- [ ] Disallow recreating special tags
 - [ ] disable checkbox hover on phones
-- [ ] Expressions like @every(2 days)
-- [ ] Cron expressions
+- [ ] Disallow recreating special tags
+- [ ] Expressions:
+    - [ ] Expressions like @every(2 days)
+    - [ ] Expressions like @every(Friday)
+    - [ ] Cron expressions
 - [ ] Prevent renames w/ unchanged tasks
 - [ ] Display completed tasks on click to "all done"
     - [ ] Display a clickable span like "...228 upcoming"
@@ -36,6 +40,7 @@
 - [ ] Clear input button for phones
 - [ ] Sort by completion time and then ID (front)
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
+- [ ] Write README
 
 ## v0.3.0 Auth & safety
 
