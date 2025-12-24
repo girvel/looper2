@@ -127,11 +127,6 @@ button {
   color: var(--background);
 }
 
-button:hover {
-  background-color: var(--dark1);
-  color: var(--text);
-}
-
 /* GENERATED */
 input[type="checkbox"] {
   appearance: none;
@@ -156,12 +151,19 @@ input[type="checkbox"]:checked::before {
   white-space: pre;
 }
 
-input[type="checkbox"]:hover::before {
-  content: '[x] ';
-  white-space: pre;
-}
+@media (hover: hover) {
+  input[type="checkbox"]:hover::before {
+    content: '[x] ';
+    white-space: pre;
+  }
 
-input[type="checkbox"]:checked:hover::before {
-  content: '[ ] ';
-  white-space: pre;
+  input[type="checkbox"]:checked:hover::before {
+    content: '[ ] ';
+    white-space: pre;
+  }
+
+  button:hover {
+    background-color: var(--dark1);
+    color: var(--text);
+  }
 }
