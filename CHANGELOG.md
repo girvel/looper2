@@ -36,7 +36,7 @@
 - [ ] Move idioms to a separate txt file
     - [ ] How would it work with build? Maybe a go file with multiline string then?
 - [ ] Checked checkboxes on iphone don't look right
-- [ ] Splits by 1+ spaces, strip space
+- [x] Splits by 1+ spaces, strip space
 - [ ] Clear input button for phones
 - [ ] Sort by completion time and then ID (front)
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels

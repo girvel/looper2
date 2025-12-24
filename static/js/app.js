@@ -44,6 +44,10 @@ const resizeTextarea = function() {
 
 const mod = (a, b) => ((a % b) + b) % b;
 
+const tokenize = (str) => {
+  return str.trim().split(/\s+/);
+};
+
 const is_mobile = () => window.innerWidth < 600;
 
 // day means 03:00, week means sunday, month means the first day
@@ -79,7 +83,7 @@ const isCompleted = task => {
 }
 
 const doesTagMatch = (tag, task_text) => {
-  const task_elements = task_text.toLowerCase().split(" ");
+  const task_elements = tokenize(task_text.toLowerCase());
   return task_elements.some(
     e => tag.name.toLowerCase() == e
       || tag.subtags.some(st => st.toLowerCase() == e)
@@ -123,14 +127,13 @@ const App = {
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
-      await this.changeTask(ev.currentTarget.closest(".task"), ev.currentTarget.value);
+      await this.changeTask(div, ev.currentTarget.value);
     };
 
     const textarea = html`
       <textarea
         rows="1"
-        onchange=${async ev =>
-          this.changeTask(ev.currentTarget.closest(".task"), ev.currentTarget.value)}
+        onchange=${async ev => this.changeTask(div, ev.currentTarget.value)}
         onkeydown=${handleKeydown}
         oninput=${resizeTextarea}
       >
@@ -213,7 +216,7 @@ const App = {
     if (value === "") return;
 
     if (value.startsWith(":")) {
-      const args = value.split(" ");
+      const args = tokenize(value);
 
       if (args[0] == ":Tag") {
         const response = await api.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
@@ -232,6 +235,8 @@ const App = {
           elements.input.value = "";
         }
       }
+
+      // TODO error explaining that : means command
 
       return;
     }
