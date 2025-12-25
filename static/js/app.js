@@ -9,18 +9,22 @@ const elements = {
   status: document.getElementById("status"),
 };
 
+const setError = msg => {
+  elements.status.innerText = msg;
+};
+
 const api = Axios.create();
 api.interceptors.response.use(
   response => response,
   error => {
     if (!error.response) {
-      elements.status.innerText = "Connection issues";
+      setError("Connection issues");
     } else {
       const status = error.response.status;
       if (status >= 500) {
-        elements.status.innerText = "Server error";
+        setError("Server error");
       } else if (status >= 400) {
-        elements.status.innerText = "Unknown error";
+        setError("Unknown error");
       }
     }
     return Promise.reject(error);
@@ -174,7 +178,7 @@ const App = {
   },
 
   render: function() {
-    elements.status.innerText = "";
+    setError("");
     elements.tags.replaceChildren(
       this.createTag(pseudo_tags.feed),
       this.createTag(pseudo_tags.completed),
@@ -212,14 +216,22 @@ const App = {
   },
 
   submitInput: async function() {
-    const value = elements.input.value
+    const value = elements.input.value.trim()
     if (value === "") return;
 
     if (value.startsWith(":")) {
       const args = tokenize(value);
 
       if (args[0] == ":Tag") {
-        const response = await api.post("api/tags", {"name": args[1], "subtags": args.slice(2)});
+        const name = args[1]
+        const subtags = args.slice(2)
+
+        if (Object.values(pseudo_tags).includes(name)) {
+          setError("Don't.");
+          return;
+        }
+
+        const response = await api.post("api/tags", {name: name, subtags: subtags});
 
         if (response.data.status === "OK") {
           this.state.tags = (await api.get("/api/tags")).data;
@@ -227,7 +239,7 @@ const App = {
           elements.input.value = "";
         }
       } else if (args[0] == ":TagRemove") {
-        const response = await api.post("api/tags/remove", {"name": args[1]});
+        const response = await api.post("api/tags/remove", {name: args[1]});
 
         if (response.data.status === "OK") {
           this.state.tags = (await api.get("/api/tags")).data;
@@ -268,7 +280,7 @@ const App = {
 
     if (
       unusable_prev && elements.input.value === ""
-        || !unusable_prev && doesTagMatch(prev, elements.input.value)
+      || !unusable_prev && doesTagMatch(prev, elements.input.value)
     ) {
       elements.input.value = unusable_next ? "" : (next.subtags[0] ?? next.name) + " ";
     }

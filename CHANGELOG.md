@@ -22,8 +22,8 @@
 - [x] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
 - [ ] Removing current tag breaks stuff
     - [ ] bug: :TagRemove on the current empty tag crashes
-- [ ] disable checkbox hover on phones
-- [ ] Disallow recreating special tags
+- [x] disable checkbox hover on phones
+- [x] Disallow recreating special tags
 - [ ] Expressions:
     - [ ] Expressions like @every(2 days)
     - [ ] Expressions like @every(Friday)
