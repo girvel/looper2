@@ -25,7 +25,7 @@
 - [x] disable checkbox hover on phones
 - [x] Disallow recreating special tags
 - [ ] Expressions:
-    - [ ] Expressions like @every(2 days)
+    - [x] Expressions like @every(2 days)
     - [ ] Expressions like @every(Friday)
     - [ ] Cron expressions
 - [ ] Prevent renames w/ unchanged tasks
@@ -153,6 +153,7 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Subtasks
 - [ ] BIG IDEA: all of tasks is a single file
 - [ ] Swagger
+- [ ] getActivationTime may have DST issues
 
 ## Later
 

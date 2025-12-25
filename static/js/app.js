@@ -54,29 +54,44 @@ const tokenize = (str) => {
 
 const is_mobile = () => window.innerWidth < 600;
 
+const time_literals = {
+  second: {k: 1, offset: 0},
+  minute: {k: 60, offset: 0},
+  hour: {k: 3600, offset: 0},
+  day: {k: 24 * 3600, offset: 3 * 3600},
+  week: {k: 7 * 24 * 3600, offset: 3 * 3600 + 3 * 24 * 3600},
+  // TODO year, month as special cases
+}
+
+// TODO that is actually testable, I need tests here
+
 // day means 03:00, week means sunday, month means the first day
 const getActivationTime = function(expr) {
-  let date = new Date();
-
-  if (date.getHours() < 3) {
-    date.setDate(date.getDate() - 1);
-  }
-
-  if (expr === "second") {
-    date.setMilliseconds(0);
-  } else if (expr === "day") {
-    date.setHours(3, 0, 0, 0);
-  } else if (expr === "week") {
-    date.setHours(3, 0, 0, 0);
-    date.setDate(date.getDate() - date.getDay());
-  } else if (expr === "month") {
-    date.setHours(3, 0, 0, 0);
-    date.setDate(1);
+  const tokens = tokenize(expr);
+  let n, period;
+  if (tokens.length == 1) {
+    n = 1;
+    period = tokens[0];
+  } else if (tokens.length == 2) {
+    n = Number(tokens[0]);
+    period = tokens[1];
+    if (period.endsWith("s")) {
+      period = period.substring(0, period.length - 1);
+    }
   } else {
     return 0;
   }
 
-  return date.getTime() / 1000;
+  const stats = time_literals[period];
+  if (stats === undefined) return 0;
+
+  const now = new Date();
+  const seconds = now.getTime() / 1000;
+  const tzOffset = now.getTimezoneOffset() * 60;
+  const totalK = stats.k * n;
+  const totalOffset = stats.offset + tzOffset;
+
+  return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset;
 };
 
 const isCompleted = task => {
