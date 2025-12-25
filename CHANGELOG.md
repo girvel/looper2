@@ -31,7 +31,8 @@
 - [ ] Prevent renames w/ unchanged tasks
 - [ ] Display completed tasks on click to "all done"
     - [ ] Display a clickable span like "...228 upcoming"
-- [ ] Disallow space-filled tasks in backend
+- [x] Disallow space-filled tasks in backend
+    - [ ] Error messages in front-end
 - [x] binding:"required" for most of DTOs
 - [ ] Move idioms to a separate txt file
     - [ ] How would it work with build? Maybe a go file with multiline string then?
@@ -42,6 +43,7 @@
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Write README
 - [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
+- [ ] Any unknown @ expression => task does not get completed ever
 
 ## v0.3.0 Auth & safety
 

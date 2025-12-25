@@ -57,13 +57,14 @@ func (d Deps) getTasks(c *gin.Context) error {
 }
 
 type taskText struct {
-	Text string `json:"text" binding:"required"`
+	Text string `json:"text" binding:"notblank"`
 }
 
 func (d Deps) addTask(c *gin.Context) error {
 	var currentTask taskText
 	if err := c.BindJSON(&currentTask); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	result, err := d.DB.Exec(`
@@ -139,7 +140,7 @@ func (d Deps) renameTask(c *gin.Context) error {
 }
 
 type tag struct {
-	Name string `json:"name" binding:"required"`
+	Name string `json:"name" binding:"notblank"`
 	Subtags []string `json:"subtags"`
 }
 
@@ -187,7 +188,8 @@ func (d Deps) getTags(c *gin.Context) error {
 func (d Deps) setTag(c *gin.Context) error {
 	var currentTag tag
 	if err := c.BindJSON(&currentTag); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	tx, err := d.DB.Begin()
@@ -234,13 +236,14 @@ func (d Deps) setTag(c *gin.Context) error {
 }
 
 type tagName struct {
-	Name string `json:"name" binding:"required"`
+	Name string `json:"name" binding:"notblank"`
 }
 
 func (d Deps) removeTag(c *gin.Context) error {
 	var currentTag tagName
 	if err := c.BindJSON(&currentTag); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	_, err := d.DB.Exec(`
@@ -263,8 +266,8 @@ func (d Deps) healthCheck(c *gin.Context) {
 }
 
 type authPair struct {
-	Login string `json:"login" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Login string `json:"login" binding:"notblank"`
+	Password string `json:"password" binding:"notblank"`
 }
 
 const authLifetime int = 3600 * 24 * 30
@@ -273,7 +276,8 @@ const iphoneAuthLifetime int = 3600 * 24 * 365
 func (d Deps) auth(c *gin.Context) error {
 	var pair authPair
 	if err := c.BindJSON(&pair); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	var password_hashed string
@@ -307,7 +311,8 @@ func (d Deps) auth(c *gin.Context) error {
 func (d Deps) authIphone(c *gin.Context) error {
 	var pair authPair
 	if err := c.BindJSON(&pair); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	var password_hashed string
@@ -343,7 +348,8 @@ func (d Deps) authIphone(c *gin.Context) error {
 func (d Deps) register(c *gin.Context) error {
 	var pair authPair
 	if err := c.BindJSON(&pair); err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "ERROR"})
+		return nil
 	}
 
 	password_hashed, err := bcrypt.GenerateFromPassword([]byte(pair.Password), bcrypt.DefaultCost)
