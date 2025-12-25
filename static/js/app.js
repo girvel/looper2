@@ -63,6 +63,12 @@ const time_literals = {
   // TODO year, month as special cases
 }
 
+time_literals.s = time_literals.second
+time_literals.m = time_literals.minute
+time_literals.h = time_literals.hour
+time_literals.d = time_literals.day
+time_literals.w = time_literals.week
+
 // TODO that is actually testable, I need tests here
 
 // day means 03:00, week means sunday, month means the first day
