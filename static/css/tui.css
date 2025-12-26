@@ -125,6 +125,7 @@ button {
   cursor: pointer;
   background-color: var(--text);
   color: var(--background);
+  white-space: pre;
 }
 
 /* GENERATED */

@@ -1,13 +1,3 @@
-.task {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5ch;
-}
-
-.task textarea {
-  background-color: inherit;
-}
-
 #tags {
   display: flex;
   flex-wrap: wrap;
@@ -20,6 +10,11 @@
   text-decoration: none;
 }
 
+.tag.active {
+  opacity: 1;
+  color: #fce566;
+}
+
 @media (hover: hover) {
   .tag:hover {
     opacity: 0.8;
@@ -27,9 +22,35 @@
   }
 }
 
-.tag.active {
-  opacity: 1;
-  color: #fce566;
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5ch;
+}
+
+.task textarea {
+  background-color: inherit;
+}
+
+.input_wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 1ch;
+  width: 100%;
+}
+
+#input {
+  flex-grow: 1;
+}
+
+#input_clear {
+  display: block;
+}
+
+@media (hover: hover) {
+  #input_clear {
+    display: none;
+  }
 }
 
 #status {

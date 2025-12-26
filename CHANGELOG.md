@@ -36,7 +36,7 @@
 - [x] binding:"required" for most of DTOs
 - [x] Checked checkboxes on iphone don't look right
 - [x] Splits by 1+ spaces, strip space
-- [ ] Clear input button for phones
+- [x] Clear input button for phones
 - [x] Sort by completion time and then ID (front)
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Write README

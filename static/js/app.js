@@ -6,6 +6,7 @@ const elements = {
   tasks: document.getElementById("tasks"),
   tags: document.getElementById("tags"),
   input: document.getElementById("input"),
+  input_clear: document.getElementById("input_clear"),
   status: document.getElementById("status"),
 };
 
@@ -395,6 +396,10 @@ const App = {
 
     elements.input.addEventListener("input", resizeTextarea);
     resizeTextarea.call(elements.input);
+
+    elements.input_clear.addEventListener("click", () => {
+      elements.input.value = "";
+    });
   },
 };
 

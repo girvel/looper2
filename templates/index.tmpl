@@ -15,8 +15,17 @@
     </div>
     <br />
 
-    <textarea rows="1" id="input" enterkeyhint="enter" placeholder="{{.Idiom}}" autofocus></textarea>
-    <br /> <br />
+    <div class="input_wrapper">
+        <textarea
+            rows="1"
+            id="input"
+            enterkeyhint="enter"
+            placeholder="{{.Idiom}}"
+            autofocus
+        ></textarea>
+        <button id="input_clear"> ⌫ </button>
+    </div>
+    <br />
     <span id="status"></span>
 
     <script type="module" src="{{.StaticRoot}}/js/index.js"></script>
