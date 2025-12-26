@@ -28,14 +28,12 @@
     - [x] Expressions like @every(2 days)
     - [ ] Expressions like @every(Friday)
     - [ ] Cron expressions
-- [ ] Prevent renames w/ unchanged tasks
+- [x] Prevent renames w/ unchanged tasks
 - [ ] Display completed tasks on click to "all done"
     - [ ] Display a clickable span like "...228 upcoming"
 - [x] Disallow space-filled tasks in backend
     - [ ] Error messages in front-end
 - [x] binding:"required" for most of DTOs
-- [ ] Move idioms to a separate txt file
-    - [ ] How would it work with build? Maybe a go file with multiline string then?
 - [x] Checked checkboxes on iphone don't look right
 - [x] Splits by 1+ spaces, strip space
 - [ ] Clear input button for phones

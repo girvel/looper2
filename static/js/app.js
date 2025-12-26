@@ -315,6 +315,7 @@ const App = {
   changeTask: async function(element, value) {
     // TODO reset on fail? or dimmed while pending -> normal color
     const task = element._task;
+    if (task.text == value) return;
     const response = await api.post(`api/tasks/${task.id}/rename`, {text: value});
     if (response.data.status == "OK") {
       task.text = value;
