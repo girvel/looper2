@@ -61,6 +61,13 @@ const time_literals = {
   hour: {k: 3600, offset: 0},
   day: {k: 24 * 3600, offset: 3 * 3600},
   week: {k: 7 * 24 * 3600, offset: 3 * 3600 + 3 * 24 * 3600},
+  monday:    {k: 7 * 24 * 3600, offset: 3 * 3600 + 4 * 24 * 3600},
+  tuesday:   {k: 7 * 24 * 3600, offset: 3 * 3600 + 5 * 24 * 3600},
+  wednesday: {k: 7 * 24 * 3600, offset: 3 * 3600 + 6 * 24 * 3600},
+  thursday:  {k: 7 * 24 * 3600, offset: 3 * 3600 + 0 * 24 * 3600},
+  friday:    {k: 7 * 24 * 3600, offset: 3 * 3600 + 1 * 24 * 3600},
+  saturday:  {k: 7 * 24 * 3600, offset: 3 * 3600 + 2 * 24 * 3600},
+  sunday:    {k: 7 * 24 * 3600, offset: 3 * 3600 + 3 * 24 * 3600},
   // TODO year, month as special cases
 }
 
@@ -69,12 +76,19 @@ time_literals.m = time_literals.minute
 time_literals.h = time_literals.hour
 time_literals.d = time_literals.day
 time_literals.w = time_literals.week
+time_literals.mon = time_literals.monday
+time_literals.tue = time_literals.tuesday
+time_literals.wed = time_literals.wednesday
+time_literals.thu = time_literals.thursday
+time_literals.fri = time_literals.friday
+time_literals.sat = time_literals.saturday
+time_literals.sun = time_literals.sunday
 
 // TODO that is actually testable, I need tests here
 
 // day means 03:00, week means sunday, month means the first day
 const getActivationTime = function(expr) {
-  const tokens = tokenize(expr);
+  const tokens = tokenize(expr.toLowerCase());
   let n, period;
   if (tokens.length == 1) {
     n = 1;
