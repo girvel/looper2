@@ -207,7 +207,10 @@ const App = {
       ...this.state.tags.map(tag => this.createTag(tag))
     );
 
-    let renderedTasks = this.state.tasks.filter(task => this.filterTask(task));
+    let renderedTasks = this.state.tasks
+      .filter(task => this.filterTask(task))
+      .sort((a, b) => a.completion_time > b.completion_time || a.id > b.id);
+
     if (renderedTasks.length === 0) {
       elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
     } else {

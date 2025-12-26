@@ -37,7 +37,7 @@
 - [x] Checked checkboxes on iphone don't look right
 - [x] Splits by 1+ spaces, strip space
 - [ ] Clear input button for phones
-- [ ] Sort by completion time and then ID (front)
+- [x] Sort by completion time and then ID (front)
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Write README
 - [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
