@@ -7,6 +7,12 @@
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Research usability features for iPhone/phones
 - [ ] iPhone shortcut for sharing
+- [ ] Use nixos for deployment?
+- [ ] Reorganize URLs:
+    girvel.xyz/looper: looper2
+    girvel.xyz/fallen: the game page
+    girvel.xyz/cv: my CV, empty for now
+    girvel.xyz/taste: top of games, cartoons, movies & tv shows
 
 ## v0.4 Tag ordering
 
