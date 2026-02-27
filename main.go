@@ -60,7 +60,7 @@ func init_looper() error {
 		}
 	}
 
-	return router.Run()
+	return router.RunTLS(":8080", "cert.pem", "key.pem")
 }
 
 func main() {

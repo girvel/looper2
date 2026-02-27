@@ -13,7 +13,7 @@ docker save $IMAGE_NAME:latest | gzip > looper-deploy.tar.gz
 trap "rm looper-deploy.tar.gz" EXIT
 
 echo "Uploading Assets..."
-scp looper-deploy.tar.gz .auth-key backup.sh $VPS_USER@$VPS_HOST:~
+scp looper-deploy.tar.gz .auth-key backup.sh cert.pem key.pem $VPS_USER@$VPS_HOST:~
 
 echo "Remote: Loading & Restarting..."
 ssh $VPS_USER@$VPS_HOST << EOF
@@ -26,10 +26,12 @@ ssh $VPS_USER@$VPS_HOST << EOF
     docker run -d \
         --name looper \
         --restart unless-stopped \
-        -p 80:8080 \
+        -p 443:8080 \
         -e GIN_MODE=release \
         -v girvel_looper2_db:/app/data \
         -v /home/girvel/.auth-key:/app/.auth-key \
+        -v /home/girvel/cert.pem:/app/cert.pem \
+        -v /home/girvel/key.pem:/app/key.pem \
         looper-vps:latest
 
     rm looper-deploy.tar.gz

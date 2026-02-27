@@ -1,2 +1,4 @@
 /data
 /.auth-key
+/key.pem
+/cert.pem
