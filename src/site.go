@@ -14,7 +14,7 @@ var idioms []string = []string{
 	"Journal tribe movements",
 	"Wash my pants",
 	"Buy ritual paint (3), rags (3)",
-	"Pratice swordcraft",
+	"Practice swordcraft",
 	"Clean the dungeon",
 	"Send anonymous prank letters to the King",
 	"Hunt",
