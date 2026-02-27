@@ -21,7 +21,6 @@
 ## v0.4 Tag ordering
 
 - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
-- [ ] publish tags (for the wishlist)
 - [ ] Tag descriptions
     - [ ] Editable
 
@@ -51,6 +50,7 @@
 - [x] Splits by 1+ spaces, strip space
 - [x] Clear input button for phones
 - [x] Sort by completion time and then ID (front)
+- [x] Selected tag goes to URL
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Write README
 - [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
@@ -165,6 +165,7 @@ The most basic thing possible: an editable list of tasks.
 - [ ] BIG IDEA: all of tasks is a single file
 - [ ] Swagger
 - [ ] getActivationTime may have DST issues
+- [ ] publish tags (for the wishlist) ??
 
 ## Later
 

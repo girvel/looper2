@@ -135,7 +135,9 @@ const App = {
   state: {
     tasks: [],
     tags: [],
-    current_tag: pseudo_tags.feed,
+    current_tag: window.location.hash != ""
+      ? window.location.hash
+      : pseudo_tags.feed,
   },
 
   // RENDERING //
@@ -312,6 +314,12 @@ const App = {
   },
 
   selectTag: function(tagname) {
+    if (window.location.hash != tagname && tagname[0] == "#") {
+      history.pushState(null, null, tagname);
+    } else {
+      history.pushState(null, null, "/");
+    }
+
     const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
     const unusable_next = Object.values(pseudo_tags).includes(tagname);
     const prev = this.state.tags.find(tag => tag.name == this.state.current_tag);
@@ -413,6 +421,10 @@ const App = {
 
     elements.input_clear.addEventListener("click", () => {
       elements.input.value = "";
+    });
+
+    window.addEventListener("hashchange", () => {
+      this.selectTag(window.location.hash);
     });
   },
 };
