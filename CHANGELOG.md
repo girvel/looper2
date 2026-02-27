@@ -13,6 +13,10 @@
     girvel.xyz/fallen: the game page
     girvel.xyz/cv: my CV, empty for now
     girvel.xyz/taste: top of games, cartoons, movies & tv shows
+- [ ] Unknown command error
+- [ ] Render tasks for printing
+- [ ] Adding tags through a textinput
+- [ ] Selected tag becomes editable
 
 ## v0.4 Tag ordering
 
