@@ -158,7 +158,7 @@ The most basic thing possible: an editable list of tasks.
 
 ## Never
 
-- [ ] Emulate vim text editing: everything is editable; periods are defined through @ and highlighted
+- [ ] Emulate vim text editing: everything is editable
 - [ ] Or just mass actions
 - [ ] Telegram bot to evade DPI
 - [ ] Subtasks
@@ -169,6 +169,10 @@ The most basic thing possible: an editable list of tasks.
 
 ## Later
 
+- [ ] Use one large textbox
+    - [ ] Manual task ordering
+    - [ ] Highlighting periods
+    - [ ] Highlighted & clickable links
 - [ ] Go multi-user
 - [ ] Backup cleanup
 - [ ] Editing tags directly (maybe doubleclick?)
@@ -184,6 +188,5 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Typescript?
 - [ ] Gestures (swipe tasks) for phones
 - [ ] Push backup to remote
-- [ ] Manual task ordering
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
