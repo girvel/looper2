@@ -1,5 +1,6 @@
 import Axios from "/static/lib/axios.min.js";
 import html from "/static/js/htm.js";
+import cronParser from "https://esm.sh/cron-parser@4.9.0";
 
 
 const elements = {
@@ -87,7 +88,7 @@ time_literals.sun = time_literals.sunday
 // TODO that is actually testable, I need tests here
 
 // day means 03:00, week means sunday, month means the first day
-const getActivationTime = function(expr) {
+const getEveryActivationTime = expr => {
   const tokens = tokenize(expr.toLowerCase());
   let n, period;
   if (tokens.length == 1) {
@@ -115,11 +116,30 @@ const getActivationTime = function(expr) {
   return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset;
 };
 
+const getCronActivationTime = expr => {
+  try {
+    const interval = cronParser.parseExpression(expr);
+    return Math.floor(interval.prev().getTime() / 1000);
+  } catch (err) {
+    console.error(err);
+    return 0;
+  }
+};
+
 const isCompleted = task => {
   if (task.completion_time === null) return false;
-  const match = task.text.match(/@every\(([^)]+)\)/);
-  if (!match) return true;
-  return task.completion_time >= getActivationTime(match[1]);
+
+  const everyMatch = task.text.match(/@every\(([^)]+)\)/);
+  if (everyMatch) {
+    return task.completion_time >= getEveryActivationTime(everyMatch[1]);
+  }
+
+  const cronMatch = task.text.match(/@cron\(([^)]+)\)/);
+  if (cronMatch) {
+    return task.completion_time >= getCronActivationTime(cronMatch[1]);
+  }
+
+  return true;
 }
 
 const doesTagMatch = (tag, task_text) => {

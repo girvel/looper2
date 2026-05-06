@@ -36,9 +36,9 @@
 - [ ] Expressions:
     - [x] Expressions like @every(2 days)
     - [x] Expressions like @every(Friday)
+    - [x] Cron expressions
     - [ ] Return @every(month), year
     - [ ] Do @every(3 months)
-    - [ ] Cron expressions
     - [ ] Tests
 - [x] Prevent renames w/ unchanged tasks
 - [ ] Display completed tasks on click to "all done"
