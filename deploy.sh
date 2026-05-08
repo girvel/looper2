@@ -26,7 +26,7 @@ ssh $VPS_USER@$VPS_HOST << EOF
     docker run -d \
         --name looper \
         --restart unless-stopped \
-        -p 443:8080 \
+        -p $VPS_HOST:443:8080 \
         -e GIN_MODE=release \
         -v girvel_looper2_db:/app/data \
         -v /home/girvel/.auth-key:/app/.auth-key \
