@@ -313,6 +313,7 @@ const App = {
         }
       }
       elements.tasks.replaceChildren(...tasks);
+      elements.tasks.scrollTop = elements.tasks.scrollHeight;
     }
   },
 

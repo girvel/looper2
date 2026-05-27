@@ -2,7 +2,6 @@
 
 ## Queue
 
-- [ ] Scrollable frame
 - [ ] Search tasks
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Research usability features for iPhone/phones
@@ -11,6 +10,7 @@
     girvel.xyz/fallen: the game page
     girvel.xyz/cv: my CV, empty for now
     girvel.xyz/taste: top of games, cartoons, movies & tv shows
+- [x] Scrollable frame
 - [x] Selected tag becomes editable
     - [x] `(+)` button
     - [ ] Removing tags by erasing them
