@@ -419,20 +419,18 @@ const App = {
       setError("Tag name should not be empty");
       return;
     }
-    if (new_name != tagname) {
-      setError("Tag rename not yet implemented");
-      return;
-    }
 
     const subtags = args.slice(1);
-    const response = await api.post("api/tags", {name: new_name, subtags: subtags});
-    // TODO handle errors?
-
-    if (response.data.status === "OK") {
-      this.state.tags = (await api.get("/api/tags")).data;
-      this.render();
-      elements.input.value = "";
+    if (new_name != tagname) {
+      await api.post("api/tags/remove", {name: tagname});
+      await api.post("api/tags", {name: new_name, subtags: subtags});
+      this.state.current_category = new_name;
+    } else {
+      await api.post("api/tags", {name: new_name, subtags: subtags});
     }
+
+    this.state.tags = (await api.get("/api/tags")).data;
+    this.render();
   },
 
   toggleTask: async function(element) {

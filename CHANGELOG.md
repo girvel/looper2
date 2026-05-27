@@ -6,8 +6,6 @@
 - [ ] Search tasks
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Research usability features for iPhone/phones
-- [ ] iPhone shortcut for sharing
-- [ ] Use nixos for deployment?
 - [ ] Reorganize URLs:
     girvel.xyz/looper: looper2
     girvel.xyz/fallen: the game page
@@ -16,7 +14,8 @@
 - [ ] Unknown command error
 - [ ] Render tasks for printing
 - [ ] Adding tags through a textinput
-- [ ] Selected tag becomes editable
+- [x] Selected tag becomes editable
+- [x] iPhone shortcut for sharing
 
 ## v0.4 Tag ordering
 
@@ -39,7 +38,7 @@
     - [x] Cron expressions
 - [x] Prevent renames w/ unchanged tasks
 - [ ] Display completed tasks on click to "all done"
-    - [ ] Display a clickable span like "...228 upcoming"
+- [x] Display a clickable span like "...228 upcoming"
 - [x] Disallow space-filled tasks in backend
     - [ ] Error messages in front-end
 - [x] binding:"required" for most of DTOs
