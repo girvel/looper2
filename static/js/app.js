@@ -156,9 +156,10 @@ const App = {
   state: {
     tasks: [],
     tags: [],
-    current_category: window.location.hash != ""
+    currentCategory: window.location.hash != ""
       ? window.location.hash
       : pseudo_tags.feed,
+    displayCompleted: false,
   },
 
   // RENDERING //
@@ -176,7 +177,7 @@ const App = {
       }
     }
 
-    if (this.state.current_category != name) {
+    if (this.state.currentCategory != name) {
       return html`
         <span
           className="tag"
@@ -253,21 +254,22 @@ const App = {
   doesCategoryMatch: function(tag, task_text) {
     if (tag === pseudo_tags.feed) {
       return !this.state.tags.some(tag => doesTagMatch(tag, task_text));
-    } else if (this.state.current_category === pseudo_tags.all) {
+    } else if (this.state.currentCategory === pseudo_tags.all) {
       return true;
-    } else if (this.state.current_category === pseudo_tags.add) {
+    } else if (this.state.currentCategory === pseudo_tags.add) {
       return false;
     } else {
-      const tag = this.state.tags.find(tag => tag.name === this.state.current_category);
+      const tag = this.state.tags.find(tag => tag.name === this.state.currentCategory);
       return doesTagMatch(tag, task_text);
     }
   },
 
   filterTask: function(task) {
-    return !isCompleted(task) && this.doesCategoryMatch(this.state.current_category, task.text);
+    return !isCompleted(task) && this.doesCategoryMatch(this.state.currentCategory, task.text);
   },
 
-  render: function(display_completed) {
+  render: function(displayCompleted) {
+    this.state.displayCompleted = displayCompleted || false;
     setError("");
     elements.tags.replaceChildren(
       this.createCategory(pseudo_tags.feed),
@@ -277,8 +279,8 @@ const App = {
     );
 
     let renderedTasks = this.state.tasks
-      .filter(task => this.doesCategoryMatch(this.state.current_category, task.text));
-    if (!display_completed) {
+      .filter(task => this.doesCategoryMatch(this.state.currentCategory, task.text));
+    if (!displayCompleted) {
       renderedTasks = renderedTasks
         .filter(task => !isCompleted(task));
     }
@@ -290,16 +292,16 @@ const App = {
       });
 
     if (renderedTasks.length === 0) {
-      if (this.state.current_category === pseudo_tags.add) {
-        elements.tasks.innerHTML = `<span class="punctuation">(Type the new tag's name)</span>`
+      if (this.state.currentCategory === pseudo_tags.add) {
+        elements.tasks.innerHTML = ""
       } else {
         elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
       }
     } else {
       let tasks = renderedTasks.map(task => this.createTask(task));
-      if (!display_completed) {
+      if (!displayCompleted) {
         let count = this.state.tasks
-          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.current_category, t.text))
+          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.currentCategory, t.text))
           .length;
         if (count > 0) {
           tasks.splice(0, 0, html`
@@ -378,9 +380,9 @@ const App = {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
 
-      const unusable_tag = Object.values(pseudo_tags).includes(this.state.current_category);
+      const unusable_tag = Object.values(pseudo_tags).includes(this.state.currentCategory);
       if (!unusable_tag) {
-        const tag = this.state.tags.find(tag => tag.name == this.state.current_category);
+        const tag = this.state.tags.find(tag => tag.name == this.state.currentCategory);
         if (doesTagMatch(tag, value)) {
           elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
         } else {
@@ -399,9 +401,9 @@ const App = {
       history.pushState(null, null, "/");
     }
 
-    const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_category);
+    const unusable_prev = Object.values(pseudo_tags).includes(this.state.currentCategory);
     const unusable_next = Object.values(pseudo_tags).includes(tagname);
-    const prev = this.state.tags.find(tag => tag.name == this.state.current_category);
+    const prev = this.state.tags.find(tag => tag.name == this.state.currentCategory);
     const next = this.state.tags.find(tag => tag.name == tagname);
 
     if (
@@ -413,7 +415,7 @@ const App = {
 
     if (!is_mobile()) elements.input.focus();
 
-    this.state.current_category = tagname;
+    this.state.currentCategory = tagname;
     this.render();
   },
 
@@ -449,7 +451,7 @@ const App = {
     if (new_name != tagname) {
       await api.post("api/tags/remove", {name: tagname});
       await api.post("api/tags", {name: new_name, subtags: subtags});
-      this.state.current_category = new_name;
+      this.state.currentCategory = new_name;
     } else {
       await api.post("api/tags", {name: new_name, subtags: subtags});
     }
@@ -473,7 +475,7 @@ const App = {
 
     const subtags = args.slice(1);
     await api.post("api/tags", {name: name, subtags: subtags});
-    this.state.current_category = name;
+    this.state.currentCategory = name;
 
     this.state.tags = (await api.get("/api/tags")).data;
     this.render();
@@ -491,7 +493,7 @@ const App = {
     if (response.data.status != "OK") return;
 
     task.completion_time = completed ? Date.now() / 1000 : "reset";
-    if (this.filterTask(task) == completed) {
+    if (this.state.displayCompleted || !completed) {
       element.classList.remove("punctuation");
     } else {
       element.classList.add("punctuation");
