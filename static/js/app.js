@@ -118,13 +118,14 @@ const getEveryActivationTime = expr => {
   return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset;
 };
 
-const getCronActivationTime = expr => {
+const getCronNextTime = (expr, completionTime) => {
   try {
-    const interval = cronParser.parseExpression(expr);
-    return Math.floor(interval.prev().getTime() / 1000);
+    let interval = cronParser.parseExpression(expr, {currentDate: new Date(completionTime * 1000)});
+    return Math.floor(interval.next().getTime() / 1000);
   } catch (err) {
+    console.error(err);
     console.log(`Cron expression "${expr}" is invalid`);
-    return new Date().getTime() / 1000;
+    return Date.now() / 1000;
   }
 };
 
@@ -138,7 +139,7 @@ const isCompleted = task => {
 
   const cronMatch = task.text.match(/@cron\(([^)]+)\)/);
   if (cronMatch) {
-    return task.completion_time >= getCronActivationTime(cronMatch[1]);
+    return Date.now() / 1000 <= getCronNextTime(cronMatch[1], task.completion_time);
   }
 
   return true;
@@ -298,11 +299,25 @@ const App = {
           && t.text.match(/\@/));
     }
 
+    let areCompleted = new Map();
+    for (let task of renderedTasks) {
+      areCompleted.set(task, isCompleted(task));
+    }
+
     renderedTasks = renderedTasks
       .sort((a, b) => {
-        const a_time = a.completion_time ?? Infinity;
-        const b_time = b.completion_time ?? Infinity;
-        return isCompleted(a) < isCompleted(b) || a_time > b_time || a.id > b.id;
+        const aCompleted = areCompleted.get(a);
+        if (aCompleted !== areCompleted.get(b)) {
+          return aCompleted ? -1 : 1;
+        }
+
+        const aTime = a.completion_time ?? Infinity;
+        const bTime = b.completion_time ?? Infinity;
+        if (aTime !== bTime) {
+          return aTime - bTime;
+        }
+
+        return a.id > b.id;
       });
 
     if (renderedTasks.length === 0) {

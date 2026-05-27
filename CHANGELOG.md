@@ -21,6 +21,7 @@
 ## v0.3.1 UI/UX
 
 - [ ] -- all done -- + schedule
+- [ ] Cron is slow and not vendored
 - [x] See schedule button
 - [x] Write README
 - [x] Catch error on renaming tasks to empty
