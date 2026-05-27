@@ -187,3 +187,4 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Safety: async locks for submitInput & changeTask
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Bug: tags that do not start with # don't go to URL
+- [ ] Validate expressions before adding/changing tasks

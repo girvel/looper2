@@ -222,7 +222,13 @@ const App = {
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
-      await this.changeTask(div, ev.currentTarget.value);
+      try {
+        await this.changeTask(div, ev.currentTarget.value);
+      } catch (error) {
+        if (error.status === 400) {
+          setError("Invalid task");
+        }
+      }
     };
 
     const textarea = html`
