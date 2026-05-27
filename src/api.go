@@ -149,6 +149,7 @@ func (d Deps) getTags(c *gin.Context) error {
 		SELECT tags.name, subtags.name FROM tags
 		LEFT JOIN subtags ON tags.id = subtags.tag_id
 		WHERE tags.user = ?
+		ORDER BY subtags.id ASC
 	`, c.GetString("user"))
 	if err != nil {
 		return err

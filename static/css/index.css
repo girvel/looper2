@@ -10,9 +10,9 @@
   text-decoration: none;
 }
 
-.tag.active {
-  opacity: 1;
+.active_tag {
   color: #fce566;
+  display: inline-block;
 }
 
 @media (hover: hover) {

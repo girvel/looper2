@@ -33,10 +33,6 @@ api.interceptors.response.use(
   },
 );
 
-const literals = {
-  no_subtags: "<no subtags>",
-};
-
 // tags + pseudo tags = categories
 const pseudo_tags = {
   feed: "<feed>",
@@ -47,6 +43,10 @@ const resizeTextarea = function() {
   this.style.height = "auto";  // Reset to calculate shrinkage
   this.style.height = this.scrollHeight + "px";
 };
+
+const resizeInputText = function() {
+  this.size = Math.max(3, this.value.length);
+}
 
 const mod = (a, b) => ((a % b) + b) % b;
 
@@ -163,26 +163,39 @@ const App = {
   // RENDERING //
 
   createCategory: function(tag) {
-    let name, title
-    if (Object.values(pseudo_tags).includes(tag)) {
-      name = tag;
-      title = "";
-    } else {
-      name = tag.name;
-      title = tag.subtags.length === 0
-        ? literals.no_subtags
-        : tag.subtags.join(" ");
+    const is_pseudo_tag = Object.values(pseudo_tags).includes(tag);
+    const name = is_pseudo_tag ? tag : tag.name;
+    const expanded_name = is_pseudo_tag
+      ? tag
+      : `${tag.name} ${tag.subtags.join(" ")}`
+
+    if (this.state.current_category != name) {
+      return html`
+        <span
+          className="tag"
+          title=${expanded_name}
+          onclick=${() => this.selectCategory(name)}
+        >
+          ${name}
+        </span>
+      `;
     }
 
-    return html`
-      <span
-        className="tag ${this.state.current_category === name ? 'active' : ''}"
-        title=${title}
-        onclick=${() => this.selectCategory(name)}
-      >
-        ${name}
-      </span>
+    let input = html`
+      <input
+        type="text"
+        class="active_tag"
+        rows="1"
+        value=${expanded_name}
+        size=${expanded_name.length}
+        disabled=${is_pseudo_tag}
+        oninput=${resizeInputText}
+      />
     `;
+    if (!is_pseudo_tag) {
+      input.onchange = async ev => this.changeTag(tag.name, ev.currentTarget.value);
+    }
+    return input;
   },
 
   createTask: function(task) {
@@ -305,8 +318,8 @@ const App = {
       const args = tokenize(value);
 
       if (args[0] == ":Tag") {
-        const name = args[1]
-        const subtags = args.slice(2)
+        const name = args[1];
+        const subtags = args.slice(2);
 
         if (Object.values(pseudo_tags).includes(name)) {
           setError("Don't.");
@@ -391,6 +404,34 @@ const App = {
       } else {
         element.classList.add("punctuation");
       }
+    }
+  },
+
+  changeTag: async function(tagname, expr) {
+    const args = tokenize(expr);
+    if (!args.every(a => !Object.values(pseudo_tags).includes(a))) {
+      setError("Don't.");
+      return;
+    }
+
+    const new_name = args[0];
+    if (new_name.length === 0) {
+      setError("Tag name should not be empty");
+      return;
+    }
+    if (new_name != tagname) {
+      setError("Tag rename not yet implemented");
+      return;
+    }
+
+    const subtags = args.slice(1);
+    const response = await api.post("api/tags", {name: new_name, subtags: subtags});
+    // TODO handle errors?
+
+    if (response.data.status === "OK") {
+      this.state.tags = (await api.get("/api/tags")).data;
+      this.render();
+      elements.input.value = "";
     }
   },
 
