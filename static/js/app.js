@@ -123,8 +123,8 @@ const getCronActivationTime = expr => {
     const interval = cronParser.parseExpression(expr);
     return Math.floor(interval.prev().getTime() / 1000);
   } catch (err) {
-    console.error(err);
-    return 0;
+    console.log(`Cron expression "${expr}" is invalid`);
+    return new Date().getTime() / 1000;
   }
 };
 

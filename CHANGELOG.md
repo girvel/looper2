@@ -20,10 +20,12 @@
 
 ## v0.3.1 UI/UX
 
-- [x] Disallow space-filled tasks in backend
-    - [ ] Error messages in front-end
+- [ ] See schedule button
+- [ ] Catch error on renaming tasks to empty
 - [ ] Write README
-- [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
+- [x] Disallow space-filled tasks in backend
+    - [x] Error messages in front-end
+- [x] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
 - [x] Dim tasks that are moved to another tag, not remove them
 - [x] Uncomplete tasks
 - [x] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
