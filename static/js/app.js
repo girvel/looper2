@@ -160,7 +160,7 @@ const App = {
     currentCategory: window.location.hash != ""
       ? window.location.hash
       : pseudo_tags.feed,
-    displayCompleted: false,
+    displayMode: undefined,
   },
 
   // RENDERING //
@@ -275,8 +275,8 @@ const App = {
     return !isCompleted(task) && this.doesCategoryMatch(this.state.currentCategory, task.text);
   },
 
-  render: function(displayCompleted) {
-    this.state.displayCompleted = displayCompleted || false;
+  render: function(displayMode) {
+    this.state.displayMode = displayMode;
     setError("");
     elements.tags.replaceChildren(
       this.createCategory(pseudo_tags.feed),
@@ -285,12 +285,19 @@ const App = {
       this.createCategory(pseudo_tags.add),
     );
 
-    let renderedTasks = this.state.tasks
-      .filter(task => this.doesCategoryMatch(this.state.currentCategory, task.text));
-    if (!displayCompleted) {
+    let renderedTasks = this.state.tasks;
+
+    if (displayMode === null) {
+      renderedTasks = renderedTasks.filter(this.filterTask);
+    } else if (displayMode === "completed") {
       renderedTasks = renderedTasks
-        .filter(task => !isCompleted(task));
+        .filter(t => this.doesCategoryMatch(this.state.currentCategory, t.text));
+    } else {
+      renderedTasks = renderedTasks
+        .filter(t => this.doesCategoryMatch(this.state.currentCategory, t.text)
+          && t.text.match(/\@/));
     }
+
     renderedTasks = renderedTasks
       .sort((a, b) => {
         const a_time = a.completion_time ?? Infinity;
@@ -311,16 +318,28 @@ const App = {
       }
     } else {
       let tasks = renderedTasks.map(task => this.createTask(task));
-      if (!displayCompleted) {
-        let count = this.state.tasks
+      if (displayMode === undefined) {
+        let completedCount = this.state.tasks
           .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.currentCategory, t.text))
           .length;
-        if (count > 0) {
+        let scheduledCount = this.state.tasks
+          .filter(t => this.doesCategoryMatch(this.state.currentCategory, t.text)
+            && t.text.match(/\@/))
+          .length;
+
+        if (completedCount > 0 || scheduledCount > 0) {
           tasks.splice(0, 0, html`
-            <span
-              class="punctuation button"
-              onclick=${() => this.render(true)}
-            >...${count} completed</span>
+            <div>
+              <span
+                class="punctuation button"
+                onclick=${() => this.render("completed")}
+              >...${completedCount} completed</span>
+              <span class="punctuation">, </span>
+              <span
+                class="punctuation button"
+                onclick=${() => this.render("scheduled")}
+              >${scheduledCount} scheduled</span>
+            </div>
           `)
         }
       }
@@ -504,7 +523,7 @@ const App = {
     if (response.data.status != "OK") return;
 
     task.completion_time = completed ? Date.now() / 1000 : "reset";
-    if (this.state.displayCompleted || !completed) {
+    if (this.state.displayMode !== undefined || !completed) {
       element.classList.remove("punctuation");
     } else {
       element.classList.add("punctuation");

@@ -20,7 +20,8 @@
 
 ## v0.3.1 UI/UX
 
-- [ ] See schedule button
+- [ ] -- all done -- + schedule
+- [x] See schedule button
 - [x] Write README
 - [x] Catch error on renaming tasks to empty
 - [x] Disallow space-filled tasks in backend
