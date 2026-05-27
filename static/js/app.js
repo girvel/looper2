@@ -366,9 +366,9 @@ const App = {
           this.render();
           elements.input.value = "";
         }
+      } else {
+        setError(`Unknown command "${args[0]}"; any input starting with ":" is a command, btw.`);
       }
-
-      // TODO error explaining that : means command
 
       return;
     }
