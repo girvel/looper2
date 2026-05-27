@@ -37,6 +37,7 @@ api.interceptors.response.use(
 const pseudo_tags = {
   feed: "<feed>",
   all: "<all>",
+  add: "(+)",
 }
 
 const resizeTextarea = function() {
@@ -163,17 +164,23 @@ const App = {
   // RENDERING //
 
   createCategory: function(tag) {
-    const is_pseudo_tag = Object.values(pseudo_tags).includes(tag);
-    const name = is_pseudo_tag ? tag : tag.name;
-    const expanded_name = is_pseudo_tag
-      ? tag
-      : `${tag.name} ${tag.subtags.join(" ")}`
+    const isPseudoTag = Object.values(pseudo_tags).includes(tag);
+    const name = isPseudoTag ? tag : tag.name;
+    let expandedName;
+    if (isPseudoTag) {
+      expandedName = tag;
+    } else {
+      expandedName = tag.name;
+      if (tag.subtags.length > 0) {
+        expandedName += " " + tag.subtags.join(" ");
+      }
+    }
 
     if (this.state.current_category != name) {
       return html`
         <span
           className="tag"
-          title=${expanded_name}
+          title=${expandedName}
           onclick=${() => this.selectCategory(name)}
         >
           ${name}
@@ -186,15 +193,26 @@ const App = {
         type="text"
         class="active_tag"
         rows="1"
-        value=${expanded_name}
-        size=${expanded_name.length}
-        disabled=${is_pseudo_tag}
+        disabled=${isPseudoTag && tag !== pseudo_tags.add}
         oninput=${resizeInputText}
       />
     `;
-    if (!is_pseudo_tag) {
+
+    if (!isPseudoTag) {
       input.onchange = async ev => this.changeTag(tag.name, ev.currentTarget.value);
     }
+
+    if (tag === pseudo_tags.add) {
+      input.value = "";
+      input.placeholder = "#tag subtag1 subtag2";
+      input.size = input.placeholder.length;
+      setTimeout(() => input.focus(), 0);
+      input.onchange = async ev => this.addTag(ev.currentTarget.value);
+    } else {
+      input.value = expandedName;
+      input.size = expandedName.length;
+    }
+
     return input;
   },
 
@@ -235,10 +253,12 @@ const App = {
   doesCategoryMatch: function(tag, task_text) {
     if (tag === pseudo_tags.feed) {
       return !this.state.tags.some(tag => doesTagMatch(tag, task_text));
-    } else if (this.state.current_category == pseudo_tags.all) {
+    } else if (this.state.current_category === pseudo_tags.all) {
       return true;
+    } else if (this.state.current_category === pseudo_tags.add) {
+      return false;
     } else {
-      const tag = this.state.tags.find(tag => tag.name == this.state.current_category);
+      const tag = this.state.tags.find(tag => tag.name === this.state.current_category);
       return doesTagMatch(tag, task_text);
     }
   },
@@ -252,7 +272,8 @@ const App = {
     elements.tags.replaceChildren(
       this.createCategory(pseudo_tags.feed),
       this.createCategory(pseudo_tags.all),
-      ...this.state.tags.map(tag => this.createCategory(tag))
+      ...this.state.tags.map(tag => this.createCategory(tag)),
+      this.createCategory(pseudo_tags.add),
     );
 
     let renderedTasks = this.state.tasks
@@ -269,7 +290,11 @@ const App = {
       });
 
     if (renderedTasks.length === 0) {
-      elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
+      if (this.state.current_category === pseudo_tags.add) {
+        elements.tasks.innerHTML = `<span class="punctuation">(Type the new tag's name)</span>`
+      } else {
+        elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
+      }
     } else {
       let tasks = renderedTasks.map(task => this.createTask(task));
       if (!display_completed) {
@@ -428,6 +453,27 @@ const App = {
     } else {
       await api.post("api/tags", {name: new_name, subtags: subtags});
     }
+
+    this.state.tags = (await api.get("/api/tags")).data;
+    this.render();
+  },
+
+  addTag: async function(expr) {
+    const args = tokenize(expr);
+    if (!args.every(a => !Object.values(pseudo_tags).includes(a))) {
+      setError("Don't.");
+      return;
+    }
+
+    const name = args[0];
+    if (name.length === 0) {
+      setError("Tag name should not be empty");
+      return;
+    }
+
+    const subtags = args.slice(1);
+    await api.post("api/tags", {name: name, subtags: subtags});
+    this.state.current_category = name;
 
     this.state.tags = (await api.get("/api/tags")).data;
     this.render();

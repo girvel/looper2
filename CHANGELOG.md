@@ -12,9 +12,9 @@
     girvel.xyz/cv: my CV, empty for now
     girvel.xyz/taste: top of games, cartoons, movies & tv shows
 - [ ] Unknown command error
-- [ ] Render tasks for printing
-- [ ] Adding tags through a textinput
+- [ ] Bug: completing a task when displaying completed tasks makes it opaque
 - [x] Selected tag becomes editable
+    - [x] `(+)` button
 - [x] iPhone shortcut for sharing
 
 ## v0.4 Tag ordering
@@ -171,8 +171,6 @@ The most basic thing possible: an editable list of tasks.
     - [ ] Highlighted & clickable links
 - [ ] Go multi-user
 - [ ] Backup cleanup
-- [ ] Editing tags directly (maybe doubleclick?)
-    - [ ] `(+)` button
 - [ ] Dim @ directives
 - [ ] Disable autofocus on #input for Android
 - [ ] Consider something like pseudo tag `<today>`
@@ -180,9 +178,10 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Consider Ansible for deployment
 - [ ] Don't fetch ALL the tasks (only with @ or no completion date or completed in the last month?)
 - [ ] Don't deploy to ~
-- [ ] selected tag should go to URL?
 - [ ] Typescript?
 - [ ] Gestures (swipe tasks) for phones
 - [ ] Push backup to remote
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
+- [ ] Render tasks for printing
+- [x] selected tag should go to URL?
