@@ -1,10 +1,10 @@
 # Looper
 
-![logo.png]
+![](logo.png)
 
 Personal webapp to manage repetitive tasks & spontaneous ideas.
 
-![screenshot.png]
+![](screenshot.png)
 
 ## Why?
 
