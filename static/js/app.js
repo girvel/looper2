@@ -37,9 +37,9 @@ const literals = {
   no_subtags: "<no subtags>",
 };
 
+// tags + pseudo tags = categories
 const pseudo_tags = {
   feed: "<feed>",
-  completed: "<completed>",
   all: "<all>",
 }
 
@@ -155,7 +155,7 @@ const App = {
   state: {
     tasks: [],
     tags: [],
-    current_tag: window.location.hash != ""
+    current_category: window.location.hash != ""
       ? window.location.hash
       : pseudo_tags.feed,
   },
@@ -176,9 +176,9 @@ const App = {
 
     return html`
       <span
-        className="tag ${this.state.current_tag === name ? 'active' : ''}"
+        className="tag ${this.state.current_category === name ? 'active' : ''}"
         title=${title}
-        onclick=${() => this.selectTag(name)}
+        onclick=${() => this.selectCategory(name)}
       >
         ${name}
       </span>
@@ -219,27 +219,25 @@ const App = {
     return div;
   },
 
-  filterTask: function(task) {
-    let invert = this.state.current_tag === pseudo_tags.completed;
-    if (isCompleted(task) ^ invert) return false;
-
-    if (this.state.current_tag === pseudo_tags.feed) {
-      return !this.state.tags.some(tag => doesTagMatch(tag, task.text));
-    } else if (invert) {
-    } else if (this.state.current_tag == pseudo_tags.all) {
+  doesCategoryMatch: function(tag, task_text) {
+    if (tag === pseudo_tags.feed) {
+      return !this.state.tags.some(tag => doesTagMatch(tag, task_text));
+    } else if (this.state.current_category == pseudo_tags.all) {
+      return true;
     } else {
-      const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
-      return doesTagMatch(tag, task.text);
+      const tag = this.state.tags.find(tag => tag.name == this.state.current_category);
+      return doesTagMatch(tag, task_text);
     }
+  },
 
-    return true;
+  filterTask: function(task) {
+    return !isCompleted(task) && this.doesCategoryMatch(this.state.current_category, task.text);
   },
 
   render: function() {
     setError("");
     elements.tags.replaceChildren(
       this.createTag(pseudo_tags.feed),
-      this.createTag(pseudo_tags.completed),
       this.createTag(pseudo_tags.all),
       ...this.state.tags.map(tag => this.createTag(tag))
     );
@@ -251,7 +249,14 @@ const App = {
     if (renderedTasks.length === 0) {
       elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
     } else {
-      elements.tasks.replaceChildren(...renderedTasks.map(task => this.createTask(task)));
+      let tasks = renderedTasks.map(task => this.createTask(task));
+      let count = this.state.tasks
+        .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.current_category, t.text))
+        .length;
+      if (count > 0) {
+        tasks.splice(0, 0, html`<span class="punctuation">...${count} completed</span>`)
+      }
+      elements.tasks.replaceChildren(...tasks);
     }
   },
 
@@ -319,9 +324,9 @@ const App = {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
 
-      const unusable_tag = Object.values(pseudo_tags).includes(this.state.current_tag);
+      const unusable_tag = Object.values(pseudo_tags).includes(this.state.current_category);
       if (!unusable_tag) {
-        const tag = this.state.tags.find(tag => tag.name == this.state.current_tag);
+        const tag = this.state.tags.find(tag => tag.name == this.state.current_category);
         if (doesTagMatch(tag, value)) {
           elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
         } else {
@@ -333,16 +338,16 @@ const App = {
     }
   },
 
-  selectTag: function(tagname) {
+  selectCategory: function(tagname) {
     if (window.location.hash != tagname && tagname[0] == "#") {
       history.pushState(null, null, tagname);
     } else {
       history.pushState(null, null, "/");
     }
 
-    const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_tag);
+    const unusable_prev = Object.values(pseudo_tags).includes(this.state.current_category);
     const unusable_next = Object.values(pseudo_tags).includes(tagname);
-    const prev = this.state.tags.find(tag => tag.name == this.state.current_tag);
+    const prev = this.state.tags.find(tag => tag.name == this.state.current_category);
     const next = this.state.tags.find(tag => tag.name == tagname);
 
     if (
@@ -354,7 +359,7 @@ const App = {
 
     if (!is_mobile()) elements.input.focus();
 
-    this.state.current_tag = tagname;
+    this.state.current_category = tagname;
     this.render();
   },
 
@@ -444,7 +449,7 @@ const App = {
     });
 
     window.addEventListener("hashchange", () => {
-      this.selectTag(window.location.hash);
+      this.selectCategory(window.location.hash);
     });
   },
 };
