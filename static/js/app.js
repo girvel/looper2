@@ -443,13 +443,11 @@ const App = {
     }
 
     const new_name = args[0];
-    if (new_name.length === 0) {
-      setError("Tag name should not be empty");
-      return;
-    }
-
     const subtags = args.slice(1);
-    if (new_name != tagname) {
+    if (new_name.length === 0) {
+      await api.post("api/tags/remove", {name: tagname});
+      this.state.currentCategory = pseudo_tags.feed;
+    } else if (new_name != tagname) {
       await api.post("api/tags/remove", {name: tagname});
       await api.post("api/tags", {name: new_name, subtags: subtags});
       this.state.currentCategory = new_name;

@@ -10,10 +10,10 @@
     girvel.xyz/fallen: the game page
     girvel.xyz/cv: my CV, empty for now
     girvel.xyz/taste: top of games, cartoons, movies & tv shows
-- [x] Scrollable frame
 - [x] Selected tag becomes editable
     - [x] `(+)` button
-    - [ ] Removing tags by erasing them
+    - [x] Removing tags by erasing them
+- [x] Scrollable frame
 - [x] Bug: completing a task when displaying completed tasks makes it opaque
 - [x] Unknown command error
 - [x] iPhone shortcut for sharing
