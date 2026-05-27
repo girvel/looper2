@@ -90,6 +90,9 @@ time_literals.sun = time_literals.sunday
 
 // day means 03:00, week means sunday, month means the first day
 const getEveryActivationTime = expr => {
+  const now = new Date();
+  const seconds = now.getTime() / 1000;
+
   const tokens = tokenize(expr.toLowerCase());
   let n, period;
   if (tokens.length == 1) {
@@ -102,14 +105,12 @@ const getEveryActivationTime = expr => {
       period = period.substring(0, period.length - 1);
     }
   } else {
-    return 0;
+    return seconds;
   }
 
   const stats = time_literals[period];
-  if (stats === undefined) return 0;
+  if (stats === undefined) return seconds;
 
-  const now = new Date();
-  const seconds = now.getTime() / 1000;
   const tzOffset = now.getTimezoneOffset() * 60;
   const totalK = stats.k * n;
   const totalOffset = stats.offset + tzOffset;
@@ -295,7 +296,12 @@ const App = {
       if (this.state.currentCategory === pseudo_tags.add) {
         elements.tasks.innerHTML = ""
       } else {
-        elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
+        elements.tasks.replaceChildren(html`
+          <span
+            class="punctuation button"
+            onclick=${() => this.render(true)}
+          >-- all done --</span>
+        `);
       }
     } else {
       let tasks = renderedTasks.map(task => this.createTask(task));

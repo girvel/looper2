@@ -3,13 +3,6 @@
 ## Queue
 
 - [ ] Search tasks
-- [ ] Safety: async locks for submitInput & changeTask
-- [ ] Research usability features for iPhone/phones
-- [ ] Reorganize URLs:
-    girvel.xyz/looper: looper2
-    girvel.xyz/fallen: the game page
-    girvel.xyz/cv: my CV, empty for now
-    girvel.xyz/taste: top of games, cartoons, movies & tv shows
 - [x] Selected tag becomes editable
     - [x] `(+)` button
     - [x] Removing tags by erasing them
@@ -17,6 +10,7 @@
 - [x] Bug: completing a task when displaying completed tasks makes it opaque
 - [x] Unknown command error
 - [x] iPhone shortcut for sharing
+- [x] selected tag should go to URL?
 
 ## v0.4 Tag ordering
 
@@ -26,11 +20,13 @@
 
 ## v0.3.1 UI/UX
 
+- [x] Disallow space-filled tasks in backend
+    - [ ] Error messages in front-end
+- [ ] Write README
+- [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
 - [x] Dim tasks that are moved to another tag, not remove them
 - [x] Uncomplete tasks
 - [x] Rerendering of any kind is generally messy (different scroll issues, flickering, etc.). Update manually/consider virtual DOM?
-- [ ] Removing current tag breaks stuff
-    - [ ] bug: :TagRemove on the current empty tag crashes
 - [x] disable checkbox hover on phones
 - [x] Disallow recreating special tags
 - [x] Expressions:
@@ -38,20 +34,15 @@
     - [x] Expressions like @every(Friday)
     - [x] Cron expressions
 - [x] Prevent renames w/ unchanged tasks
-- [ ] Display completed tasks on click to "all done"
+- [x] Display completed tasks on click to "all done"
 - [x] Display a clickable span like "...228 upcoming"
-- [x] Disallow space-filled tasks in backend
-    - [ ] Error messages in front-end
 - [x] binding:"required" for most of DTOs
 - [x] Checked checkboxes on iphone don't look right
 - [x] Splits by 1+ spaces, strip space
 - [x] Clear input button for phones
 - [x] Sort by completion time and then ID (front)
 - [x] Selected tag goes to URL
-- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
-- [ ] Write README
-- [ ] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
-- [ ] Any unknown @ expression => task does not get completed ever
+- [x] Any unknown @ expression => task does not get completed ever
 
 ## v0.3.0 Auth & safety
 
@@ -181,8 +172,16 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Don't deploy to ~
 - [ ] Typescript?
 - [ ] Gestures (swipe tasks) for phones
+    - [ ] Research usability features for iPhone/phones
 - [ ] Push backup to remote
 - [ ] Tasks for the future
     - [ ] Autotags like @tomorrow
 - [ ] Render tasks for printing
-- [x] selected tag should go to URL?
+- [ ] Reorganize URLs:
+    girvel.xyz/looper: looper2
+    girvel.xyz/fallen: the game page
+    girvel.xyz/cv: my CV, empty for now
+    girvel.xyz/taste: top of games, cartoons, movies & tv shows
+- [ ] Safety: async locks for submitInput & changeTask
+- [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
+- [ ] Bug: tags that do not start with # don't go to URL

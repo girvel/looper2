@@ -29,9 +29,9 @@ ssh $VPS_USER@$VPS_HOST << EOF
         -p $VPS_HOST:443:8080 \
         -e GIN_MODE=release \
         -v girvel_looper2_db:/app/data \
-        -v /home/girvel/.auth-key:/app/.auth-key \
-        -v /home/girvel/cert.pem:/app/cert.pem \
-        -v /home/girvel/key.pem:/app/key.pem \
+        -v /home/$VPS_USER/.auth-key:/app/.auth-key \
+        -v /home/$VPS_USER/cert.pem:/app/cert.pem \
+        -v /home/$VPS_USER/key.pem:/app/key.pem \
         looper-vps:latest
 
     rm looper-deploy.tar.gz
