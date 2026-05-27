@@ -1,6 +1,8 @@
-# Looper
+<p align="center">
+  <img src="logo.png" />
+</p>
 
-![](logo.png)
+# Looper
 
 Personal webapp to manage repetitive tasks & spontaneous ideas.
 
