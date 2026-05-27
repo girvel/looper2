@@ -23,6 +23,7 @@ Personal webapp to manage repetitive tasks & spontaneous ideas.
 - The workflow is text+tags: you push a bunch of ideas & tasks during the day, then (or even before) you sort them to tags by mentioning a tag in the task's text
 - The killer feature is unpublished: I made a shortcut for my iPhone, triple tap on the back allows to write down an idea without even unlocking the phone
 - Cron-based expressions for repetitive tasks
+- In Russian, the verb for writing down an idea into the looper is `залупить`. Ударение на ваш вкус.
 
 ## Usage & installation
 
