@@ -162,7 +162,7 @@ const App = {
 
   // RENDERING //
 
-  createTag: function(tag) {
+  createCategory: function(tag) {
     let name, title
     if (Object.values(pseudo_tags).includes(tag)) {
       name = tag;
@@ -234,27 +234,43 @@ const App = {
     return !isCompleted(task) && this.doesCategoryMatch(this.state.current_category, task.text);
   },
 
-  render: function() {
+  render: function(display_completed) {
     setError("");
     elements.tags.replaceChildren(
-      this.createTag(pseudo_tags.feed),
-      this.createTag(pseudo_tags.all),
-      ...this.state.tags.map(tag => this.createTag(tag))
+      this.createCategory(pseudo_tags.feed),
+      this.createCategory(pseudo_tags.all),
+      ...this.state.tags.map(tag => this.createCategory(tag))
     );
 
     let renderedTasks = this.state.tasks
-      .filter(task => this.filterTask(task))
-      .sort((a, b) => a.completion_time > b.completion_time || a.id > b.id);
+      .filter(task => this.doesCategoryMatch(this.state.current_category, task.text));
+    if (!display_completed) {
+      renderedTasks = renderedTasks
+        .filter(task => !isCompleted(task));
+    }
+    renderedTasks = renderedTasks
+      .sort((a, b) => {
+        const a_time = a.completion_time ?? Infinity;
+        const b_time = b.completion_time ?? Infinity;
+        return isCompleted(a) < isCompleted(b) || a_time > b_time || a.id > b.id;
+      });
 
     if (renderedTasks.length === 0) {
       elements.tasks.innerHTML = `<span class="punctuation">-- all done --</span>`
     } else {
       let tasks = renderedTasks.map(task => this.createTask(task));
-      let count = this.state.tasks
-        .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.current_category, t.text))
-        .length;
-      if (count > 0) {
-        tasks.splice(0, 0, html`<span class="punctuation">...${count} completed</span>`)
+      if (!display_completed) {
+        let count = this.state.tasks
+          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.state.current_category, t.text))
+          .length;
+        if (count > 0) {
+          tasks.splice(0, 0, html`
+            <span
+              class="punctuation button"
+              onclick=${() => this.render(true)}
+            >...${count} completed</span>
+          `)
+        }
       }
       elements.tasks.replaceChildren(...tasks);
     }

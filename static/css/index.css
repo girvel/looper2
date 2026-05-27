@@ -22,6 +22,17 @@
   }
 }
 
+.button {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+}
+
 .task {
   display: flex;
   align-items: flex-start;
