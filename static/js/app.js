@@ -287,8 +287,8 @@ const App = {
 
     let renderedTasks = this.state.tasks;
 
-    if (displayMode === null) {
-      renderedTasks = renderedTasks.filter(this.filterTask);
+    if (displayMode === undefined) {
+      renderedTasks = renderedTasks.filter(t => this.filterTask(t));
     } else if (displayMode === "completed") {
       renderedTasks = renderedTasks
         .filter(t => this.doesCategoryMatch(this.state.currentCategory, t.text));
