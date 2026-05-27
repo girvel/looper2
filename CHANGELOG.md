@@ -21,8 +21,8 @@
 ## v0.3.1 UI/UX
 
 - [ ] See schedule button
-- [ ] Catch error on renaming tasks to empty
-- [ ] Write README
+- [x] Write README
+- [x] Catch error on renaming tasks to empty
 - [x] Disallow space-filled tasks in backend
     - [x] Error messages in front-end
 - [x] bug: complete the task, uncomplete it, look at `<completed>` -- tag's there. F5 fixes things
@@ -149,13 +149,10 @@ The most basic thing possible: an editable list of tasks.
 ## Never
 
 - [ ] Emulate vim text editing: everything is editable
-- [ ] Or just mass actions
-- [ ] Telegram bot to evade DPI
-- [ ] Subtasks
-- [ ] BIG IDEA: all of tasks is a single file
+    - [ ] Or BIG IDEA: all of tasks is a single file
 - [ ] Swagger
-- [ ] getActivationTime may have DST issues
-- [ ] publish tags (for the wishlist) ??
+- [ ] published/shared tags (for the wishlist) ??
+- [ ] README: installation & usage
 
 ## Later
 
@@ -188,3 +185,4 @@ The most basic thing possible: an editable list of tasks.
 - [ ] Multiline tasks: shift+enter adds line break; needs `pre` for task labels
 - [ ] Bug: tags that do not start with # don't go to URL
 - [ ] Validate expressions before adding/changing tasks
+- [ ] getActivationTime -> cron expressions in backend too
