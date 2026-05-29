@@ -3,6 +3,12 @@
 ## Queue
 
 - [ ] Search tasks
+- [ ] Successfully submitting a task should not trigger refresh
+- [ ] Don't send completed & unscheduled tasks if not asked for it
+- [ ] Usability issues:
+    - [x] Min height for task div
+    - [ ] Don't scroll down when pressing the "X completed"
+    - [ ] Reset texterea height to 1 when submitting a task
 - [x] Selected tag becomes editable
     - [x] `(+)` button
     - [x] Removing tags by erasing them
