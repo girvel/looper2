@@ -468,40 +468,6 @@ const App = {
     const value = elements.input.value.trim()
     if (value === "") return;
 
-    if (value.startsWith(":")) {  // NEXT remove commands
-      const args = tokenize(value);
-
-      if (args[0] == ":Tag") {
-        const name = args[1];
-        const subtags = args.slice(2);
-
-        if (Object.values(PseudoTag).includes(name)) {
-          setError("Don't.");
-          return;
-        }
-
-        const response = await api.post("api/tags", {name: name, subtags: subtags});
-
-        if (response.data.status === "OK") {
-          this.tags = (await api.get("/api/tags")).data;
-          this.reconstruct();
-          elements.input.value = "";
-        }
-      } else if (args[0] == ":TagRemove") {
-        const response = await api.post("api/tags/remove", {name: args[1]});
-
-        if (response.data.status === "OK") {
-          this.tags = (await api.get("/api/tags")).data;
-          this.reconstruct();
-          elements.input.value = "";
-        }
-      } else {
-        setError(`Unknown command "${args[0]}"; any input starting with ":" is a command, btw.`);
-      }
-
-      return;
-    }
-
     const response = await api.post("api/tasks", {"text": value});
     if (response.data.status === "OK") {
       this.tasks.push({id: response.data.id, text: value, completion_time: null});
