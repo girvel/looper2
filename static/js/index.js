@@ -457,8 +457,18 @@ const App = {
           `)
         }
       }
+
+      const prevScrollHeight = elements.tasks.scrollHeight;
       elements.tasks.replaceChildren(...tasks);
-      setTimeout(() => elements.tasks.scrollTop = elements.tasks.scrollHeight, 0);
+      setTimeout(() => {
+        if (displayMode === undefined) {
+          elements.tasks.scrollTop = elements.tasks.scrollHeight;
+        } else if (displayMode === "completed") {
+          elements.tasks.scrollTop += elements.tasks.scrollHeight - prevScrollHeight;
+        } else if (displayMode === "scheduled") {
+          elements.tasks.scrollTop = 0;
+        }
+      }, 0);
     }
   },
 

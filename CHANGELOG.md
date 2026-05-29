@@ -3,11 +3,22 @@
 ## Queue
 
 - [ ] Search tasks
-- [ ] Successfully submitting a task should not trigger refresh
 - [ ] Don't send completed & unscheduled tasks if not asked for it
+- [ ] -- all done -- + schedule
+- [ ] Cron is slow and not vendored
+
+## v0.4 Tag ordering
+
+- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
+- [ ] Tag descriptions
+    - [ ] Editable
+
+## v0.3.1 UI/UX
+
+- [ ] Successfully submitting a task should not trigger refresh
 - [ ] Usability issues:
     - [x] Min height for task div
-    - [ ] Don't scroll down when pressing the "X completed"
+    - [x] Don't scroll down when pressing the "X completed"
     - [ ] Reset texterea height to 1 when submitting a task
     - [ ] -- all done -- and X completed, X scheduled are clickable only if the count > 0
 - [x] Selected tag becomes editable
@@ -18,17 +29,6 @@
 - [x] Unknown command error
 - [x] iPhone shortcut for sharing
 - [x] selected tag should go to URL?
-
-## v0.4 Tag ordering
-
-- [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
-- [ ] Tag descriptions
-    - [ ] Editable
-
-## v0.3.1 UI/UX
-
-- [ ] -- all done -- + schedule
-- [ ] Cron is slow and not vendored
 - [x] See schedule button
 - [x] Write README
 - [x] Catch error on renaming tasks to empty
