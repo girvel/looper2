@@ -464,25 +464,6 @@ const App = {
 
   // INTERACTIONS //
 
-  refresh: async function() { // NEXT inline
-    const active = document.activeElement;
-    const isEditingInRender = active && elements.tasks.contains(active);
-
-    if (isEditingInRender) {
-      console.log("Skipping rerender, user is editing");
-    } else {
-      const newTasks = await api.get("/api/tasks");
-      const newTags = await api.get("/api/tags");
-      this.tasks = newTasks.data;
-      this.tags = newTags.data;
-
-      const scrollX = window.scrollX;
-      const scrollY = window.scrollY;
-      this.reconstruct();
-      window.scrollTo(scrollX, scrollY);
-    }
-  },
-
   submitInput: async function() {
     const value = elements.input.value.trim()
     if (value === "") return;
@@ -664,8 +645,9 @@ const App = {
   // PUBLIC //
 
   bind: async function() {
-    // allows HTML to fully load on slow internet speed
-    this.refresh();
+    this.tasks = (await api.get("/api/tasks")).data;
+    this.tags = (await api.get("/api/tags")).data;
+    this.reconstruct();
 
     elements.tasks.addEventListener("keydown", ev => {
       if (ev.target.tagName !== "TEXTAREA") return;
