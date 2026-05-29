@@ -248,7 +248,7 @@ const App = {
    * @param {Category} category
    * @return {HTMLElement}
    */
-  createCategory: function(category) {  // NEXT create -> construct
+  constructCategory: function(category) {
     const isPseudoTag = Object.values(PseudoTag).includes(category);
     let name, expandedName;
     if (isPseudoTag) {
@@ -306,7 +306,7 @@ const App = {
    * @param {Task} task
    * @return {HTMLElement}
    */
-  createTask: function(task) { // NEXT create -> construct
+  constructTask: function(task) {
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
@@ -375,14 +375,14 @@ const App = {
   /**
    * @param {DisplayMode=} displayMode
    */
-  render: function(displayMode) {  // NEXT rename to reconstruct
+  reconstruct: function(displayMode) {
     this.displayMode = displayMode;
     setError("");
     elements.tags.replaceChildren(
-      this.createCategory(PseudoTag.feed),
-      this.createCategory(PseudoTag.all),
-      ...this.tags.map(tag => this.createCategory(tag)),
-      this.createCategory(PseudoTag.add),
+      this.constructCategory(PseudoTag.feed),
+      this.constructCategory(PseudoTag.all),
+      ...this.tags.map(tag => this.constructCategory(tag)),
+      this.constructCategory(PseudoTag.add),
     );
 
     let renderedTasks = this.tasks;
@@ -426,12 +426,12 @@ const App = {
         elements.tasks.replaceChildren(html`
           <span
             class="punctuation button"
-            onclick=${() => this.render("completed")}
+            onclick=${() => this.reconstruct("completed")}
           >-- all done --</span>
         `);
       }
     } else {
-      let tasks = renderedTasks.map(task => this.createTask(task));
+      let tasks = renderedTasks.map(task => this.constructTask(task));
       if (displayMode === undefined) {
         let completedCount = this.tasks
           .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
@@ -446,12 +446,12 @@ const App = {
             <div>
               <span
                 class="punctuation button"
-                onclick=${() => this.render("completed")}
+                onclick=${() => this.reconstruct("completed")}
               >...${completedCount} completed</span>
               <span class="punctuation">, </span>
               <span
                 class="punctuation button"
-                onclick=${() => this.render("scheduled")}
+                onclick=${() => this.reconstruct("scheduled")}
               >${scheduledCount} scheduled</span>
             </div>
           `)
@@ -478,7 +478,7 @@ const App = {
 
       const scrollX = window.scrollX;
       const scrollY = window.scrollY;
-      this.render();
+      this.reconstruct();
       window.scrollTo(scrollX, scrollY);
     }
   },
@@ -503,7 +503,7 @@ const App = {
 
         if (response.data.status === "OK") {
           this.tags = (await api.get("/api/tags")).data;
-          this.render();
+          this.reconstruct();
           elements.input.value = "";
         }
       } else if (args[0] == ":TagRemove") {
@@ -511,7 +511,7 @@ const App = {
 
         if (response.data.status === "OK") {
           this.tags = (await api.get("/api/tags")).data;
-          this.render();
+          this.reconstruct();
           elements.input.value = "";
         }
       } else {
@@ -524,7 +524,7 @@ const App = {
     const response = await api.post("api/tasks", {"text": value});
     if (response.data.status === "OK") {
       this.tasks.push({id: response.data.id, text: value, completion_time: null});
-      this.render();
+      this.reconstruct();
 
       const unusable_tag = Object.values(PseudoTag).includes(this.currentCategory);
       if (!unusable_tag) {
@@ -565,7 +565,7 @@ const App = {
     if (!isMobile()) elements.input.focus();
 
     this.currentCategory = tagname;
-    this.render();
+    this.reconstruct();
   },
 
   /**
@@ -612,7 +612,7 @@ const App = {
     }
 
     this.tags = (await api.get("/api/tags")).data;
-    this.render();
+    this.reconstruct();
   },
 
   /**
@@ -636,7 +636,7 @@ const App = {
     this.currentCategory = name;
 
     this.tags = (await api.get("/api/tags")).data;
-    this.render();
+    this.reconstruct();
   },
 
   /**
