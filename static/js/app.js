@@ -1,16 +1,49 @@
+// @ts-check
 import Axios from "/static/lib/axios.min.js";
 import html from "/static/js/htm.js";
 import cronParser from "https://esm.sh/cron-parser@4.9.0";
 
 
+/**
+ * @typedef {Object} Task
+ * @property {number|null} completion_time
+ * @property {string} text
+ * @property {number} id
+ */
+
+/**
+ * @typedef {Object} Tag
+ * @property {string} name
+ * @property {string[]} subtags
+ */
+
+/** @enum {string} */
+const PseudoTag = {
+  feed: "<feed>",
+  all: "<all>",
+  add: "(+)",
+}
+
+/** @typedef {Tag|PseudoTag} Category */
+
+/** @typedef {"scheduled"|"completed"=} DisplayMode */
+
+/**
+ * @typedef {HTMLElement & {_task: Task}} TaskElement
+ */
+
+
 const elements = {
-  tasks: document.getElementById("tasks"),
-  tags: document.getElementById("tags"),
-  input: document.getElementById("input"),
-  input_clear: document.getElementById("input_clear"),
-  status: document.getElementById("status"),
+  tasks: /** @type {HTMLDivElement} */ (document.getElementById("tasks")),
+  tags: /** @type {HTMLDivElement} */ (document.getElementById("tags")),
+  input: /** @type {HTMLInputElement} */ (document.getElementById("input")),
+  input_clear: /** @type {HTMLButtonElement} */ (document.getElementById("input_clear")),
+  status: /** @type {!HTMLSpanElement} */ (document.getElementById("status")),
 };
 
+/**
+ * @param {string} msg
+ */
 const setError = msg => {
   elements.status.innerText = msg;
 };
@@ -33,29 +66,37 @@ api.interceptors.response.use(
   },
 );
 
-// tags + pseudo tags = categories
-const pseudo_tags = {
-  feed: "<feed>",
-  all: "<all>",
-  add: "(+)",
-}
-
+/**
+ * @this {HTMLTextAreaElement}
+ */
 const resizeTextarea = function() {
   this.style.height = "auto";  // Reset to calculate shrinkage
   this.style.height = this.scrollHeight + "px";
 };
 
+/**
+ * @this {HTMLInputElement}
+ */
 const resizeInputText = function() {
   this.size = Math.max(3, this.value.length);
 }
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @return {number}
+ */
 const mod = (a, b) => ((a % b) + b) % b;
 
+/**
+ * @param {string} str
+ * @return {string[]}
+ */
 const tokenize = (str) => {
   return str.trim().split(/\s+/);
 };
 
-const is_mobile = () => window.innerWidth < 600;
+const isMobile = () => window.innerWidth < 600;
 
 const time_literals = {
   second: {k: 1, offset: 0},
@@ -88,7 +129,11 @@ time_literals.sun = time_literals.sunday
 
 // TODO that is actually testable, I need tests here
 
-// day means 03:00, week means sunday, month means the first day
+/**
+ * day means 03:00, week means sunday, month means the first day
+ * @param {string} expr
+ * @return {number}
+ */
 const getEveryActivationTime = expr => {
   const now = new Date();
   const seconds = now.getTime() / 1000;
@@ -118,6 +163,11 @@ const getEveryActivationTime = expr => {
   return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset;
 };
 
+/**
+ * @param {string} expr
+ * @param {number} completionTime
+ * @return {number}
+ */
 const getCronNextTime = (expr, completionTime) => {
   try {
     let interval = cronParser.parseExpression(expr, {currentDate: new Date(completionTime * 1000)});
@@ -129,24 +179,35 @@ const getCronNextTime = (expr, completionTime) => {
   }
 };
 
+/**
+ * @param {Task} task
+ * @return {boolean}
+ */
 const isCompleted = task => {
   if (task.completion_time === null) return false;
 
   const everyMatch = task.text.match(/@every\(([^)]+)\)/);
   if (everyMatch) {
     return task.completion_time >= getEveryActivationTime(everyMatch[1]);
+      // NEXT move comparisons in
   }
 
   const cronMatch = task.text.match(/@cron\(([^)]+)\)/);
   if (cronMatch) {
     return Date.now() / 1000 <= getCronNextTime(cronMatch[1], task.completion_time);
+      // NEXT move comparisons in
   }
 
   return true;
 }
 
-const doesTagMatch = (tag, task_text) => {
-  const task_elements = tokenize(task_text.toLowerCase());
+/**
+ * @param {Tag} tag
+ * @param {string} taskText
+ * @return {boolean}
+ */
+const doesTagMatch = (tag, taskText) => {
+  const task_elements = tokenize(taskText.toLowerCase());
   return task_elements.some(
     e => tag.name.toLowerCase() == e
       || tag.subtags.some(st => st.toLowerCase() == e)
@@ -155,27 +216,37 @@ const doesTagMatch = (tag, task_text) => {
 
 
 const App = {
+  // NEXT flatten state
   state: {
+    /** @type {Task[]} */
     tasks: [],
+    /** @type {Tag[]} */
     tags: [],
+    /** @type {string} */
     currentCategory: window.location.hash != ""
       ? window.location.hash
-      : pseudo_tags.feed,
+      : PseudoTag.feed,
+    /** @type {DisplayMode} */
     displayMode: undefined,
   },
 
   // RENDERING //
 
-  createCategory: function(tag) {
-    const isPseudoTag = Object.values(pseudo_tags).includes(tag);
-    const name = isPseudoTag ? tag : tag.name;
-    let expandedName;
+  /**
+   * @param {Category} category
+   * @return {HTMLElement}
+   */
+  createCategory: function(category) {  // NEXT create -> construct
+    const isPseudoTag = Object.values(PseudoTag).includes(category);
+    let name, expandedName;
     if (isPseudoTag) {
-      expandedName = tag;
+      name = category;
+      expandedName = category;
     } else {
-      expandedName = tag.name;
-      if (tag.subtags.length > 0) {
-        expandedName += " " + tag.subtags.join(" ");
+      name = category.name;
+      expandedName = category.name;
+      if (category.subtags.length > 0) {
+        expandedName += " " + category.subtags.join(" ");
       }
     }
 
@@ -196,16 +267,16 @@ const App = {
         type="text"
         class="active_tag"
         rows="1"
-        disabled=${isPseudoTag && tag !== pseudo_tags.add}
+        disabled=${isPseudoTag && category !== PseudoTag.add}
         oninput=${resizeInputText}
       />
     `;
 
     if (!isPseudoTag) {
-      input.onchange = async ev => this.changeTag(tag.name, ev.currentTarget.value);
+      input.onchange = async ev => this.changeTag(category.name, ev.currentTarget.value);
     }
 
-    if (tag === pseudo_tags.add) {
+    if (category === PseudoTag.add) {
       input.value = "";
       input.placeholder = "#tag subtag1 subtag2";
       input.size = input.placeholder.length;
@@ -219,7 +290,11 @@ const App = {
     return input;
   },
 
-  createTask: function(task) {
+  /**
+   * @param {Task} task
+   * @return {HTMLElement}
+   */
+  createTask: function(task) { // NEXT create -> construct
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
@@ -259,31 +334,43 @@ const App = {
     return div;
   },
 
-  doesCategoryMatch: function(tag, task_text) {
-    if (tag === pseudo_tags.feed) {
-      return !this.state.tags.some(tag => doesTagMatch(tag, task_text));
-    } else if (this.state.currentCategory === pseudo_tags.all) {
+  /**
+   * @param {Category} category
+   * @param {string} taskText
+   * @return {boolean}
+   */
+  doesCategoryMatch: function(category, taskText) {
+    if (category === PseudoTag.feed) {
+      return !this.state.tags.some(tag => doesTagMatch(tag, taskText));
+    } else if (this.state.currentCategory === PseudoTag.all) {
       return true;
-    } else if (this.state.currentCategory === pseudo_tags.add) {
+    } else if (this.state.currentCategory === PseudoTag.add) {
       return false;
     } else {
       const tag = this.state.tags.find(tag => tag.name === this.state.currentCategory);
-      return doesTagMatch(tag, task_text);
+      return doesTagMatch(tag, taskText);
     }
   },
 
+  /**
+   * @param {Task} task
+   * @return {boolean}
+   */
   filterTask: function(task) {
     return !isCompleted(task) && this.doesCategoryMatch(this.state.currentCategory, task.text);
   },
 
-  render: function(displayMode) {
+  /**
+   * @param {DisplayMode=} displayMode
+   */
+  render: function(displayMode) {  // NEXT rename to reconstruct
     this.state.displayMode = displayMode;
     setError("");
     elements.tags.replaceChildren(
-      this.createCategory(pseudo_tags.feed),
-      this.createCategory(pseudo_tags.all),
+      this.createCategory(PseudoTag.feed),
+      this.createCategory(PseudoTag.all),
       ...this.state.tags.map(tag => this.createCategory(tag)),
-      this.createCategory(pseudo_tags.add),
+      this.createCategory(PseudoTag.add),
     );
 
     let renderedTasks = this.state.tasks;
@@ -317,17 +404,17 @@ const App = {
           return aTime - bTime;
         }
 
-        return a.id > b.id;
+        return a.id - b.id;
       });
 
     if (renderedTasks.length === 0) {
-      if (this.state.currentCategory === pseudo_tags.add) {
+      if (this.state.currentCategory === PseudoTag.add) {
         elements.tasks.innerHTML = ""
       } else {
         elements.tasks.replaceChildren(html`
           <span
             class="punctuation button"
-            onclick=${() => this.render(true)}
+            onclick=${() => this.render("completed")}
           >-- all done --</span>
         `);
       }
@@ -359,13 +446,13 @@ const App = {
         }
       }
       elements.tasks.replaceChildren(...tasks);
-      elements.tasks.scrollTop = elements.tasks.scrollHeight;
+      setTimeout(() => elements.tasks.scrollTop = elements.tasks.scrollHeight, 0);
     }
   },
 
   // INTERACTIONS //
 
-  refresh: async function() {
+  refresh: async function() { // NEXT inline
     const active = document.activeElement;
     const isEditingInRender = active && elements.tasks.contains(active);
 
@@ -388,14 +475,14 @@ const App = {
     const value = elements.input.value.trim()
     if (value === "") return;
 
-    if (value.startsWith(":")) {
+    if (value.startsWith(":")) {  // NEXT remove commands
       const args = tokenize(value);
 
       if (args[0] == ":Tag") {
         const name = args[1];
         const subtags = args.slice(2);
 
-        if (Object.values(pseudo_tags).includes(name)) {
+        if (Object.values(PseudoTag).includes(name)) {
           setError("Don't.");
           return;
         }
@@ -427,7 +514,7 @@ const App = {
       this.state.tasks.push({id: response.data.id, text: value, completion_time: null});
       this.render();
 
-      const unusable_tag = Object.values(pseudo_tags).includes(this.state.currentCategory);
+      const unusable_tag = Object.values(PseudoTag).includes(this.state.currentCategory);
       if (!unusable_tag) {
         const tag = this.state.tags.find(tag => tag.name == this.state.currentCategory);
         if (doesTagMatch(tag, value)) {
@@ -441,6 +528,9 @@ const App = {
     }
   },
 
+  /**
+   * @param {string} tagname
+   */
   selectCategory: function(tagname) {
     if (window.location.hash != tagname && tagname[0] == "#") {
       history.pushState(null, null, tagname);
@@ -448,8 +538,8 @@ const App = {
       history.pushState(null, null, "/");
     }
 
-    const unusable_prev = Object.values(pseudo_tags).includes(this.state.currentCategory);
-    const unusable_next = Object.values(pseudo_tags).includes(tagname);
+    const unusable_prev = Object.values(PseudoTag).includes(this.state.currentCategory);
+    const unusable_next = Object.values(PseudoTag).includes(tagname);
     const prev = this.state.tags.find(tag => tag.name == this.state.currentCategory);
     const next = this.state.tags.find(tag => tag.name == tagname);
 
@@ -460,12 +550,16 @@ const App = {
       elements.input.value = unusable_next ? "" : (next.subtags[0] ?? next.name) + " ";
     }
 
-    if (!is_mobile()) elements.input.focus();
+    if (!isMobile()) elements.input.focus();
 
     this.state.currentCategory = tagname;
     this.render();
   },
 
+  /**
+   * @param {TaskElement} element
+   * @param {string} value
+   */
   changeTask: async function(element, value) {
     // TODO reset on fail? or dimmed while pending -> normal color
     const task = element._task;
@@ -481,9 +575,13 @@ const App = {
     }
   },
 
+  /**
+   * @param {string} tagname
+   * @param {string} expr
+   */
   changeTag: async function(tagname, expr) {
     const args = tokenize(expr);
-    if (!args.every(a => !Object.values(pseudo_tags).includes(a))) {
+    if (args.some(a => Object.values(PseudoTag).includes(a))) {
       setError("Don't.");
       return;
     }
@@ -492,7 +590,7 @@ const App = {
     const subtags = args.slice(1);
     if (new_name.length === 0) {
       await api.post("api/tags/remove", {name: tagname});
-      this.state.currentCategory = pseudo_tags.feed;
+      this.state.currentCategory = PseudoTag.feed;
     } else if (new_name != tagname) {
       await api.post("api/tags/remove", {name: tagname});
       await api.post("api/tags", {name: new_name, subtags: subtags});
@@ -505,9 +603,12 @@ const App = {
     this.render();
   },
 
+  /**
+   * @param {string} expr
+   */
   addTag: async function(expr) {
     const args = tokenize(expr);
-    if (!args.every(a => !Object.values(pseudo_tags).includes(a))) {
+    if (args.some(a => Object.values(PseudoTag).includes(a))) {
       setError("Don't.");
       return;
     }
@@ -526,6 +627,9 @@ const App = {
     this.render();
   },
 
+  /**
+   * @param {TaskElement} element
+   */
   toggleTask: async function(element) {
     const task = element._task
     const checkbox = element.querySelector('input[type="checkbox"]');
@@ -537,7 +641,7 @@ const App = {
 
     if (response.data.status != "OK") return;
 
-    task.completion_time = completed ? Date.now() / 1000 : "reset";
+    task.completion_time = completed ? Date.now() / 1000 : null;
     if (this.state.displayMode !== undefined || !completed) {
       element.classList.remove("punctuation");
     } else {
