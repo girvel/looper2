@@ -146,12 +146,10 @@ time_literals.sun = time_literals.sunday
 /**
  * day means 03:00, week means sunday, month means the first day
  * @param {string} expr
- * @return {number}
+ * @param {number} completionTime
+ * @return {boolean}
  */
-const getEveryActivationTime = expr => {
-  const now = new Date();
-  const seconds = now.getTime() / 1000;
-
+const isEveryCompleted = (expr, completionTime) => {
   const tokens = tokenize(expr.toLowerCase());
   let n, period;
   if (tokens.length == 1) {
@@ -164,32 +162,34 @@ const getEveryActivationTime = expr => {
       period = period.substring(0, period.length - 1);
     }
   } else {
-    return seconds;
+    return false;
   }
 
   const stats = time_literals[period];
-  if (stats === undefined) return seconds;
+  if (stats === undefined) return false;
 
+  const now = new Date();
+  const seconds = now.getTime() / 1000;
   const tzOffset = now.getTimezoneOffset() * 60;
   const totalK = stats.k * n;
   const totalOffset = stats.offset + tzOffset;
 
-  return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset;
+  return Math.floor((seconds - totalOffset) / totalK) * totalK + totalOffset <= completionTime;
 };
 
 /**
  * @param {string} expr
  * @param {number} completionTime
- * @return {number}
+ * @return {boolean}
  */
-const getCronNextTime = (expr, completionTime) => {
+const isCronCompleted = (expr, completionTime) => {
   try {
     let interval = cronParser.parseExpression(expr, {currentDate: new Date(completionTime * 1000)});
-    return Math.floor(interval.next().getTime() / 1000);
+    return Date.now() / 1000 <= Math.floor(interval.next().getTime() / 1000);
   } catch (err) {
     console.error(err);
     console.log(`Cron expression "${expr}" is invalid`);
-    return Date.now() / 1000;
+    return false;
   }
 };
 
@@ -202,14 +202,12 @@ const isCompleted = task => {
 
   const everyMatch = task.text.match(/@every\(([^)]+)\)/);
   if (everyMatch) {
-    return task.completion_time >= getEveryActivationTime(everyMatch[1]);
-      // NEXT move comparisons in
+    return isEveryCompleted(everyMatch[1], task.completion_time);
   }
 
   const cronMatch = task.text.match(/@cron\(([^)]+)\)/);
   if (cronMatch) {
-    return Date.now() / 1000 <= getCronNextTime(cronMatch[1], task.completion_time);
-      // NEXT move comparisons in
+    return isCronCompleted(cronMatch[1], task.completion_time);
   }
 
   return true;
