@@ -41,6 +41,7 @@ const PseudoTag = {
 
 const elements = {
   tasks: /** @type {HTMLDivElement} */ (document.getElementById("tasks")),
+  remainder: /** @type {HTMLDivElement} */ (document.getElementById("remainder")),
   tags: /** @type {HTMLDivElement} */ (document.getElementById("tags")),
   input: /** @type {HTMLInputElement} */ (document.getElementById("input")),
   input_clear: /** @type {HTMLButtonElement} */ (document.getElementById("input_clear")),
@@ -265,7 +266,7 @@ const App = {
     if (this.currentCategory != name) {
       return html`
         <span
-          className="tag"
+          class="tag"
           title=${expandedName}
           onclick=${() => this.selectCategory(name)}
         >
@@ -333,7 +334,7 @@ const App = {
 
     const is_completed = isCompleted(task);
     const div = html`
-      <div className="task" _task=${task}>
+      <div class="task" _task=${task}>
         <input
           type="checkbox"
           checked=${is_completed}
@@ -420,18 +421,22 @@ const App = {
       });
 
     if (renderedTasks.length === 0) {
+      elements.remainder.replaceChildren();
       if (this.currentCategory === PseudoTag.add) {
         elements.tasks.innerHTML = ""
       } else {
-        elements.tasks.replaceChildren(html`
-          <span
-            class="punctuation button"
-            onclick=${() => this.reconstruct("completed")}
-          >-- all done --</span>
-        `);
+        let allDone = html`<span class="punctuation">-- all done --</span>`;
+        let completedCount = this.tasks
+          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
+          .length;
+        if (completedCount > 0) {
+          allDone.classList.add("button");
+          allDone.onclick = () => this.reconstruct("completed");
+        }
+        elements.tasks.replaceChildren(allDone);
       }
     } else {
-      let tasks = renderedTasks.map(task => this.constructTask(task));
+      let remainderChildren = [];
       if (displayMode === undefined) {
         let completedCount = this.tasks
           .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
@@ -442,22 +447,31 @@ const App = {
           .length;
 
         if (completedCount > 0 || scheduledCount > 0) {
-          tasks.splice(0, 0, html`
-            <div>
-              <span
-                class="punctuation button"
-                onclick=${() => this.reconstruct("completed")}
-              >...${completedCount} completed</span>
-              <span class="punctuation">, </span>
-              <span
-                class="punctuation button"
-                onclick=${() => this.reconstruct("scheduled")}
-              >${scheduledCount} scheduled</span>
-            </div>
-          `)
-        }
-      }
+          let completedElement = html`<span>${completedCount} completed</span>`;
+          if (completedCount > 0) {
+            completedElement.classList.add("button");
+            completedElement.onclick = () => this.reconstruct("completed");
+          }
 
+          let scheduledElement = html`<span>${scheduledCount} scheduled</span>`;
+          if (scheduledCount > 0) {
+            scheduledElement.classList.add("button");
+            scheduledElement.onclick = () => this.reconstruct("scheduled");
+          }
+
+          remainderChildren = html`...${completedElement}, ${scheduledElement}`
+        }
+      } else {
+        remainderChildren = [html`
+          <span
+            class="button"
+            onclick=${() => this.reconstruct()}
+          >(hide ${displayMode})</span>
+        `];
+      }
+      elements.remainder.replaceChildren(...remainderChildren);
+
+      let tasks = renderedTasks.map(task => this.constructTask(task));
       const prevScrollHeight = elements.tasks.scrollHeight;
       elements.tasks.replaceChildren(...tasks);
       setTimeout(() => {

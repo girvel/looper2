@@ -20,7 +20,7 @@
     - [x] Min height for task div
     - [x] Don't scroll down when pressing the "X completed"
     - [ ] Reset texterea height to 1 when submitting a task
-    - [ ] -- all done -- and X completed, X scheduled are clickable only if the count > 0
+    - [x] -- all done -- and X completed, X scheduled are clickable only if the count > 0
 - [x] Selected tag becomes editable
     - [x] `(+)` button
     - [x] Removing tags by erasing them

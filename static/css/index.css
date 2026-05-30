@@ -39,8 +39,11 @@ body {
   }
 }
 
-#tasks {
+#remainder {
   margin-top: var(--line-height-unit);
+}
+
+#tasks {
   margin-bottom: var(--line-height-unit);
   flex-grow: 1;
   width: 100%;
