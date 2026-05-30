@@ -494,8 +494,11 @@ const App = {
 
     const response = await api.post("api/tasks", {"text": value});
     if (response.data.status === "OK") {
-      this.tasks.push({id: response.data.id, text: value, completion_time: null});
-      this.reconstruct();
+      const task = {id: response.data.id, text: value, completion_time: null};
+      this.tasks.push(task);
+      if (this.filterTask(task)) {
+        elements.tasks.appendChild(this.constructTask(task));
+      }
 
       const unusable_tag = Object.values(PseudoTag).includes(this.currentCategory);
       if (!unusable_tag) {

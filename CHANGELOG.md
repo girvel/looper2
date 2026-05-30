@@ -15,8 +15,8 @@
 
 ## v0.3.1 UI/UX
 
-- [ ] Successfully submitting a task should not trigger refresh
-- [ ] Usability issues:
+- [x] Successfully submitting a task should not trigger refresh
+- [x] Usability issues:
     - [x] Min height for task div
     - [x] Don't scroll down when pressing the "X completed"
     - [x] Reset texterea height to 1 when submitting a task
