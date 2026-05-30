@@ -508,6 +508,7 @@ const App = {
       } else {
         elements.input.value = "";
       }
+      elements.input.style.height = "auto";
     }
   },
 
