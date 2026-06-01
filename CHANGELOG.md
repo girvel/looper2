@@ -15,6 +15,8 @@
 
 ## v0.3.1 UI/UX
 
+- [x] Bigger min height for the scrollable region
+- [x] Scroll shadow
 - [x] Successfully submitting a task should not trigger refresh
 - [x] Usability issues:
     - [x] Min height for task div
