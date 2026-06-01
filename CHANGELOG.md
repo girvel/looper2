@@ -15,6 +15,7 @@
 
 ## v0.3.1 UI/UX
 
+- [x] Compress JSON
 - [x] Bigger min height for the scrollable region
 - [x] Scroll shadow
 - [x] Successfully submitting a task should not trigger refresh

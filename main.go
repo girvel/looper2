@@ -7,13 +7,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/gin-contrib/gzip"
 	"github.com/go-playground/validator/v10"
 	_ "github.com/mattn/go-sqlite3"
 
 	looper2 "github.com/girvel/looper2/src"
 )
 
-func init_looper() error {
+func initLooper() error {
 	deps, err := looper2.NewDeps()
 	if err != nil {
 		return err
@@ -50,6 +51,7 @@ func init_looper() error {
 	}
 
 	router := gin.Default()
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	looper2.ApiRoutes(router, deps)
 	looper2.SiteRoutes(router, deps)
 
@@ -64,7 +66,7 @@ func init_looper() error {
 }
 
 func main() {
-	err := init_looper()
+	err := initLooper()
 	if err != nil {
 		log.Fatalf("Initialization error: %s", err.Error())
 	}
