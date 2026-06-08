@@ -86,6 +86,7 @@ textarea, button, input[type="text"], input[type="password"] {
   color: inherit;
   font-size: inherit;
   font-family: inherit;
+  height: var(--line-height-unit);
 
   border: none;
   outline: none;

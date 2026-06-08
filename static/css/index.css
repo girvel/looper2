@@ -7,7 +7,7 @@ body {
 #tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 1ch;
+  gap: 0.4ch 1ch;
 }
 
 .tag {
