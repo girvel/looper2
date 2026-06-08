@@ -215,6 +215,14 @@ const isCompleted = task => {
 }
 
 /**
+ * @param {string} task_text
+ * @return {boolean}
+ */
+const containsExpression = task_text => task_text
+  .split(/\s+/)
+  .some(part => part.startsWith("@") && part.length > 1);
+
+/**
  * @param {Tag} tag
  * @param {string} taskText
  * @return {boolean}
@@ -396,7 +404,7 @@ const App = {
     } else {
       renderedTasks = renderedTasks
         .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
-          && t.text.match(/\@/));
+          && containsExpression(t.text));
     }
 
     let areCompleted = new Map();
@@ -443,7 +451,7 @@ const App = {
           .length;
         let scheduledCount = this.tasks
           .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
-            && t.text.match(/\@/))
+            && containsExpression(t.text))
           .length;
 
         if (completedCount > 0 || scheduledCount > 0) {
