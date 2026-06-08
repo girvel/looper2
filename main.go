@@ -51,7 +51,7 @@ func initLooper() error {
 	}
 
 	router := gin.Default()
-	router.Use(gzip.Gzip(gzip.DefaultCompression))
+	router.Use(gzip.Gzip(gzip.BestCompression))
 	looper2.ApiRoutes(router, deps)
 	looper2.SiteRoutes(router, deps)
 
