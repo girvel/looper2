@@ -15,6 +15,7 @@
 
 ## v0.3.1 UI/UX
 
+- [ ] Display new task even if it's immediately grayed out
 - [x] Compress JSON
 - [x] Bigger min height for the scrollable region
 - [x] Scroll shadow

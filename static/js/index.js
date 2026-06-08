@@ -496,8 +496,10 @@ const App = {
     if (response.data.status === "OK") {
       const task = {id: response.data.id, text: value, completion_time: null};
       this.tasks.push(task);
-      if (this.filterTask(task)) {
-        elements.tasks.appendChild(this.constructTask(task));
+      const taskElement = this.constructTask(task);
+      elements.tasks.appendChild(taskElement);
+      if (!this.filterTask(task)) {
+        taskElement.classList.add("punctuation");
       }
 
       const unusable_tag = Object.values(PseudoTag).includes(this.currentCategory);
