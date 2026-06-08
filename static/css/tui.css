@@ -66,6 +66,11 @@ a {
   color: #49a1f8;
 }
 
+.suppress_link_decoration {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 h1::before {
   content: '# ';
   opacity: var(--punctuation-opacity);
