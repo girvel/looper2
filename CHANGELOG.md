@@ -15,8 +15,9 @@
 
 ## v0.3.1 UI/UX
 
-- [ ] displayMode === undefined is cringe
+- [ ] Remainder depends on task editing
 - [ ] Tags like @daily, @monday (@mon)
+- [x] displayMode === undefined is cringe
 - [x] Recalculate "N completed, M scheduled" reactively
 - [x] Gray the new non-@ task when displaying scheduled tasks
 - [x] Remove annoying 2px margins between task textboxes

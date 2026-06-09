@@ -29,7 +29,7 @@ const PseudoTag = {
 
 /** @typedef {Tag|PseudoTag} Category */
 
-/** @typedef {"scheduled"|"completed"=} DisplayMode */
+/** @typedef {"normal"|"scheduled"|"completed"} DisplayMode */
 
 /**
  * @typedef {HTMLElement & {_task: Task}} TaskElement
@@ -249,7 +249,7 @@ const App = {
     ? window.location.hash
     : PseudoTag.feed,
   /** @type {DisplayMode} */
-  displayMode: undefined,
+  displayMode: "normal",
 
   // RENDERING //
 
@@ -378,7 +378,7 @@ const App = {
       .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
         && containsExpression(t.text))
       .length;
-    if (this.displayMode === undefined) {
+    if (this.displayMode === "normal") {
       if (completedCount === 0 && scheduledCount === 0) return [];
 
       let completedElement = html`<span>${completedCount} completed</span>`;
@@ -428,7 +428,7 @@ const App = {
    */
   filterTask: function(task) {
     if (!this.doesCategoryMatch(this.currentCategory, task.text)) return false;
-    if (this.displayMode === undefined) {
+    if (this.displayMode === "normal") {
       return !isCompleted(task);
     } else if (this.displayMode === "completed") {
       return true
@@ -441,7 +441,7 @@ const App = {
    * @param {DisplayMode=} displayMode
    */
   reconstruct: function(displayMode) {
-    this.displayMode = displayMode;
+    this.displayMode = displayMode ?? "normal";
     setError("");
     elements.tags.replaceChildren(
       this.constructCategory(PseudoTag.feed),
@@ -478,7 +478,7 @@ const App = {
     const prevScrollHeight = elements.tasks.scrollHeight;
     elements.tasks.replaceChildren(...taskElements);
     setTimeout(() => {
-      if (displayMode === undefined) {
+      if (displayMode === "normal") {
         elements.tasks.scrollTop = elements.tasks.scrollHeight;
       } else if (displayMode === "completed") {
         elements.tasks.scrollTop += elements.tasks.scrollHeight - prevScrollHeight;
@@ -634,7 +634,7 @@ const App = {
     if (response.data.status != "OK") return;
 
     task.completion_time = completed ? Date.now() / 1000 : null;
-    if (this.displayMode !== undefined || !completed) {
+    if (this.displayMode !== "normal" || !completed) {
       element.classList.remove("punctuation");
     } else {
       element.classList.add("punctuation");
