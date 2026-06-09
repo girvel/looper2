@@ -356,6 +356,55 @@ const App = {
   },
 
   /**
+   * @param {boolean} noTasks
+   * @return HTMLElement[]
+   */
+  constructRemainder: function(noTasks) {
+    if (this.currentCategory === PseudoTag.add) return [];
+
+    let completedCount = this.tasks
+      .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
+      .length;
+    if (noTasks) {
+      let allDone = html`-- all done --`;
+      if (completedCount > 0) {
+        allDone.classList.add("button");
+        allDone.onclick = () => this.reconstruct("completed");
+      }
+      return [allDone];
+    }
+
+    let scheduledCount = this.tasks
+      .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
+        && containsExpression(t.text))
+      .length;
+    if (this.displayMode === undefined) {
+      if (completedCount === 0 && scheduledCount === 0) return [];
+
+      let completedElement = html`<span>${completedCount} completed</span>`;
+      if (completedCount > 0) {
+        completedElement.classList.add("button");
+        completedElement.onclick = () => this.reconstruct("completed");
+      }
+
+      let scheduledElement = html`<span>${scheduledCount} scheduled</span>`;
+      if (scheduledCount > 0) {
+        scheduledElement.classList.add("button");
+        scheduledElement.onclick = () => this.reconstruct("scheduled");
+      }
+
+      return html`...${completedElement}, ${scheduledElement}`;
+    }
+
+    return [html`
+      <span
+        class="button"
+        onclick=${() => this.reconstruct()}
+      >(hide ${this.displayMode})</span>
+    `];
+  },
+
+  /**
    * @param {Category} category
    * @param {string} taskText
    * @return {boolean}
@@ -424,70 +473,19 @@ const App = {
         return a.id - b.id;
       });
 
-    if (renderedTasks.length === 0) {
-      elements.remainder.replaceChildren();
-      if (this.currentCategory === PseudoTag.add) {
-        elements.tasks.innerHTML = ""
-      } else {
-        let allDone = html`<span class="punctuation">-- all done --</span>`;
-        let completedCount = this.tasks
-          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
-          .length;
-        if (completedCount > 0) {
-          allDone.classList.add("button");
-          allDone.onclick = () => this.reconstruct("completed");
-        }
-        elements.tasks.replaceChildren(allDone);
-      }
-    } else {
-      let remainderChildren = [];
+    elements.remainder.replaceChildren(...this.constructRemainder(renderedTasks.length === 0));
+    let taskElements = renderedTasks.map(task => this.constructTask(task));
+    const prevScrollHeight = elements.tasks.scrollHeight;
+    elements.tasks.replaceChildren(...taskElements);
+    setTimeout(() => {
       if (displayMode === undefined) {
-        let completedCount = this.tasks
-          .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
-          .length;
-        let scheduledCount = this.tasks
-          .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
-            && containsExpression(t.text))
-          .length;
-
-        if (completedCount > 0 || scheduledCount > 0) {
-          let completedElement = html`<span>${completedCount} completed</span>`;
-          if (completedCount > 0) {
-            completedElement.classList.add("button");
-            completedElement.onclick = () => this.reconstruct("completed");
-          }
-
-          let scheduledElement = html`<span>${scheduledCount} scheduled</span>`;
-          if (scheduledCount > 0) {
-            scheduledElement.classList.add("button");
-            scheduledElement.onclick = () => this.reconstruct("scheduled");
-          }
-
-          remainderChildren = html`...${completedElement}, ${scheduledElement}`
-        }
-      } else {
-        remainderChildren = [html`
-          <span
-            class="button"
-            onclick=${() => this.reconstruct()}
-          >(hide ${displayMode})</span>
-        `];
+        elements.tasks.scrollTop = elements.tasks.scrollHeight;
+      } else if (displayMode === "completed") {
+        elements.tasks.scrollTop += elements.tasks.scrollHeight - prevScrollHeight;
+      } else if (displayMode === "scheduled") {
+        elements.tasks.scrollTop = 0;
       }
-      elements.remainder.replaceChildren(...remainderChildren);
-
-      let tasks = renderedTasks.map(task => this.constructTask(task));
-      const prevScrollHeight = elements.tasks.scrollHeight;
-      elements.tasks.replaceChildren(...tasks);
-      setTimeout(() => {
-        if (displayMode === undefined) {
-          elements.tasks.scrollTop = elements.tasks.scrollHeight;
-        } else if (displayMode === "completed") {
-          elements.tasks.scrollTop += elements.tasks.scrollHeight - prevScrollHeight;
-        } else if (displayMode === "scheduled") {
-          elements.tasks.scrollTop = 0;
-        }
-      }, 0);
-    }
+    }, 0);
   },
 
   // INTERACTIONS //
@@ -505,9 +503,10 @@ const App = {
       if (!this.filterTask(task)) {
         taskElement.classList.add("punctuation");
       }
+      elements.remainder.replaceChildren(...this.constructRemainder(false));
 
-      const unusable_tag = Object.values(PseudoTag).includes(this.currentCategory);
-      if (!unusable_tag) {
+      const is_tag_unusable = Object.values(PseudoTag).includes(this.currentCategory);
+      if (!is_tag_unusable) {
         const tag = this.tags.find(tag => tag.name == this.currentCategory);
         if (doesTagMatch(tag, value)) {
           elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
@@ -640,6 +639,7 @@ const App = {
     } else {
       element.classList.add("punctuation");
     }
+    elements.remainder.replaceChildren(...this.constructRemainder(false));
   },
 
   // PUBLIC //
