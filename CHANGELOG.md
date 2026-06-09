@@ -15,8 +15,10 @@
 
 ## v0.3.1 UI/UX
 
+- [ ] displayMode === undefined is cringe
+- [ ] Tags like @daily, @monday (@mon), 
 - [ ] Recalculate "N completed, M scheduled" reactively
-- [ ] Gray the new non-@ task when displaying scheduled tasks
+- [x] Gray the new non-@ task when displaying scheduled tasks
 - [x] Remove annoying 2px margins between task textboxes
 - [x] Display new task even if it's immediately grayed out
 - [x] Compress JSON

@@ -378,7 +378,14 @@ const App = {
    * @return {boolean}
    */
   filterTask: function(task) {
-    return !isCompleted(task) && this.doesCategoryMatch(this.currentCategory, task.text);
+    if (!this.doesCategoryMatch(this.currentCategory, task.text)) return false;
+    if (this.displayMode === undefined) {
+      return !isCompleted(task);
+    } else if (this.displayMode === "completed") {
+      return true
+    } else {
+      return containsExpression(task.text);
+    }
   },
 
   /**
@@ -394,18 +401,7 @@ const App = {
       this.constructCategory(PseudoTag.add),
     );
 
-    let renderedTasks = this.tasks;
-
-    if (displayMode === undefined) {
-      renderedTasks = renderedTasks.filter(t => this.filterTask(t));
-    } else if (displayMode === "completed") {
-      renderedTasks = renderedTasks
-        .filter(t => this.doesCategoryMatch(this.currentCategory, t.text));
-    } else {
-      renderedTasks = renderedTasks
-        .filter(t => this.doesCategoryMatch(this.currentCategory, t.text)
-          && containsExpression(t.text));
-    }
+    let renderedTasks = this.tasks.filter(t => this.filterTask(t));
 
     let areCompleted = new Map();
     for (let task of renderedTasks) {
