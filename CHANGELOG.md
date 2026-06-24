@@ -15,7 +15,6 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 - [ ] Shared tasks
 - [ ] Push multiple tasks at once (for the shortcut)
 - [ ] Removing tasks by resetting them to ""
-- [ ] If the task already exists and it is not completed, don't add the duplicate
 
 ## v0.4 Tag ordering
 
@@ -26,6 +25,7 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 ## v0.3.1 UI/UX
 
 - [ ] Tags like @daily, @monday (@mon)
+- [x] If the task already exists and it is not completed, don't add the duplicate
 - [x] Buffer for iphone shortcut
 - [x] Remainder depends on task editing
 - [x] displayMode === undefined is cringe

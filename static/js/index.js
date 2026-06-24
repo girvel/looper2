@@ -65,6 +65,8 @@ api.interceptors.response.use(
       const status = error.response.status;
       if (status >= 500) {
         setError("Server error");
+      } else if (status == 409 && error.response.data.status == "EXIST") {
+        setError("Task already exists");
       } else if (status >= 400) {
         setError("Unknown error");
       }

@@ -67,6 +67,20 @@ func (d Deps) addTask(c *gin.Context) error {
 		return nil
 	}
 
+	var alreadyExists bool
+	query := d.DB.QueryRowContext(c.Request.Context(), `SELECT EXISTS(
+		SELECT user, text, completion_time FROM tasks
+		WHERE user = ? AND text = ? AND completion_time IS NULL
+	)`, c.GetString("user"), currentTask.Text)
+	err := query.Scan(&alreadyExists)
+	if err != nil {
+		return err
+	}
+	if alreadyExists {
+		c.JSON(http.StatusConflict, gin.H{"status": "EXIST"})
+		return nil
+	}
+
 	result, err := d.DB.Exec(`
 		INSERT INTO tasks (user, text) VALUES (?, ?)
 	`, c.GetString("user"), currentTask.Text)
