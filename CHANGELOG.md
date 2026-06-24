@@ -3,9 +3,19 @@
 ## Queue
 
 - [ ] Search tasks
-- [ ] Don't send completed & unscheduled tasks if not asked for it
 - [ ] -- all done -- + schedule
 - [ ] Cron is slow and not vendored
+- [ ] Scroll tasks when the scroll is at the bottom and the new task is added
+
+## v0.5 Shared tasks
+
+Data remodel: tasks can be fetched not only from your own account, but from the connected ones; checking for duplicates => separate tables with different indexes for completed and non-completed tasks? Or not?
+
+- [ ] Optimization: don't send completed & unscheduled tasks if not asked for it
+- [ ] Shared tasks
+- [ ] Push multiple tasks at once (for the shortcut)
+- [ ] Removing tasks by resetting them to ""
+- [ ] If the task already exists and it is not completed, don't add the duplicate
 
 ## v0.4 Tag ordering
 
@@ -16,6 +26,7 @@
 ## v0.3.1 UI/UX
 
 - [ ] Tags like @daily, @monday (@mon)
+- [x] Buffer for iphone shortcut
 - [x] Remainder depends on task editing
 - [x] displayMode === undefined is cringe
 - [x] Recalculate "N completed, M scheduled" reactively
