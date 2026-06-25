@@ -213,6 +213,15 @@ const isCompleted = task => {
     return isCronCompleted(cronMatch[1], task.completion_time);
   }
 
+  if (task.text.includes("@daily")) return isCronCompleted("0 3 * * *", task.completion_time);
+  if (task.text.includes("@mon")) return isCronCompleted("0 3 * * mon", task.completion_time);
+  if (task.text.includes("@tue")) return isCronCompleted("0 3 * * tue", task.completion_time);
+  if (task.text.includes("@wed")) return isCronCompleted("0 3 * * wed", task.completion_time);
+  if (task.text.includes("@thu")) return isCronCompleted("0 3 * * thu", task.completion_time);
+  if (task.text.includes("@fri")) return isCronCompleted("0 3 * * fri", task.completion_time);
+  if (task.text.includes("@sat")) return isCronCompleted("0 3 * * sat", task.completion_time);
+  if (task.text.includes("@sun")) return isCronCompleted("0 3 * * sun", task.completion_time);
+
   return true;
 }
 
