@@ -497,29 +497,36 @@ const App = {
     if (value === "") return;
 
     const response = await api.post("api/tasks", {"text": value});
-    if (response.data.status === "OK") {
-      const task = {id: response.data.id, text: value, completion_time: null};
-      this.tasks.push(task);
-      const taskElement = this.constructTask(task);
-      elements.tasks.appendChild(taskElement);
-      if (!this.filterTask(task)) {
-        taskElement.classList.add("punctuation");
-      }
-      elements.remainder.replaceChildren(...this.constructRemainder(false));
 
-      const is_tag_unusable = Object.values(PseudoTag).includes(this.currentCategory);
-      if (!is_tag_unusable) {
-        const tag = this.tags.find(tag => tag.name == this.currentCategory);
-        if (doesTagMatch(tag, value)) {
-          elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
-        } else {
-          elements.input.value = "";
-        }
+    const task = {id: response.data.id, text: value, completion_time: null};
+    this.tasks.push(task);
+
+    const taskElement = this.constructTask(task);
+    const scrollIsAtBottom = (
+      elements.tasks.clientHeight + elements.tasks.scrollTop == elements.tasks.scrollHeight
+    );
+    elements.tasks.appendChild(taskElement);
+    if (scrollIsAtBottom) {
+      setTimeout(() => elements.tasks.scrollTop = elements.tasks.scrollHeight, 0);
+    }
+    if (!this.filterTask(task)) {
+      taskElement.classList.add("punctuation");
+    }
+
+    elements.remainder.replaceChildren(...this.constructRemainder(false));
+
+    const is_tag_unusable = Object.values(PseudoTag).includes(this.currentCategory);
+    if (!is_tag_unusable) {
+      const tag = this.tags.find(tag => tag.name == this.currentCategory);
+      if (doesTagMatch(tag, value)) {
+        elements.input.value = (tag.subtags[0] ?? tag.name) + " ";
       } else {
         elements.input.value = "";
       }
-      elements.input.style.height = "auto";
+    } else {
+      elements.input.value = "";
     }
+    elements.input.style.height = "auto";
   },
 
   /**
