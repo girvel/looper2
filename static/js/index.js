@@ -665,6 +665,7 @@ const App = {
     this.tasks = (await api.get("/api/tasks")).data;
     this.tags = (await api.get("/api/tags")).data;
     this.reconstruct();
+    window.scrollTo(0, document.body.scrollHeight);
 
     elements.tasks.addEventListener("keydown", ev => {
       if (ev.target.tagName !== "TEXTAREA") return;

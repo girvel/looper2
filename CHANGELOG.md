@@ -23,6 +23,7 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 
 ## v0.3.1 UI/UX
 
+- [x] Scroll down both the page & the tasks by default
 - [x] Tags like @daily, @monday (@mon)
 - [x] Scroll tasks when the scroll is at the bottom and the new task is added
 - [x] If the task already exists and it is not completed, don't add the duplicate
