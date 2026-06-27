@@ -45,7 +45,8 @@ const elements = {
   tags: /** @type {HTMLDivElement} */ (document.getElementById("tags")),
   input: /** @type {HTMLInputElement} */ (document.getElementById("input")),
   input_clear: /** @type {HTMLButtonElement} */ (document.getElementById("input_clear")),
-  status: /** @type {!HTMLSpanElement} */ (document.getElementById("status")),
+  status: /** @type {HTMLSpanElement} */ (document.getElementById("status")),
+  title: /** @type {HTMLHeadingElement} */ (document.getElementById("title")),
 };
 
 /**
@@ -551,11 +552,10 @@ const App = {
    * @param {string} tagname
    */
   selectCategory: function(tagname) {
-    if (window.location.hash != tagname && tagname[0] == "#") {
-      history.pushState(null, null, tagname);
-    } else {
-      history.pushState(null, null, "/");
-    }
+    const url = window.location.hash != tagname && tagname[0] == "#"
+      ? tagname
+      : "/";
+    history.pushState(null, null, url);
 
     const unusable_prev = Object.values(PseudoTag).includes(this.currentCategory);
     const unusable_next = Object.values(PseudoTag).includes(tagname);
@@ -723,6 +723,10 @@ const App = {
 
     window.addEventListener("hashchange", () => {
       this.selectCategory(window.location.hash);
+    });
+
+    elements.title.addEventListener("click", () => {
+      window.location.reload();
     });
   },
 };
