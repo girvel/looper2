@@ -377,7 +377,7 @@ const App = {
       .filter(t => isCompleted(t) && this.doesCategoryMatch(this.currentCategory, t.text))
       .length;
     if (noTasks) {
-      let allDone = html`-- all done --`;
+      let allDone = html`<span>-- all done --</span>`;
       if (completedCount > 0) {
         allDone.classList.add("button");
         allDone.onclick = () => this.reconstruct("completed");

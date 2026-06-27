@@ -17,12 +17,14 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 
 ## v0.4 Tag ordering
 
+- [ ] Tag & release 0.3.1
 - [ ] Ordered collection of tags (like #nodep -> #extra) -- EPIC tags
 - [ ] Tag descriptions
     - [ ] Editable
 
 ## v0.3.1 UI/UX
 
+- [ ] Changing @-expressions does not toggle tasks' checkboxes immediately when in completed mode
 - [x] Scroll down both the page & the tasks by default
 - [x] Tags like @daily, @monday (@mon)
 - [x] Scroll tasks when the scroll is at the bottom and the new task is added
