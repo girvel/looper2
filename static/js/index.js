@@ -196,12 +196,24 @@ const isCronCompleted = (expr, completionTime) => {
   }
 };
 
+const shorthands = {
+  day: "0 3 * * *",
+  mon: "0 3 * * mon",
+  tue: "0 3 * * tue",
+  wed: "0 3 * * wed",
+  thu: "0 3 * * thu",
+  fri: "0 3 * * fri",
+  sat: "0 3 * * sat",
+  sun: "0 3 * * sun",
+}
+
 /**
  * @param {Task} task
  * @return {boolean}
  */
 const isCompleted = task => {
   if (task.completion_time === null) return false;
+  if (!task.text.includes("@")) return true;
 
   const everyMatch = task.text.match(/@every\(([^)]+)\)/);
   if (everyMatch) {
@@ -213,16 +225,13 @@ const isCompleted = task => {
     return isCronCompleted(cronMatch[1], task.completion_time);
   }
 
-  if (task.text.includes("@daily")) return isCronCompleted("0 3 * * *", task.completion_time);
-  if (task.text.includes("@mon")) return isCronCompleted("0 3 * * mon", task.completion_time);
-  if (task.text.includes("@tue")) return isCronCompleted("0 3 * * tue", task.completion_time);
-  if (task.text.includes("@wed")) return isCronCompleted("0 3 * * wed", task.completion_time);
-  if (task.text.includes("@thu")) return isCronCompleted("0 3 * * thu", task.completion_time);
-  if (task.text.includes("@fri")) return isCronCompleted("0 3 * * fri", task.completion_time);
-  if (task.text.includes("@sat")) return isCronCompleted("0 3 * * sat", task.completion_time);
-  if (task.text.includes("@sun")) return isCronCompleted("0 3 * * sun", task.completion_time);
+  for (const shorthand in shorthands) {
+    if (task.text.includes(shorthand)) {
+      return isCronCompleted(shorthands[shorthand], task.completion_time);
+    }
+  }
 
-  return true;
+  return false;
 }
 
 /**
