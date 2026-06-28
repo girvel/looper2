@@ -5,6 +5,7 @@
 - [ ] Search tasks
 - [ ] -- all done -- + schedule
 - [ ] Cron is slow and not vendored
+- [ ] setTimeout for scroll & such introduces 1-frame lag
 
 ## v0.5 Shared tasks
 
@@ -24,7 +25,11 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 
 ## v0.3.1 UI/UX
 
+- [ ] word wrap for the selected tag
+- [ ] `@at(<YYYY-MM-DD>)` for upcoming tasks
+- [ ] Display "X upcoming" for the tasks upcoming the next day
 - [ ] Changing @-expressions does not toggle tasks' checkboxes immediately when in completed mode
+- [x] Scroll the feed down by default
 - [x] Fix the title link: make it trigger a reload
 - [x] Scroll down both the page & the tasks by default
 - [x] Tags like @daily, @monday (@mon)

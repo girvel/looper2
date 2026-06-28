@@ -571,8 +571,14 @@ const App = {
 
     if (!isMobile()) elements.input.focus();
 
+    const scrollPercentageBefore = elements.tasks.scrollTop
+      / (elements.tasks.scrollHeight - elements.tasks.clientHeight);
     this.currentCategory = tagname;
     this.reconstruct();
+    setTimeout(() => {
+      elements.tasks.scrollTop = scrollPercentageBefore
+        * (elements.tasks.scrollHeight - elements.tasks.clientHeight);
+    }, 0);
   },
 
   /**
@@ -674,7 +680,11 @@ const App = {
     this.tasks = (await api.get("/api/tasks")).data;
     this.tags = (await api.get("/api/tags")).data;
     this.reconstruct();
-    window.scrollTo(0, document.body.scrollHeight);
+
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+      elements.tasks.scrollTo(0, elements.tasks.scrollHeight);
+    }, 0);
 
     elements.tasks.addEventListener("keydown", ev => {
       if (ev.target.tagName !== "TEXTAREA") return;
