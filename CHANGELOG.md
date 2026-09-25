@@ -2,6 +2,14 @@
 
 ## Queue
 
+- [ ] Bug: on resize (for some reason only after refresh), textareas have a wrong height
+- [ ] On wide screens, display tags in a column to the left
+- [ ] Animate pressing on the header (for iphone webapp)
+- [ ] Reset checkbox if response errored
+- [ ] If HTTP error "task already exists", ensure it exists on front-end
+- [ ] Research functionality of iOS webapp, s.a. offline stuff & background fetching of tasks
+- [ ] Buffer unsent tasks in a cookie?
+- [ ] Drag and drop tasks
 - [ ] Search tasks
 - [ ] -- all done -- + schedule
 - [ ] Cron is slow and not vendored
@@ -11,7 +19,6 @@
 
 Data remodel: tasks can be fetched not only from your own account, but from the connected ones; checking for duplicates => separate tables with different indexes for completed and non-completed tasks? Or not?
 
-- [ ] Optimization: don't send completed & unscheduled tasks if not asked for it
 - [ ] Shared tasks
 - [ ] Push multiple tasks at once (for the shortcut)
 - [ ] Removing tasks by resetting them to ""
@@ -25,6 +32,7 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 
 ## v0.3.1 UI/UX
 
+- [ ] Optimization: don't send completed & unscheduled tasks if not asked for it
 - [ ] word wrap for the selected tag
 - [ ] `@at(<YYYY-MM-DD>)` for upcoming tasks
 - [ ] Display "X upcoming" for the tasks upcoming the next day
