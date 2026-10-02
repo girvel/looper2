@@ -1,41 +1,26 @@
 #!/bin/bash
 set -e
 
-VPS_USER="girvel"
-VPS_HOST="185.167.234.186"  # hardcoded, that's fine
-IMAGE_NAME="looper-vps"
+: "${HOST:?HOST required}"
+: "${USER:?USER required}"
 
-echo "Building Docker Image (amd64)..."
-docker build --platform linux/amd64 -t $IMAGE_NAME:latest .
+IMAGE_NAME=${IMAGE_NAME:-"looper-vps"}
+DEPLOY_PATH=${DEPLOY_PATH:-"/var/looper2"}
 
-echo "Compressing Image..."
-docker save $IMAGE_NAME:latest | gzip > looper-deploy.tar.gz
-trap "rm looper-deploy.tar.gz" EXIT
+echo "Building..."
+CGO_ENABLED=1 CC=x86_64-linux-musl-gcc \
+    go build -trimpath -ldflags="-s -w -linkmode external -extldflags=-static" \
+    -o looper2 main.go
 
-echo "Uploading Assets..."
-scp looper-deploy.tar.gz .auth-key backup.sh cert.pem key.pem $VPS_USER@$VPS_HOST:~
+echo "Uploading..."
+scp looper2 .auth-key backup.sh cert.pem key.pem $USER@$HOST:$DEPLOY_PATH
+scp looper2.service $USER@$HOST:/etc/systemd/system/
 
-echo "Remote: Loading & Restarting..."
-ssh $VPS_USER@$VPS_HOST << EOF
-    set -e
-
-    gunzip -c looper-deploy.tar.gz | docker load
-
-    docker stop looper || true
-    docker rm looper || true
-    docker run -d \
-        --name looper \
-        --restart unless-stopped \
-        -p $VPS_HOST:443:8080 \
-        -e GIN_MODE=release \
-        -v girvel_looper2_db:/app/data \
-        -v /home/$VPS_USER/.auth-key:/app/.auth-key \
-        -v /home/$VPS_USER/cert.pem:/app/cert.pem \
-        -v /home/$VPS_USER/key.pem:/app/key.pem \
-        looper-vps:latest
-
-    rm looper-deploy.tar.gz
-    docker image prune -f # Remove old dangling images
+echo "Restarting systemd..."
+ssh $USER@$HOST << EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable looper2
+    sudo systemctl restart looper2
 EOF
 
-echo "Deployment Complete!"
+echo "Done."

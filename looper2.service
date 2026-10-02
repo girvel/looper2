@@ -1,0 +1,17 @@
+[Unit]
+Description=Looper
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+WorkingDirectory=/var/looper2
+ExecStart=/var/looper2/looper2
+Restart=on-failure
+RestartSec=5s
+
+Environment=GIN_MODE=release
+Environment=PORT=443
+
+[Install]
+WantedBy=multi-user.target

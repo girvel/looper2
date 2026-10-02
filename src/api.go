@@ -295,8 +295,16 @@ func (d Deps) auth(c *gin.Context) error {
 		return nil
 	}
 
+	var users_n int
+	err := d.DB.QueryRowContext(c.Request.Context(), "SELECT COUNT(*) FROM users").Scan(&users_n)
+	if err != nil {
+		log.Printf("ERROR: %s", err.Error())
+	} else {
+		log.Printf("OK: %d", users_n);
+	}
+
 	var password_hashed string
-	err := d.DB.QueryRowContext(c.Request.Context(), `
+	err = d.DB.QueryRowContext(c.Request.Context(), `
 		SELECT password_hashed FROM users
 		WHERE user = ?
 	`, pair.Login).Scan(&password_hashed)

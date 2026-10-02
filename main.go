@@ -2,12 +2,13 @@ package main
 
 import (
 	"log"
+	"os"
 	"reflect"
 	"strings"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/gin-contrib/gzip"
 	"github.com/go-playground/validator/v10"
 	_ "github.com/mattn/go-sqlite3"
 
@@ -62,7 +63,12 @@ func initLooper() error {
 		}
 	}
 
-	return router.RunTLS(":8080", "cert.pem", "key.pem")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	return router.RunTLS(":" + port, "cert.pem", "key.pem")
 }
 
 func main() {
