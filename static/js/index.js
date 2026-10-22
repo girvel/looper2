@@ -338,7 +338,7 @@ const App = {
    */
   constructTask: function(task) {
     const handleKeydown = async (ev) => {
-      if (ev.key !== "Enter") return;
+      if (ev.key !== "Enter" || ev.shiftKey) return;
       ev.preventDefault();
 
       try {
@@ -355,17 +355,36 @@ const App = {
       }
     };
 
+    const hideDetails = function(ev) {
+      const fullText = this.value;
+      const firstLine = fullText.split('\n')[0];
+
+      console.log("--");
+      console.log(fullText);
+      console.log(firstLine);
+
+      this.value = firstLine;
+      this.style.height = "auto";
+      const targetHeight = this.scrollHeight;
+      console.log(targetHeight);
+
+      this.value = fullText;
+      this.style.height = targetHeight + "px";
+    };
+
     const textarea = html`
       <textarea
         rows="1"
         onchange=${async ev => this.changeTask(div, ev.currentTarget.value)}
         onkeydown=${handleKeydown}
         oninput=${resizeTextarea}
+        onblur=${hideDetails}
+        onfocus=${resizeTextarea}
       >
         ${task.text}
       </textarea>
     `;
-    setTimeout(() => resizeTextarea.call(textarea), 0);
+    setTimeout(() => hideDetails.call(textarea), 0);
 
     const is_completed = isCompleted(task);
     const div = html`

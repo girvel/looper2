@@ -43,7 +43,8 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 ## v0.3.2 Misha fixes
 
 - [x] Task erasure should delete a task
-- [ ] Multiline tasks, the lower lines are hidden
+- [x] Multiline tasks, the lower lines are hidden
+- [ ] Indicator for presence of details
 - [ ] `?` button that displays help
 - [ ] i18n: idioms, remainder, `-- all done --`
 
