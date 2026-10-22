@@ -340,12 +340,18 @@ const App = {
     const handleKeydown = async (ev) => {
       if (ev.key !== "Enter") return;
       ev.preventDefault();
+
       try {
         await this.changeTask(div, ev.currentTarget.value);
       } catch (error) {
         if (error.status === 400) {
           setError("Invalid task");
         }
+        return;
+      }
+
+      if (task.text == "") {
+        elements.tasks.removeChild(div);
       }
     };
 

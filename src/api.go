@@ -57,7 +57,7 @@ func (d Deps) getTasks(c *gin.Context) error {
 }
 
 type taskText struct {
-	Text string `json:"text" binding:"notblank"`
+	Text string `json:"text"`
 }
 
 func (d Deps) addTask(c *gin.Context) error {
@@ -142,9 +142,17 @@ func (d Deps) renameTask(c *gin.Context) error {
 		return err
 	}
 
-	_, err = d.DB.Exec(`
-		UPDATE tasks SET text = ? WHERE id = ? AND user = ?
-	`, currentTask.Text, id, c.GetString("user"))
+	user := c.GetString("user")
+	if currentTask.Text == "" {
+		_, err = d.DB.Exec(`
+			DELETE FROM tasks WHERE id = ? AND user = ?
+		`, id, user)
+	} else {
+		_, err = d.DB.Exec(`
+			UPDATE tasks SET text = ? WHERE id = ? AND user = ?
+		`, currentTask.Text, id, user)
+	}
+
 	if err != nil {
 		return err
 	}

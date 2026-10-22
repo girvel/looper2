@@ -14,6 +14,8 @@
 - [ ] -- all done -- + schedule
 - [ ] Cron is slow and not vendored
 - [ ] setTimeout for scroll & such introduces 1-frame lag
+- [ ] Experiment with notifications
+- [ ] on iPhone gap between tags and remainder is too large, tags div is only ~50% of the screen height
 
 ## v0.5 Shared tasks
 
@@ -30,13 +32,23 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 - [ ] Tag descriptions
     - [ ] Editable
 
-## v0.3.1 UI/UX
+## v0.3.3 More UX
 
 - [ ] Optimization: don't send completed & unscheduled tasks if not asked for it
 - [ ] word wrap for the selected tag
 - [ ] `@at(<YYYY-MM-DD>)` for upcoming tasks
 - [ ] Display "X upcoming" for the tasks upcoming the next day
 - [ ] Changing @-expressions does not toggle tasks' checkboxes immediately when in completed mode
+
+## v0.3.2 Misha fixes
+
+- [x] Task erasure should delete a task
+- [ ] Multiline tasks, the lower lines are hidden
+- [ ] `?` button that displays help
+- [ ] i18n: idioms, remainder, `-- all done --`
+
+## v0.3.1 UI/UX
+
 - [x] Scroll the feed down by default
 - [x] Fix the title link: make it trigger a reload
 - [x] Scroll down both the page & the tasks by default
