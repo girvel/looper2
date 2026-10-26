@@ -387,10 +387,6 @@ const App = {
         }
         return;
       }
-
-      if (task.text == "") {
-        elements.tasks.removeChild(div);
-      }
     };
 
     const hideDetails = function(_) {
@@ -660,8 +656,14 @@ const App = {
   changeTask: async function(element, value) {
     // TODO reset on fail? or dimmed while pending -> normal color
     const task = element._task;
-    if (task.text == value) return;
+    if (task.text === value && value !== "") return;
     await api.post(`api/tasks/${task.id}/rename`, {text: value});
+
+    if (value === "") {
+      elements.tasks.removeChild(element);
+      return;
+    }
+
     task.text = value;
     if (this.filterTask(task)) {
       element.classList.remove("punctuation");
