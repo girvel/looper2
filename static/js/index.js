@@ -376,7 +376,8 @@ const App = {
    */
   constructTask: function(task) {
     const handleKeydown = async (ev) => {
-      if (ev.key !== "Enter" || ev.shiftKey) return;
+      const isMobile = window.matchMedia("(pointer: coarse)").matches;
+      if (ev.key !== "Enter" || ev.shiftKey || isMobile) return;
       ev.preventDefault();
 
       try {
