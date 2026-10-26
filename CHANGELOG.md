@@ -45,6 +45,7 @@ Data remodel: tasks can be fetched not only from your own account, but from the 
 - [x] Task erasure should delete a task
 - [x] Multiline tasks, the lower lines are hidden
 - [x] Indicator for presence of details
+- [ ] Scroll down to fit the expanded details if needed
 - [ ] `?` button that displays help
 - [ ] i18n: idioms, remainder, `-- all done --`
 - [ ] Suggestion to install as an app
