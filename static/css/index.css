@@ -100,3 +100,40 @@ body {
 #status {
   color: #fc618d;
 }
+
+.task_container {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.task_container textarea {
+  display: block;
+}
+
+.task_details_hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font: inherit;
+  line-height: var(--line-height-unit);
+  white-space: pre;
+  opacity: var(--punctuation-opacity);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mirror {
+  position: fixed;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  box-sizing: content-box;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}

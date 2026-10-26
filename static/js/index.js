@@ -76,12 +76,50 @@ api.interceptors.response.use(
   },
 );
 
+const lineMirror = document.createElement("div");
+lineMirror.className = "mirror";
+
+/**
+ * Places `hint` right after the last character of the first logical line
+ * of `textarea`. Hides it for single-line tasks.
+ * @param {HTMLTextAreaElement} textarea
+ * @param {HTMLElement} hint
+ */
+const positionDetailsHint = (textarea, hint) => {
+  const value = textarea.value;
+  let newline_index = value.indexOf("\n");
+  if (newline_index === -1) newline_index = value.length;
+
+  const style = getComputedStyle(textarea);
+  lineMirror.style.font = style.font;
+  lineMirror.style.fontVariantLigatures = style.fontVariantLigatures;
+  lineMirror.style.letterSpacing = style.letterSpacing;
+  lineMirror.style.lineHeight = style.lineHeight;
+  lineMirror.style.whiteSpace = style.whiteSpace;
+  lineMirror.style.overflowWrap = style.overflowWrap;
+  lineMirror.style.width = textarea.clientWidth + "px";
+  lineMirror.textContent = value.slice(0, newline_index);
+
+  document.body.append(lineMirror);
+
+  const range = document.createRange();
+  range.selectNodeContents(lineMirror);
+  const rects = range.getClientRects();
+  const last = rects[rects.length - 1];
+  const origin = lineMirror.getBoundingClientRect();
+
+  lineMirror.remove();
+
+  hint.style.transform =
+    `translate(${last.right - origin.left}px, ${last.top - origin.top}px)`;
+};
+
 /**
  * @this {HTMLTextAreaElement}
  */
-const resizeTextarea = function() {
-  this.style.height = "auto";  // Reset to calculate shrinkage
-  this.style.height = this.scrollHeight + "px";
+const resizeTextarea = (textarea) => {
+  textarea.style.height = "auto";  // Reset to calculate shrinkage
+  textarea.style.height = textarea.scrollHeight + "px";
 };
 
 /**
@@ -355,36 +393,45 @@ const App = {
       }
     };
 
-    const hideDetails = function(ev) {
+    const hideDetails = function(_) {
       const fullText = this.value;
       const firstLine = fullText.split('\n')[0];
-
-      console.log("--");
-      console.log(fullText);
-      console.log(firstLine);
 
       this.value = firstLine;
       this.style.height = "auto";
       const targetHeight = this.scrollHeight;
-      console.log(targetHeight);
 
       this.value = fullText;
       this.style.height = targetHeight + "px";
+
+      hint.hidden = !fullText.includes("\n");
     };
 
     const textarea = html`
       <textarea
         rows="1"
-        onchange=${async ev => this.changeTask(div, ev.currentTarget.value)}
+        onchange=${async _ => this.changeTask(div, textarea.value)}
         onkeydown=${handleKeydown}
-        oninput=${resizeTextarea}
+        oninput=${_ => {
+          resizeTextarea(textarea);
+        }}
         onblur=${hideDetails}
-        onfocus=${resizeTextarea}
-      >
+        onfocus=${_ => {
+          resizeTextarea(textarea);
+          hint.hidden = true;
+        }}>
         ${task.text}
       </textarea>
     `;
-    setTimeout(() => hideDetails.call(textarea), 0);
+
+    const hint = html`
+      <span class="task_details_hint" aria-hidden="true" hidden=${true}>...</span>
+    `;
+
+    setTimeout(() => {
+      positionDetailsHint(textarea, hint);
+      hideDetails.call(textarea);
+    }, 0);
 
     const is_completed = isCompleted(task);
     const div = html`
@@ -394,7 +441,7 @@ const App = {
           checked=${is_completed}
           onchange=${async ev => this.toggleTask(ev.currentTarget.closest(".task"))}
         />
-        ${textarea}
+        <div class="task_container">${textarea}${hint}</div>
       </div>
     `;
 
@@ -622,6 +669,11 @@ const App = {
       element.classList.add("punctuation");
     }
     elements.remainder.replaceChildren(...this.constructRemainder(false));
+
+    positionDetailsHint(
+      element.querySelector("textarea"),
+      element.querySelector(".task_details_hint")
+    );
   },
 
   /**
@@ -749,8 +801,8 @@ const App = {
       }
     });
 
-    elements.input.addEventListener("input", resizeTextarea);
-    resizeTextarea.call(elements.input);
+    elements.input.addEventListener("input", _ => resizeTextarea(elements.input));
+    resizeTextarea(elements.input);
 
     elements.input_clear.addEventListener("click", () => {
       elements.input.value = "";
@@ -758,6 +810,15 @@ const App = {
 
     window.addEventListener("hashchange", () => {
       this.selectCategory(window.location.hash);
+    });
+
+    window.addEventListener("resize", () => {
+      for (const task of elements.tasks.querySelectorAll(".task")) {
+        positionDetailsHint(
+          task.querySelector("textarea"),
+          task.querySelector(".task_details_hint")
+        );
+      }
     });
 
     elements.title.addEventListener("click", () => {
