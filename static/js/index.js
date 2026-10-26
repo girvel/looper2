@@ -662,6 +662,7 @@ const App = {
 
     if (value === "") {
       elements.tasks.removeChild(element);
+      this.tasks = this.tasks.filter(t => t != task);
       return;
     }
 
