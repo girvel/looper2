@@ -16,6 +16,8 @@
 - [ ] setTimeout for scroll & such introduces 1-frame lag
 - [ ] Experiment with notifications
 - [ ] on iPhone gap between tags and remainder is too large, tags div is only ~50% of the screen height
+- [ ] light mode
+  - [ ] autodetection?
 
 ## v0.5 Shared tasks
 
